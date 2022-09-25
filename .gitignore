@@ -1,0 +1,11 @@
+# Ignore everything in root folder
+/*
+
+# But not these
+!.gitignore
+![Aa]ssets/
+![Pp]roject[Ss]ettings/
+
+[Pp]roject[Ss]ettings/*
+![Pp]roject[Ss]ettings/ProjectVersion.txt
+![Pp]roject[Ss]ettings/TagManager.asset
