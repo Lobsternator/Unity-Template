@@ -1,6 +1,9 @@
 # Ignore everything in root folder
 /*
 
+# Ignore Settings folder
+[Aa]ssets/_[Pp]roject/[Ss]ettings
+
 # But not these
 !.gitignore
 ![Aa]ssets/
