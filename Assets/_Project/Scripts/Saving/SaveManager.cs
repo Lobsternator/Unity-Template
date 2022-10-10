@@ -130,10 +130,10 @@ namespace Template.Saving
 
         public bool HasSaveSlot(int saveSlot)
         {
-            string pattern = GetSaveFileRegexPattern(saveSlot);
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            string pattern     = GetSaveFileRegexPattern(saveSlot);
+            Regex regex        = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files = Directory.GetFiles(_fullSaveDirectoryPath);
+            string[] files     = Directory.GetFiles(_fullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
