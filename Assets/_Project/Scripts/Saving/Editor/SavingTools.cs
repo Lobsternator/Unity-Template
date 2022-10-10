@@ -21,6 +21,30 @@ namespace Template.Saving
             }
         }
 
+        [MenuItem("Tools/Saving/Save to first slot")]
+        public static void SaveToFirstSlot()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("The application needs to be running in order to save!");
+                return;
+            }
+
+            SaveManager.Instance.SaveToSlot(0);
+        }
+
+        [MenuItem("Tools/Saving/Load from first slot")]
+        public static void LoadFromFirstSlot()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("The application needs to be running in order to load!");
+                return;
+            }
+
+            SaveManager.Instance.LoadFromSlot(0);
+        }
+
         [MenuItem("Tools/Saving/Clear save data")]
         public static void ClearSaveData()
         {
@@ -31,10 +55,10 @@ namespace Template.Saving
                 return;
             }
 
-            string pattern      = SaveManager.Instance.GetSaveFileRegexPattern();
-            Regex regex         = new Regex(pattern, RegexOptions.IgnoreCase);
+            string pattern = SaveManager.GetSaveFileRegexPattern();
+            Regex regex    = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files      = Directory.GetFiles(saveManagerData.FullSaveDirectoryPath);
+            string[] files = Directory.GetFiles(saveManagerData.FullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);

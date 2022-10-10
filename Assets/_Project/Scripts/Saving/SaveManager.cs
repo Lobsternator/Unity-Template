@@ -17,6 +17,37 @@ namespace Template.Saving
     {
         private string _fullSaveDirectoryPath;
 
+        public static string GetSaveFileRegexPattern()
+        {
+            SaveManagerData persistentData = PersistentRuntimeObjectUtility.GetPersistentData<SaveManagerData>();
+            string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
+            string saveFileExt             = Path.GetExtension(persistentData.savePath);
+            string period                  = "";
+
+            if (saveFileExt.StartsWith('.'))
+            {
+                saveFileExt = saveFileExt.Substring(1);
+                period      = @"\.";
+            }
+
+            return @$"{saveFileName}[0-9]*{period}{saveFileExt}";
+        }
+        public static string GetSaveFileRegexPattern(int saveSlot)
+        {
+            SaveManagerData persistentData = PersistentRuntimeObjectUtility.GetPersistentData<SaveManagerData>();
+            string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
+            string saveFileExt             = Path.GetExtension(persistentData.savePath);
+            string period                  = "";
+
+            if (saveFileExt.StartsWith('.'))
+            {
+                saveFileExt = saveFileExt.Substring(1);
+                period      = @"\.";
+            }
+
+            return @$"{saveFileName}{saveSlot}{period}{saveFileExt}";
+        }
+
         private bool WriteSaveDataToFile(Dictionary<DataKey, SerializableObjectDataContainer> saveData, int saveSlot)
         {
             if (!Directory.Exists(_fullSaveDirectoryPath))
@@ -70,33 +101,6 @@ namespace Template.Saving
             }
 
             return true;
-        }
-
-        public string GetSaveFileRegexPattern()
-        {
-            string saveFileName = Path.GetFileNameWithoutExtension(PersistentData.savePath);
-            string saveFileExt  = Path.GetExtension(PersistentData.savePath);
-            string period       = "";
-            if (saveFileExt.StartsWith('.'))
-            {
-                saveFileExt     = saveFileExt.Substring(1);
-                period          = @"\.";
-            }
-
-            return @$"{saveFileName}[0-9]*{period}{saveFileExt}";
-        }
-        public string GetSaveFileRegexPattern(int saveSlot)
-        {
-            string saveFileName = Path.GetFileNameWithoutExtension(PersistentData.savePath);
-            string saveFileExt  = Path.GetExtension(PersistentData.savePath);
-            string period       = "";
-            if (saveFileExt.StartsWith('.'))
-            {
-                saveFileExt     = saveFileExt.Substring(1);
-                period          = @"\.";
-            }
-
-            return @$"{saveFileName}{saveSlot}{period}{saveFileExt}";
         }
 
         public bool SaveToSlot(int saveSlot)

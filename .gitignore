@@ -8,7 +8,12 @@
 !.gitignore
 ![Aa]ssets/
 ![Pp]roject[Ss]ettings/
+![Pp]ackages/
 
 [Pp]roject[Ss]ettings/*
 ![Pp]roject[Ss]ettings/ProjectVersion.txt
 ![Pp]roject[Ss]ettings/TagManager.asset
+
+[Pp]ackages/*
+![Pp]ackages/manifest.json
+![Pp]ackages/manifest_full.json
