@@ -9,7 +9,7 @@ namespace Template.Events
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -1000000)]
     public class EventManager : PersistentRuntimeSingleton<EventManager>
     {
-        public static bool IsApplicationQuitting { get; private set; }
+        public static bool IsApplicationQuitting { get; private set; } = false;
 
         public ApplicationEvents ApplicationEvents { get; private set; }
         public GameplayEvents GameplayEvents { get; private set; }
