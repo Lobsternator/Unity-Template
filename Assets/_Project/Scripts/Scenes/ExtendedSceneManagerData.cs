@@ -6,7 +6,7 @@ using Template.Core;
 namespace Template.Scenes
 {
     [CreateAssetMenu(fileName = "SceneManagerData", menuName = "PersistentRuntimeObjectData/SceneManager")]
-    public class SceneManagerData : PersistentRuntimeObjectData
+    public class ExtendedSceneManagerData : PersistentRuntimeObjectData
     {
         public string pathToSceneFolder;
     }

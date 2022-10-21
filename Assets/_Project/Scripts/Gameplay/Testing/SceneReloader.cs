@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Template.Core;
+using Template.Scenes;
 
 namespace Template.Gameplay
 {
@@ -16,11 +16,11 @@ namespace Template.Gameplay
             {
                 yield return new WaitForSeconds(reloadInterval);
 
-                Scene activeScene = SceneManager.GetActiveScene();
+                Scene activeScene = ExtendedSceneManager.Instance.GetActiveScene();
                 if (!activeScene.isLoaded)
                     continue;
 
-                SceneManager.LoadScene(activeScene.buildIndex);
+                ExtendedSceneManager.Instance.LoadSceneAsync(activeScene.buildIndex, LoadSceneMode.Single);
             }
         }
 
