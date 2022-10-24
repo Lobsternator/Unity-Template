@@ -21,7 +21,7 @@ namespace Template.Gameplay
         {
             Debug.Log("Max Damage Changed!");
         }
-        public void OnDamageMaxed()
+        public void OnDamageMaxed(float oldDamage, float newDamage)
         {
             Debug.Log("Max Destruction!");
         }

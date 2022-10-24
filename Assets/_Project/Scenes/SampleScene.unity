@@ -1710,7 +1710,7 @@ MonoBehaviour:
         - m_Target: {fileID: 1939762841}
           m_TargetAssemblyTypeName: Template.Gameplay.TestDamageableObject, Assembly-CSharp
           m_MethodName: OnDamageMaxed
-          m_Mode: 1
+          m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

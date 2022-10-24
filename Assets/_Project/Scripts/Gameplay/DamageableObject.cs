@@ -13,7 +13,7 @@ namespace Template.Gameplay
         public void OnDamageChanged(float oldDamage, float newDamage);
         public void OnMinDamageChanged(float oldMinDamage, float newMinDamage);
         public void OnMaxDamageChanged(float oldMaxDamage, float newMaxDamage);
-        public void OnDamageMaxed();
+        public void OnDamageMaxed(float oldDamage, float newDamage);
     }
 
     [Serializable]
@@ -36,7 +36,7 @@ namespace Template.Gameplay
                     Owner.OnDamageChanged(_oldDamage, _damage);
 
                     if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed();
+                        Owner.OnDamageMaxed(_oldDamage, _damage);
                 }
                 
                 _oldDamage = Mathf.Clamp(_damage, _minDamage, _maxDamage);
@@ -61,7 +61,7 @@ namespace Template.Gameplay
                     Owner.OnDamageChanged(_oldDamage, _damage);
 
                     if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed();
+                        Owner.OnDamageMaxed(_oldDamage, _damage);
                 }
 
                 _oldDamage    = _damage;
@@ -87,7 +87,7 @@ namespace Template.Gameplay
                     Owner.OnDamageChanged(_oldDamage, _damage);
 
                     if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed();
+                        Owner.OnDamageMaxed(_oldDamage, _damage);
                 }
 
                 _oldDamage    = _damage;
@@ -97,7 +97,20 @@ namespace Template.Gameplay
 
         public DamageManager(IDamageableObject owner)
         {
-            Owner = owner;
+            Owner     = owner;
+            Damage    = 0;
+            MinDamage = 0;
+            MaxDamage = 100;
+
+            ClearOldValues();
+        }
+        public DamageManager(IDamageableObject owner, float damage, float minDamage, float maxDamage)
+        {
+            Owner     = owner;
+            Damage    = damage;
+            MinDamage = minDamage;
+            MaxDamage = maxDamage;
+
             ClearOldValues();
         }
 
@@ -124,7 +137,7 @@ namespace Template.Gameplay
             public UnityEvent<float, float> DamageChanged;
             public UnityEvent<float, float> MinDamageChanged;
             public UnityEvent<float, float> MaxDamageChanged;
-            public UnityEvent DamageMaxed;
+            public UnityEvent<float, float> DamageMaxed;
         }
 
         [field: SerializeField] public DamageManager DamageManager { get; private set; }
@@ -134,6 +147,7 @@ namespace Template.Gameplay
 
         public DamageableObject()
         {
+            Events        = new DamageEvents();
             DamageManager = new DamageManager(this);
         }
 
@@ -161,9 +175,9 @@ namespace Template.Gameplay
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
-        public virtual void OnDamageMaxed()
+        public virtual void OnDamageMaxed(float oldDamage, float newDamage)
         {
-            Events.DamageMaxed?.Invoke();
+            Events.DamageMaxed?.Invoke(oldDamage, newDamage);
         }
 
         protected virtual void Awake()
