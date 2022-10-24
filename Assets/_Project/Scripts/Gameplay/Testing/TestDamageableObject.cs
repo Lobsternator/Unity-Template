@@ -9,19 +9,19 @@ namespace Template.Gameplay
     {
         private DamageableObject _damageableObject;
 
-        public void OnDamageChanged(float oldHealth, float newHealth)
+        public void OnDamageChanged(DamageEventArgs eventArgs)
         {
             Debug.Log("Damaged");
         }
-        public void OnMinDamageChanged(float oldHealth, float newHealth)
+        public void OnMinDamageChanged(DamageEventArgs eventArgs)
         {
             Debug.Log("Min Damage Changed!");
         }
-        public void OnMaxDamageChanged(float oldHealth, float newHealth)
+        public void OnMaxDamageChanged(DamageEventArgs eventArgs)
         {
             Debug.Log("Max Damage Changed!");
         }
-        public void OnDamageMaxed(float oldDamage, float newDamage)
+        public void OnDamageMaxed(DamageEventArgs eventArgs)
         {
             Debug.Log("Max Destruction!");
         }
@@ -31,7 +31,7 @@ namespace Template.Gameplay
             while (this)
             {
                 yield return new WaitForSeconds(interval);
-                _damageableObject.AddDamage(amount);
+                _damageableObject.ApplyDamage(amount, null, this, this);
             }
         }
 

@@ -25,7 +25,7 @@ namespace Template.Core
     public class TimeManager : PersistentRuntimeSingleton<TimeManager>
     {
         public bool IsTimeFrozen { get; private set; }
-        public bool IsDoingHitstop => !(_hitstop is null);
+        public bool IsDoingHitstop => _hitstop is not null;
 
         private class Hitstop
         {

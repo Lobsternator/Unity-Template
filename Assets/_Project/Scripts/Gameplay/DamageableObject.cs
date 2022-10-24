@@ -6,94 +6,58 @@ using UnityEngine.Events;
 
 namespace Template.Gameplay
 {
+    [Serializable]
+    public class DamageEventArgs : EventArgs
+    {
+        public DamageEventArgs(float oldValue, float newValue, DamageType damageType, IDamageableObject damageReciever, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        {
+            OldValue        = oldValue;
+            NewValue        = newValue;
+            DamageType      = damageType;
+            DamageReciever  = damageReciever;
+            EventInstigator = eventInstigator;
+            DamageCauser    = damageCauser;
+        }
+
+        public float OldValue { get; }
+        public float NewValue { get; }
+        public DamageType DamageType { get; }
+
+        public IDamageableObject DamageReciever { get; }
+        public MonoBehaviour EventInstigator { get; }
+        public MonoBehaviour DamageCauser { get; }
+    }
+
+    [Serializable]
+    public abstract class DamageType : ScriptableObject
+    {
+        public abstract float GetModifiedDamage(float baseDamage, IDamageableObject damageReciever, MonoBehaviour eventInstigator, MonoBehaviour damageCauser);
+    }
+
     public interface IDamageableObject
     {
         public DamageManager DamageManager { get; }
 
-        public void OnDamageChanged(float oldDamage, float newDamage);
-        public void OnMinDamageChanged(float oldMinDamage, float newMinDamage);
-        public void OnMaxDamageChanged(float oldMaxDamage, float newMaxDamage);
-        public void OnDamageMaxed(float oldDamage, float newDamage);
+        public void OnDamageChanged(DamageEventArgs eventArgs);
+        public void OnMinDamageChanged(DamageEventArgs eventArgs);
+        public void OnMaxDamageChanged(DamageEventArgs eventArgs);
+        public void OnDamageMaxed(DamageEventArgs eventArgs);
     }
 
     [Serializable]
     public class DamageManager
     {
         public IDamageableObject Owner { get; }
-        public bool IsDestroyed => Mathf.Approximately(_damage, _maxDamage);
+        public bool IsDestroyed => Mathf.Approximately(Damage, MaxDamage);
 
         private float _oldDamage;
-        [SerializeField] private float _damage;
-        public float Damage
-        {
-            get => _damage;
-            set
-            {
-                _damage = Mathf.Clamp(value, _minDamage, _maxDamage);
-
-                if (!Mathf.Approximately(_oldDamage, _damage))
-                {
-                    Owner.OnDamageChanged(_oldDamage, _damage);
-
-                    if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed(_oldDamage, _damage);
-                }
-                
-                _oldDamage = Mathf.Clamp(_damage, _minDamage, _maxDamage);
-            }
-        }
+        [field: SerializeField] public float Damage { get; private set; }
 
         private float _oldMinDamage;
-        [SerializeField] private float _minDamage;
-        public float MinDamage
-        {
-            get => _minDamage;
-            set
-            {
-                _minDamage = Mathf.Min(value, _maxDamage);
-                _damage    = Mathf.Clamp(_damage, _minDamage, _maxDamage);
-
-                if (!Mathf.Approximately(_oldMinDamage, _minDamage))
-                    Owner.OnMinDamageChanged(_oldMinDamage, _minDamage);
-
-                if (!Mathf.Approximately(_oldDamage, _damage))
-                {
-                    Owner.OnDamageChanged(_oldDamage, _damage);
-
-                    if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed(_oldDamage, _damage);
-                }
-
-                _oldDamage    = _damage;
-                _oldMinDamage = _minDamage;
-            }
-        }
+        [field: SerializeField] public float MinDamage { get; private set; }
 
         private float _oldMaxDamage;
-        [SerializeField] private float _maxDamage;
-        public float MaxDamage
-        {
-            get => _maxDamage;
-            set
-            {
-                _maxDamage = Mathf.Max(_minDamage, value);
-                _damage    = Mathf.Clamp(_damage, _minDamage, _maxDamage);
-
-                if (!Mathf.Approximately(_oldMaxDamage, _maxDamage))
-                    Owner.OnMaxDamageChanged(_oldMaxDamage, _maxDamage);
-
-                if (!Mathf.Approximately(_oldDamage, _damage))
-                {
-                    Owner.OnDamageChanged(_oldDamage, _damage);
-
-                    if (Mathf.Approximately(_damage, _maxDamage))
-                        Owner.OnDamageMaxed(_oldDamage, _damage);
-                }
-
-                _oldDamage    = _damage;
-                _oldMaxDamage = _maxDamage;
-            }
-        }
+        [field: SerializeField] public float MaxDamage { get; private set; }
 
         public DamageManager(IDamageableObject owner)
         {
@@ -102,7 +66,7 @@ namespace Template.Gameplay
             MinDamage = 0;
             MaxDamage = 100;
 
-            ClearOldValues();
+            UpdateValues();
         }
         public DamageManager(IDamageableObject owner, float damage, float minDamage, float maxDamage)
         {
@@ -111,78 +75,138 @@ namespace Template.Gameplay
             MinDamage = minDamage;
             MaxDamage = maxDamage;
 
-            ClearOldValues();
+            UpdateValues();
         }
 
-        public void ClearOldValues()
+        public void ApplyDamage(float baseDamage, DamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            _oldMinDamage = _minDamage;
-            _oldMaxDamage = _maxDamage;
-            _oldDamage    = _damage;
+            float modifiedDamage = damageType is not null ? damageType.GetModifiedDamage(baseDamage, Owner, eventInstigator, damageCauser) : baseDamage;
+            Damage               = Mathf.Clamp(Damage + modifiedDamage, MinDamage, MaxDamage);
+
+            if (!Mathf.Approximately(_oldDamage, Damage))
+            {
+                DamageEventArgs eventArgs = new DamageEventArgs(_oldDamage, Damage, damageType, Owner, eventInstigator, damageCauser);
+
+                Owner.OnDamageChanged(eventArgs);
+
+                if (Mathf.Approximately(Damage, MaxDamage))
+                    Owner.OnDamageMaxed(eventArgs);
+            }
+
+            _oldDamage = Mathf.Clamp(Damage, MinDamage, MaxDamage);
         }
 
+        public void SetMinDamage(float minDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        {
+            MinDamage = Mathf.Min(minDamage, MaxDamage);
+            Damage    = Mathf.Clamp(Damage, MinDamage, MaxDamage);
+
+            if (!Mathf.Approximately(_oldMinDamage, MinDamage))
+                Owner.OnMinDamageChanged(new DamageEventArgs(_oldMinDamage, MinDamage, null, Owner, eventInstigator, damageCauser));
+
+            if (!Mathf.Approximately(_oldDamage, Damage))
+            {
+                DamageEventArgs eventArgs = new DamageEventArgs(_oldDamage, Damage, null, Owner, eventInstigator, damageCauser);
+
+                Owner.OnDamageChanged(eventArgs);
+
+                if (Mathf.Approximately(Damage, MaxDamage))
+                    Owner.OnDamageMaxed(eventArgs);
+            }
+
+            _oldDamage    = Damage;
+            _oldMinDamage = MinDamage;
+        }
+        public void SetMaxDamage(float maxDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        {
+            MaxDamage = Mathf.Max(MinDamage, maxDamage);
+            Damage    = Mathf.Clamp(Damage, MinDamage, MaxDamage);
+
+            if (!Mathf.Approximately(_oldMaxDamage, MaxDamage))
+                Owner.OnMaxDamageChanged(new DamageEventArgs(_oldMaxDamage, MaxDamage, null, Owner, eventInstigator, damageCauser));
+
+            if (!Mathf.Approximately(_oldDamage, Damage))
+            {
+                DamageEventArgs eventArgs = new DamageEventArgs(_oldDamage, Damage, null, Owner, eventInstigator, damageCauser);
+
+                Owner.OnDamageChanged(eventArgs);
+
+                if (Mathf.Approximately(Damage, MaxDamage))
+                    Owner.OnDamageMaxed(eventArgs);
+            }
+
+            _oldDamage    = Damage;
+            _oldMaxDamage = MaxDamage;
+        }
+
+        public void UpdateValues()
+        {
+            _oldMinDamage = MinDamage;
+            _oldMaxDamage = MaxDamage;
+            _oldDamage    = Damage;
+        }
         public void Validate()
         {
-            MinDamage = MinDamage;
-            MaxDamage = MaxDamage;
-            Damage    = Damage;
+            SetMinDamage(MinDamage, null, null);
+            SetMaxDamage(MaxDamage, null, null);
+            ApplyDamage(0, null, null, null);
         }
     }
 
     public class DamageableObject : MonoBehaviour, IDamageableObject
     {
         [Serializable]
-        public class DamageEvents
+        public class EventsContainer
         {
-            public UnityEvent<float, float> DamageChanged;
-            public UnityEvent<float, float> MinDamageChanged;
-            public UnityEvent<float, float> MaxDamageChanged;
-            public UnityEvent<float, float> DamageMaxed;
+            public UnityEvent<DamageEventArgs> DamageChanged;
+            public UnityEvent<DamageEventArgs> MinDamageChanged;
+            public UnityEvent<DamageEventArgs> MaxDamageChanged;
+            public UnityEvent<DamageEventArgs> DamageMaxed;
         }
 
         [field: SerializeField] public DamageManager DamageManager { get; private set; }
 
         [field: Space(7)]
-        [field: SerializeField] public DamageEvents Events { get; private set; }
+        [field: SerializeField] public EventsContainer DamageEvents { get; private set; }
 
         public DamageableObject()
         {
-            Events        = new DamageEvents();
+            DamageEvents  = new EventsContainer();
             DamageManager = new DamageManager(this);
         }
 
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
-        public virtual void OnDamageChanged(float oldDamage, float newDamage)
+        public virtual void OnDamageChanged(DamageEventArgs eventArgs)
         {
-            Events.DamageChanged?.Invoke(oldDamage, newDamage);
+            DamageEvents.DamageChanged?.Invoke(eventArgs);
         }
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
-        public virtual void OnMinDamageChanged(float oldMinDamage, float newMinDamage)
+        public virtual void OnMinDamageChanged(DamageEventArgs eventArgs)
         {
-            Events.MinDamageChanged?.Invoke(oldMinDamage, newMinDamage);
+            DamageEvents.MinDamageChanged?.Invoke(eventArgs);
         }
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
-        public virtual void OnMaxDamageChanged(float oldMaxDamage, float newMaxDamage)
+        public virtual void OnMaxDamageChanged(DamageEventArgs eventArgs)
         {
-            Events.MaxDamageChanged?.Invoke(oldMaxDamage, newMaxDamage);
+            DamageEvents.MaxDamageChanged?.Invoke(eventArgs);
         }
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
-        public virtual void OnDamageMaxed(float oldDamage, float newDamage)
+        public virtual void OnDamageMaxed(DamageEventArgs eventArgs)
         {
-            Events.DamageMaxed?.Invoke(oldDamage, newDamage);
+            DamageEvents.DamageMaxed?.Invoke(eventArgs);
         }
 
         protected virtual void Awake()
         {
-            DamageManager.ClearOldValues();
+            DamageManager.UpdateValues();
             DamageManager.Validate();
         }
 
@@ -190,7 +214,7 @@ namespace Template.Gameplay
         protected virtual void OnValidate()
         {
             if (!gameObject.scene.isLoaded)
-                DamageManager.ClearOldValues();
+                DamageManager.UpdateValues();
 
             DamageManager.Validate();
         }

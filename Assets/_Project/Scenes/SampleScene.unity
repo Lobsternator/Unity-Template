@@ -1655,10 +1655,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <DamageManager>k__BackingField:
-    _damage: 0
-    _minDamage: 0
-    _maxDamage: 100
-  <Events>k__BackingField:
+    <Damage>k__BackingField: 0
+    <MinDamage>k__BackingField: 0
+    <MaxDamage>k__BackingField: 100
+  <DamageEvents>k__BackingField:
     DamageChanged:
       m_PersistentCalls:
         m_Calls:
