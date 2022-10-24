@@ -17,6 +17,10 @@ namespace Template.Core
         {
             _internalEvent -= func;
         }
+        public void Clear()
+        {
+            _internalEvent = null;
+        }
 
         public TResult[] Invoke()
         {
@@ -44,6 +48,10 @@ namespace Template.Core
         public void Unsubscribe(Func<T, TResult> func)
         {
             _internalEvent -= func;
+        }
+        public void Clear()
+        {
+            _internalEvent = null;
         }
 
         public TResult[] Invoke(T arg)
@@ -73,6 +81,10 @@ namespace Template.Core
         {
             _internalEvent -= func;
         }
+        public void Clear()
+        {
+            _internalEvent = null;
+        }
 
         public TResult[] Invoke(T1 arg1, T2 arg2)
         {
@@ -101,6 +113,10 @@ namespace Template.Core
         {
             _internalEvent -= func;
         }
+        public void Clear()
+        {
+            _internalEvent = null;
+        }
 
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3)
         {
@@ -128,6 +144,10 @@ namespace Template.Core
         public void Unsubscribe(Func<T1, T2, T3, T4, TResult> func)
         {
             _internalEvent -= func;
+        }
+        public void Clear()
+        {
+            _internalEvent = null;
         }
 
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
