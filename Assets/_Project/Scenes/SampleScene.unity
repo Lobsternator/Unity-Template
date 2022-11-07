@@ -1655,6 +1655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <DamageManager>k__BackingField:
+    <IsDamageable>k__BackingField: 1
     <Damage>k__BackingField: 0
     <MinDamage>k__BackingField: 0
     <MaxDamage>k__BackingField: 100
@@ -1695,21 +1696,6 @@ MonoBehaviour:
         - m_Target: {fileID: 1939762841}
           m_TargetAssemblyTypeName: Template.Gameplay.TestDamageableObject, Assembly-CSharp
           m_MethodName: OnMaxDamageChanged
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    DamageMaxed:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1939762841}
-          m_TargetAssemblyTypeName: Template.Gameplay.TestDamageableObject, Assembly-CSharp
-          m_MethodName: OnDamageMaxed
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

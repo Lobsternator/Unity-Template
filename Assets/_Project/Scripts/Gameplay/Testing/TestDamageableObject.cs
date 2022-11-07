@@ -21,10 +21,6 @@ namespace Template.Gameplay
         {
             Debug.Log("Max Damage Changed!");
         }
-        public void OnDamageMaxed(DamageEventArgs eventArgs)
-        {
-            Debug.Log("Max Destruction!");
-        }
 
         IEnumerator DamageSelf(float amount, float interval)
         {
