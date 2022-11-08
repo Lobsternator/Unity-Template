@@ -1246,7 +1246,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxGroundSteepness>k__BackingField: 85
   <MinVelocity>k__BackingField: 0.1
-  _forceGroundedState: 2
 --- !u!54 &1278136487
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1596,7 +1595,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxGroundSteepness>k__BackingField: 85
   <MinVelocity>k__BackingField: 0.1
-  _forceGroundedState: 2
 --- !u!1 &1939762839
 GameObject:
   m_ObjectHideFlags: 0
