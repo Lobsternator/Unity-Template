@@ -805,6 +805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PhysicsChecker>k__BackingField: {fileID: 1803585296}
+  <InteractWithTriggers>k__BackingField: 0
   <ForceGroundedState>k__BackingField: 0
 --- !u!58 &590316335
 CircleCollider2D:
@@ -1357,6 +1358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PhysicsChecker>k__BackingField: {fileID: 1278136486}
+  <InteractWithTriggers>k__BackingField: 0
   <ForceGroundedState>k__BackingField: 0
 --- !u!135 &1317541307
 SphereCollider:

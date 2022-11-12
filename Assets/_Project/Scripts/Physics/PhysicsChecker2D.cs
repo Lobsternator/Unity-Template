@@ -9,42 +9,22 @@ namespace Template.Physics
     [RequireComponent(typeof(Rigidbody2D))]
     public class PhysicsChecker2D : MonoBehaviour
     {
-        private class ForceGroundedStateTallyCountContainer
+        private class CollisionInfo
         {
-            public int groundedTally;
-            public int airbornTally;
-            public int eitherTally;
+            public Vector2 contactNormal;
+
+            public CollisionInfo(Collision2D collision)
+            {
+                contactNormal = collision.GetClosestContactNormal(Vector2.up);
+            }
         }
 
         [field: Range(0.0f, 90.0f)]
         [field: Tooltip("When the ground steepness is below this threshold the object will be considered to be \"grounded\".")]
-        [field: SerializeField] public float MaxGroundSteepness { get; set; }  = 85.0f;
+        [field: SerializeField] public float MaxGroundSteepness { get; set; } = 85.0f;
 
         [field: Tooltip("When the velocity is above this threshold the object will be considered to be \"moving\".")]
-        [field: SerializeField] public float MinVelocity { get; set; }         = 0.1f;
-
-        private ForceGroundedStateTallyCountContainer _forceGroundedStateTallyCount = new ForceGroundedStateTallyCountContainer();
-        private ForceGroundedStateMode _cachedForceGroundedState                    = ForceGroundedStateMode.Either;
-        public ForceGroundedStateMode ForceGroundedState
-        {
-            get
-            {
-                if (_forceGroundedStateTallyCount.eitherTally > 0)
-                    return ForceGroundedStateMode.Either;
-
-                else if (_forceGroundedStateTallyCount.groundedTally > 0 && _forceGroundedStateTallyCount.airbornTally > 0)
-                    return ForceGroundedStateMode.Either;
-
-                else if (_forceGroundedStateTallyCount.groundedTally > 0)
-                    return ForceGroundedStateMode.Grounded;
-
-                else if (_forceGroundedStateTallyCount.airbornTally > 0)
-                    return ForceGroundedStateMode.Airborn;
-
-                else
-                    return ForceGroundedStateMode.Either;
-            }
-        }
+        [field: SerializeField] public float MinVelocity { get; set; } = 0.1f;
 
         public bool IsMoving { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -59,50 +39,91 @@ namespace Template.Physics
         public event Action BecameAirborn;
         public event Action PhysicsFrameProcessed;
 
-        private bool ShouldBecomeGrounded => _touchingColliders.Count > 0 && !IsGrounded && _isBelowMaxSteepness                      && _cachedForceGroundedState != ForceGroundedStateMode.Airborn  || (!IsGrounded && _cachedForceGroundedState == ForceGroundedStateMode.Grounded);
-        private bool ShouldBecomeAirborn  => ((_touchingColliders.Count == 0 && IsGrounded) || (IsGrounded && !_isBelowMaxSteepness)) && _cachedForceGroundedState != ForceGroundedStateMode.Grounded || ( IsGrounded && _cachedForceGroundedState == ForceGroundedStateMode.Airborn);
+        public delegate ForceGroundedStateMode ForceGroundedStateModeFromTallyDelegate(int groundedTally, int airbornTally, int eitherTally);
+        public ForceGroundedStateModeFromTallyDelegate ForceGroundedStateModeFromTallyCallback { get; set; }
+
+        private Dictionary<ForceGroundedStateMode, int> _forceGroundedStateTallyCount = new Dictionary<ForceGroundedStateMode, int>();
+
+        private bool ShouldBecomeGrounded
+        {
+            get
+            {
+                ForceGroundedStateMode forceGroundedState = GetForceGroundedState();
+
+                return _touchingColliders.Count > 0                         &&
+                       !IsGrounded                                          &&
+                       _isBelowMaxSteepness                                 &&
+                       forceGroundedState != ForceGroundedStateMode.Airborn ||
+                       (!IsGrounded && forceGroundedState == ForceGroundedStateMode.Grounded);
+            }
+        }
+        private bool ShouldBecomeAirborn
+        {
+            get
+            {
+                ForceGroundedStateMode forceGroundedState = GetForceGroundedState();
+
+                return ((_touchingColliders.Count == 0 && IsGrounded)        ||
+                       (IsGrounded && !_isBelowMaxSteepness))                &&
+                       forceGroundedState != ForceGroundedStateMode.Grounded ||
+                       ( IsGrounded && forceGroundedState == ForceGroundedStateMode.Airborn);
+            }
+        }
 
         private Rigidbody2D _rigidbody;
-        private HashSet<Collider2D> _touchingColliders      = new HashSet<Collider2D>();
-        private List<FrozenCollision2D> _collisionsToHandle = new List<FrozenCollision2D>();
+        private HashSet<Collider2D> _touchingColliders  = new HashSet<Collider2D>();
+        private List<CollisionInfo> _collisionsToHandle = new List<CollisionInfo>();
         private bool _isBelowMaxSteepness;
         private bool _hasDoneInitialStateCheck;
 
+        public PhysicsChecker2D()
+        {
+            ForceGroundedStateModeFromTallyCallback = DefaultForceGroundedStateFromTallyCallback;
+
+            foreach (ForceGroundedStateMode forceGroundedStateMode in Enum.GetValues(typeof(ForceGroundedStateMode)))
+                _forceGroundedStateTallyCount.Add(forceGroundedStateMode, 0);
+        }
+
+        public ForceGroundedStateMode DefaultForceGroundedStateFromTallyCallback(int groundedTally, int airbornTally, int eitherTally)
+        {
+            if (eitherTally > 0)
+                return ForceGroundedStateMode.Either;
+
+            else if (groundedTally > 0 && airbornTally > 0)
+                return ForceGroundedStateMode.Either;
+
+            else if (groundedTally > 0)
+                return ForceGroundedStateMode.Grounded;
+
+            else if (airbornTally > 0)
+                return ForceGroundedStateMode.Airborn;
+
+            else
+                return ForceGroundedStateMode.Either;
+        }
+
+        public ForceGroundedStateMode GetForceGroundedState()
+        {
+            return ForceGroundedStateModeFromTallyCallback.Invoke(
+                _forceGroundedStateTallyCount[ForceGroundedStateMode.Grounded],
+                _forceGroundedStateTallyCount[ForceGroundedStateMode.Airborn],
+                _forceGroundedStateTallyCount[ForceGroundedStateMode.Either]);
+        }
+
         public int GetForceGroundedStateTally(ForceGroundedStateMode forceGroundedState)
         {
-            if (forceGroundedState == ForceGroundedStateMode.Grounded)
-                return _forceGroundedStateTallyCount.groundedTally;
-            else if (forceGroundedState == ForceGroundedStateMode.Airborn)
-                return _forceGroundedStateTallyCount.airbornTally;
-            else if (forceGroundedState == ForceGroundedStateMode.Either)
-                return _forceGroundedStateTallyCount.eitherTally;
-            else
-                throw new NotImplementedException();
+            return _forceGroundedStateTallyCount[forceGroundedState];
         }
         public void SetForceGroundedStateTally(ForceGroundedStateMode forceGroundedState, int tally)
         {
-            if (forceGroundedState == ForceGroundedStateMode.Grounded)
-                _forceGroundedStateTallyCount.groundedTally = tally;
-            else if (forceGroundedState == ForceGroundedStateMode.Airborn)
-                _forceGroundedStateTallyCount.airbornTally  = tally;
-            else if (forceGroundedState == ForceGroundedStateMode.Either)
-                _forceGroundedStateTallyCount.eitherTally   = tally;
-            else
-                throw new NotImplementedException();
+            _forceGroundedStateTallyCount[forceGroundedState] = tally;
 
             if (_hasDoneInitialStateCheck)
                 UpdateGroundedState();
         }
         public void AddForceGroundedStateTally(ForceGroundedStateMode forceGroundedState, int tally)
         {
-            if (forceGroundedState == ForceGroundedStateMode.Grounded)
-                _forceGroundedStateTallyCount.groundedTally += tally;
-            else if (forceGroundedState == ForceGroundedStateMode.Airborn)
-                _forceGroundedStateTallyCount.airbornTally  += tally;
-            else if (forceGroundedState == ForceGroundedStateMode.Either)
-                _forceGroundedStateTallyCount.eitherTally   += tally;
-            else
-                throw new NotImplementedException();
+            _forceGroundedStateTallyCount[forceGroundedState] += tally;
 
             if (_hasDoneInitialStateCheck)
                 UpdateGroundedState();
@@ -110,13 +131,13 @@ namespace Template.Physics
 
         private void UpdateGroundedState()
         {
-            _cachedForceGroundedState = ForceGroundedState;
+            ForceGroundedStateMode forceGroundedState = GetForceGroundedState();
 
-            if (_cachedForceGroundedState == ForceGroundedStateMode.Grounded && !IsGrounded)
+            if (forceGroundedState == ForceGroundedStateMode.Grounded && !IsGrounded)
                 OnBecameGrounded();
-            else if (_cachedForceGroundedState == ForceGroundedStateMode.Airborn && IsGrounded)
+            else if (forceGroundedState == ForceGroundedStateMode.Airborn && IsGrounded)
                 OnBecameAirborn();
-            else if (_cachedForceGroundedState == ForceGroundedStateMode.Either)
+            else if (forceGroundedState == ForceGroundedStateMode.Either)
             {
                 if (ShouldBecomeGrounded)
                     OnBecameGrounded();
@@ -132,9 +153,9 @@ namespace Template.Physics
         }
         private void OnBecameAirborn()
         {
-            IsGrounded     = false;
-            GroundNormal   = Vector2.up;
-            GroundTangent  = Vector2.right;
+            IsGrounded    = false;
+            GroundNormal  = Vector2.up;
+            GroundTangent = Vector2.right;
             BecameAirborn?.Invoke();
         }
 
@@ -154,28 +175,27 @@ namespace Template.Physics
             Vector2 finalContactNormal = Vector2.zero;
             float finalSteepness       = float.MinValue;
 
-            foreach (FrozenCollision2D collision in _collisionsToHandle)
+            foreach (CollisionInfo collision in _collisionsToHandle)
             {
-                Vector2 closestContactNormal = collision.GetClosestContactNormal(Vector2.up);
-                float steepness              = Vector2.Dot(closestContactNormal, Vector2.up);
+                float steepness = Vector2.Dot(collision.contactNormal, Vector2.up);
 
                 if (steepness > finalSteepness)
                 {
                     finalSteepness     = steepness;
-                    finalContactNormal = closestContactNormal;
+                    finalContactNormal = collision.contactNormal;
                 }
             }
 
             _isBelowMaxSteepness = finalSteepness > Mathf.Cos(MaxGroundSteepness * Mathf.Deg2Rad);
             if (_isBelowMaxSteepness)
             {
-                GroundNormal   = finalContactNormal;
-                GroundTangent  = Vector3.Cross(finalContactNormal, Vector3.forward);
+                GroundNormal  = finalContactNormal;
+                GroundTangent = Vector3.Cross(finalContactNormal, Vector3.forward);
             }
             else
             {
-                GroundNormal   = Vector3.up;
-                GroundTangent  = Vector3.right;
+                GroundNormal  = Vector2.up;
+                GroundTangent = Vector2.right;
             }
         }
 
@@ -211,10 +231,10 @@ namespace Template.Physics
         {
             yield return new WaitForFixedUpdate();
 
-            _cachedForceGroundedState = ForceGroundedState;
+            ForceGroundedStateMode forceGroundedState = GetForceGroundedState();
             CollisionChecking();
 
-            if (_touchingColliders.Count > 0 || _cachedForceGroundedState == ForceGroundedStateMode.Grounded)
+            if (_touchingColliders.Count > 0 || forceGroundedState == ForceGroundedStateMode.Grounded)
                 OnBecameGrounded();
             else
                 OnBecameAirborn();
@@ -240,11 +260,11 @@ namespace Template.Physics
         private void OnCollisionEnter2D(Collision2D collision)
         {
             _touchingColliders.Add(collision.collider);
-            _collisionsToHandle.Add(new FrozenCollision2D(collision));
+            _collisionsToHandle.Add(new CollisionInfo(collision));
         }
         private void OnCollisionStay2D(Collision2D collision)
         {
-            _collisionsToHandle.Add(new FrozenCollision2D(collision));
+            _collisionsToHandle.Add(new CollisionInfo(collision));
         }
         private void OnCollisionExit2D(Collision2D collision)
         {

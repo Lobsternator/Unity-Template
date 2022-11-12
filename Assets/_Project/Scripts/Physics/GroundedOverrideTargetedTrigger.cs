@@ -5,16 +5,17 @@ using UnityEngine;
 namespace Template.Physics
 {
     [RequireComponent(typeof(Collider))]
-    public class GroundedOverrideAttachedTrigger : MonoBehaviour
+    public class GroundedOverrideTargetedTrigger : MonoBehaviour
     {
         [field: SerializeField] public PhysicsChecker PhysicsChecker { get; private set; }
+        [field: SerializeField] public bool InteractWithTriggers { get; set; } = false;
         [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
         private Dictionary<Collider, ForceGroundedStateMode> _touchingColliders = new Dictionary<Collider, ForceGroundedStateMode>();
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!PhysicsChecker)
+            if (!PhysicsChecker || (other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
 
             if (_touchingColliders.ContainsKey(other))
@@ -26,11 +27,29 @@ namespace Template.Physics
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!PhysicsChecker)
+            if (!PhysicsChecker || (other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
             
-            PhysicsChecker.AddForceGroundedStateTally(_touchingColliders[other], -1);
-            _touchingColliders.Remove(other);
+            if (_touchingColliders.ContainsKey(other))
+            {
+                PhysicsChecker.AddForceGroundedStateTally(_touchingColliders[other], -1);
+                _touchingColliders.Remove(other);
+            }
+        }
+
+        private void OnDisable()
+        {
+            foreach (var (collider, forceGroundedState) in _touchingColliders)
+                PhysicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+
+            _touchingColliders.Clear();
+        }
+        private void OnDestroy()
+        {
+            foreach (var (collider, forceGroundedState) in _touchingColliders)
+                PhysicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+
+            _touchingColliders.Clear();
         }
 
         private void FixedUpdate()

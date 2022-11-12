@@ -7,12 +7,16 @@ namespace Template.Physics
     [RequireComponent(typeof(Collider))]
     public class GroundedOverrideProximityTrigger : MonoBehaviour
     {
+        [field: SerializeField] public bool InteractWithTriggers { get; set; } = false;
         [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
         private Dictionary<(Collider, PhysicsChecker), ForceGroundedStateMode> _touchingColliders = new Dictionary<(Collider, PhysicsChecker), ForceGroundedStateMode>();
 
         private void OnTriggerEnter(Collider other)
         {
+            if ((other.isTrigger && !InteractWithTriggers) || !enabled)
+                return;
+
             PhysicsChecker physicsChecker = other.GetComponent<PhysicsChecker>();
             if (!physicsChecker)
                 return;
@@ -26,12 +30,33 @@ namespace Template.Physics
         }
         private void OnTriggerExit(Collider other)
         {
+            if ((other.isTrigger && !InteractWithTriggers) || !enabled)
+                return;
+
             PhysicsChecker physicsChecker = other.GetComponent<PhysicsChecker>();
             if (!physicsChecker)
                 return;
 
-            physicsChecker.AddForceGroundedStateTally(_touchingColliders[(other, physicsChecker)], -1);
-            _touchingColliders.Remove((other, physicsChecker));
+            if (_touchingColliders.ContainsKey((other, physicsChecker)))
+            {
+                physicsChecker.AddForceGroundedStateTally(_touchingColliders[(other, physicsChecker)], -1);
+                _touchingColliders.Remove((other, physicsChecker));
+            }
+        }
+
+        private void OnDisable()
+        {
+            foreach (var (colliderPhysicsCheckerPair, forceGroundedState) in _touchingColliders)
+                colliderPhysicsCheckerPair.Item2.AddForceGroundedStateTally(forceGroundedState, -1);
+
+            _touchingColliders.Clear();
+        }
+        private void OnDestroy()
+        {
+            foreach (var (colliderPhysicsCheckerPair, forceGroundedState) in _touchingColliders)
+                colliderPhysicsCheckerPair.Item2.AddForceGroundedStateTally(forceGroundedState, -1);
+
+            _touchingColliders.Clear();
         }
 
         private void FixedUpdate()
