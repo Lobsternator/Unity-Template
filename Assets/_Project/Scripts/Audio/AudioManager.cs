@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 using Template.Core;
-using Template.Events;
 
 namespace Template.Audio
 {
@@ -12,17 +12,26 @@ namespace Template.Audio
     {
         private ObjectPool<AudioObject> _audioObjectPool;
 
+        public event Action<AudioObject> OnAudioStartedPlaying;
+        public event Action<AudioObject> OnAudioStoppedPlaying;
+
+        private AudioObject PlaySound_Internal(AudioObject audioObject, AudioClip audioClip, AudioObjectSettings settings)
+        {
+            AudioSource audioSource = audioObject.AudioSource;
+            audioSource.volume      = settings.volume;
+            audioSource.clip        = audioClip;
+
+            audioObject.Play();
+            OnAudioStartedPlaying?.Invoke(audioObject);
+
+            return audioObject;
+        }
+
         public AudioObject PlaySound(AudioClip audioClip, AudioObjectSettings settings)
         {
             AudioObject audioObject = _audioObjectPool.Get();
-            AudioSource audioSource = audioObject.AudioSource;
 
-            audioSource.volume = settings.volume;
-            audioSource.clip   = audioClip;
-
-            audioSource.Play();
-
-            return audioObject;
+            return PlaySound_Internal(audioObject, audioClip, settings);
         }
         public AudioObject PlaySound(AudioClip audioClip)
         {
@@ -31,7 +40,10 @@ namespace Template.Audio
 
         private AudioObject OnAudioObjectCreate()
         {
-            return Instantiate(PersistentData.audioObjectPrefab, transform).GetComponent<AudioObject>();
+            AudioObject audioObject     = Instantiate(PersistentData.audioObjectPrefab, transform).GetComponent<AudioObject>();
+            audioObject.StoppedPlaying += OnAudioObjectStoppedPlaying;
+
+            return audioObject;
         }
         private void OnAudioObjectGet(AudioObject audioObject)
         {
@@ -43,24 +55,14 @@ namespace Template.Audio
         }
         private void OnAudioObjectDestroy(AudioObject audioObject)
         {
+            audioObject.StoppedPlaying -= OnAudioObjectStoppedPlaying;
             Destroy(audioObject.gameObject);
         }
 
-        private void OnAudioObjectFinishedPlaying(AudioObject audioObject)
+        private void OnAudioObjectStoppedPlaying(AudioObject audioObject)
         {
             _audioObjectPool.Release(audioObject);
-        }
-
-        private void OnEnable()
-        {
-            EventManager.Instance.ApplicationEvents.AudioObjectFinishedPlaying += OnAudioObjectFinishedPlaying;
-        }
-        private void OnDisable()
-        {
-            if (EventManager.IsApplicationQuitting)
-                return;
-
-            EventManager.Instance.ApplicationEvents.AudioObjectFinishedPlaying -= OnAudioObjectFinishedPlaying;
+            OnAudioStoppedPlaying?.Invoke(audioObject);
         }
 
         protected override void Awake()

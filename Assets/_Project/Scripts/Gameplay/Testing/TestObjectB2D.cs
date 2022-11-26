@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Template.Events;
 
 namespace Template.Gameplay
 {
@@ -10,21 +9,9 @@ namespace Template.Gameplay
     {
         private Rigidbody2D _rigidbody;
 
-        private void OnTest2D(TestObjectA2D objA)
+        public void Launch(float force)
         {
-            _rigidbody.AddForce(Vector2.up * objA.LaunchForce, ForceMode2D.Impulse);
-        }
-
-        private void OnEnable()
-        {
-            EventManager.Instance.GameplayEvents.Test2D += OnTest2D;
-        }
-        private void OnDisable()
-        {
-            if (EventManager.IsApplicationQuitting)
-                return;
-
-            EventManager.Instance.GameplayEvents.Test2D -= OnTest2D;
+            _rigidbody.AddForce(Vector2.up * force, ForceMode2D.Impulse);
         }
 
         private void Awake()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Template.Audio;
 using Template.Core;
-using Template.Events;
 using Template.Physics;
 
 namespace Template.Gameplay
@@ -13,7 +12,7 @@ namespace Template.Gameplay
     {
         [field: SerializeField] public float LaunchForce { get; private set; }
         [field: SerializeField] public AudioClip ImpactSound { get; private set; }
-        [field: SerializeField] public HitstopSettings ImpactHitstopSettings {  get; private set; }
+        [field: SerializeField] public HitstopSettings ImpactHitstopSettings { get; private set; }
 
         private PhysicsChecker _physicsChecker;
 
@@ -21,7 +20,9 @@ namespace Template.Gameplay
         {
             AudioManager.Instance.PlaySound(ImpactSound);
             TimeManager.Instance.DoHitstop(ImpactHitstopSettings);
-            EventManager.Instance.GameplayEvents.Test?.Invoke(this);
+
+            foreach (TestObjectB testObjectB in FindObjectsOfType<TestObjectB>())
+                testObjectB.Launch(LaunchForce);
         }
 
         private void OnEnable()

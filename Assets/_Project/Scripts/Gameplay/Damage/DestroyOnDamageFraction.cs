@@ -5,24 +5,29 @@ using UnityEngine;
 namespace Template.Gameplay
 {
     [RequireComponent(typeof(DamageableObject))]
-    public class DestroyOnDamagePercent : MonoBehaviour
+    public class DestroyOnDamageFraction : MonoBehaviour
     {
         [Range(0f, 1f)]
-        public float targetPercent;
+        public float targetFraction;
 
         private DamageableObject _damageableObject;
 
         private void OnDamageChanged(DamageEventArgs eventArgs)
         {
-            float currentPercent = eventArgs.NewValue / _damageableObject.DamageManager.MaxDamage;
+            float currentFraction = eventArgs.NewDamage / _damageableObject.GetMaxDamage();
 
-            if (Mathf.Approximately(currentPercent, targetPercent) || currentPercent > targetPercent)
+            if (Mathf.Approximately(currentFraction, targetFraction) || currentFraction > targetFraction)
                 Destroy(gameObject);
         }
 
         private void OnEnable()
         {
-            _damageableObject.DamageEvents.DamageChanged.AddListener(OnDamageChanged);
+            float currentFraction = _damageableObject.GetDamage() / _damageableObject.GetMaxDamage();
+
+            if (Mathf.Approximately(currentFraction, targetFraction) || currentFraction > targetFraction)
+                Destroy(gameObject);
+            else
+                _damageableObject.DamageEvents.DamageChanged.AddListener(OnDamageChanged);
         }
         private void OnDisable()
         {

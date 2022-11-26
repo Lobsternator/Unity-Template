@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Template.Core
 {
     [CreateAssetMenu(fileName = "ApplicationStatesData", menuName = "PersistentRuntimeObjectData/ApplicationStates")]
-    public class ApplicationStatesData : PersistentRuntimeObjectData
+    public class ApplicationStateManagerData : PersistentRuntimeObjectData
     {
         [field: SerializeField] public ApplicationStateTest ApplicationStateTest { get; set; } = new ApplicationStateTest();
     }

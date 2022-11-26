@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Type = System.Type;
 
 namespace Template.Core
 {
@@ -11,13 +11,22 @@ namespace Template.Core
     {
         protected State<TStateMachine> _state;
 
+        public event Action<State<TStateMachine>> BeforeStateDisabled;
+        public event Action<State<TStateMachine>> BeforeStateEnabled;
+        public event Action<State<TStateMachine>> StateDisabled;
+        public event Action<State<TStateMachine>> StateEnabled;
+
         protected virtual IEnumerator EnableState(State<TStateMachine> state)
         {
-            yield return StartCoroutine(state.OnEnable());
+            BeforeStateEnabled?.Invoke(state);
+            yield return state.OnEnable();
+            StateEnabled?.Invoke(state);
         }
         protected virtual IEnumerator DisableState(State<TStateMachine> state)
         {
-            yield return StartCoroutine(state.OnDisable());
+            BeforeStateDisabled?.Invoke(state);
+            yield return state.OnDisable();
+            StateDisabled?.Invoke(state);
         }
         protected virtual void UpdateState(State<TStateMachine> state)
         {

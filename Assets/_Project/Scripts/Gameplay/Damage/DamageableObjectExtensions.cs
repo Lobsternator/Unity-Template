@@ -21,6 +21,18 @@ namespace Template.Gameplay
         {
             return damageableObject.DamageManager.IsDestroyed;
         }
+        public static float GetDamage(this IDamageableObject damageableObject)
+        {
+            return damageableObject.DamageManager.Damage;
+        }
+        public static float GetMinDamage(this IDamageableObject damageableObject)
+        {
+            return damageableObject.DamageManager.MinDamage;
+        }
+        public static float GetMaxDamage(this IDamageableObject damageableObject)
+        {
+            return damageableObject.DamageManager.MaxDamage;
+        }
 
         public static void ApplyDamage(this IDamageableObject damageableObject, float baseDamage, DamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {

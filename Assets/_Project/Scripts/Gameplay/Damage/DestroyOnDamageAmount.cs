@@ -13,15 +13,20 @@ namespace Template.Gameplay
 
         private void OnDamageChanged(DamageEventArgs eventArgs)
         {
-            float currentAmount = eventArgs.NewValue;
+            float currentAmount = eventArgs.NewDamage;
 
-            if (Mathf.Approximately(currentAmount, targetAmount) || eventArgs.NewValue > targetAmount)
+            if (Mathf.Approximately(currentAmount, targetAmount) || currentAmount > targetAmount)
                 Destroy(gameObject);
         }
 
         private void OnEnable()
         {
-            _damageableObject.DamageEvents.DamageChanged.AddListener(OnDamageChanged);
+            float currentAmount = _damageableObject.GetDamage();
+
+            if (Mathf.Approximately(currentAmount, targetAmount) || currentAmount > targetAmount)
+                Destroy(gameObject);
+            else
+                _damageableObject.DamageEvents.DamageChanged.AddListener(OnDamageChanged);
         }
         private void OnDisable()
         {
