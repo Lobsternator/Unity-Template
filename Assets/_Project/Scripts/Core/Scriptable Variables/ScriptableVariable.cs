@@ -29,7 +29,7 @@ namespace Template.Core
     [Serializable]
     public class ScriptableVariable<TValue>
     {
-        public bool useConstant;
+        public bool useConstant = true;
         public TValue constant;
         public ScriptableReference<TValue> reference;
 
