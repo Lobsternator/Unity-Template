@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Template.Core;
 using Template.Saving.Serialization;
-using System.Text.RegularExpressions;
 
 namespace Template.Saving
 {
