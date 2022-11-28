@@ -9,6 +9,9 @@ namespace Template.Gameplay
     public class TestSavableObject : MonoBehaviour, ISavableObject
     {
         [field: SerializeField] public DataKey DataKey { get; set; } = new DataKey();
+        public bool ShouldAutomaticallySave => true;
+        public bool ShouldAutomaticallyLoad => true;
+
         public Vector3 test;
 
         public SerializableObjectDataContainer GetSaveData()
