@@ -142,9 +142,9 @@ namespace Template.Gameplay
         [Serializable]
         public class EventsContainer
         {
-            public UnityEvent<DamageEventArgs> DamageChanged;
-            public UnityEvent<DamageEventArgs> MinDamageChanged;
-            public UnityEvent<DamageEventArgs> MaxDamageChanged;
+            public UnityEvent<DamageEventArgs> damageChanged;
+            public UnityEvent<DamageEventArgs> minDamageChanged;
+            public UnityEvent<DamageEventArgs> maxDamageChanged;
         }
 
         [field: SerializeField] public DamageManager DamageManager { get; private set; }
@@ -163,21 +163,21 @@ namespace Template.Gameplay
         /// </summary>
         public virtual void OnDamageChanged(DamageEventArgs eventArgs)
         {
-            DamageEvents.DamageChanged?.Invoke(eventArgs);
+            DamageEvents.damageChanged?.Invoke(eventArgs);
         }
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
         public virtual void OnMinDamageChanged(DamageEventArgs eventArgs)
         {
-            DamageEvents.MinDamageChanged?.Invoke(eventArgs);
+            DamageEvents.minDamageChanged?.Invoke(eventArgs);
         }
         /// <summary>
         /// Internal function, don't use unless you know what you're doing.
         /// </summary>
         public virtual void OnMaxDamageChanged(DamageEventArgs eventArgs)
         {
-            DamageEvents.MaxDamageChanged?.Invoke(eventArgs);
+            DamageEvents.maxDamageChanged?.Invoke(eventArgs);
         }
 
         protected virtual void Awake()

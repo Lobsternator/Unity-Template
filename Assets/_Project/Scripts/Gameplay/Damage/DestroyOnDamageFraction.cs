@@ -27,11 +27,11 @@ namespace Template.Gameplay
             if (Mathf.Approximately(currentFraction, targetFraction) || currentFraction > targetFraction)
                 Destroy(gameObject);
             else
-                _damageableObject.DamageEvents.DamageChanged.AddListener(OnDamageChanged);
+                _damageableObject.DamageEvents.damageChanged.AddListener(OnDamageChanged);
         }
         private void OnDisable()
         {
-            _damageableObject.DamageEvents.DamageChanged.RemoveListener(OnDamageChanged);
+            _damageableObject.DamageEvents.damageChanged.RemoveListener(OnDamageChanged);
         }
 
         private void Awake()

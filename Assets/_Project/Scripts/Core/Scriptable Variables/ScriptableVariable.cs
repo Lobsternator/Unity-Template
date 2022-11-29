@@ -18,12 +18,12 @@ namespace Template.Core
                 _value = value;
 
                 if (notifyChanges)
-                    OnValueChanged?.Invoke(_value);
+                    valueChanged?.Invoke(_value);
             }
         }
 
         [Space(7)] public bool notifyChanges;
-        [Space(2)] public UnityEvent<TValue> OnValueChanged;
+        [Space(2)] public UnityEvent<TValue> valueChanged;
     }
 
     [Serializable]

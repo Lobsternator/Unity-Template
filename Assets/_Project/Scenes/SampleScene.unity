@@ -1660,7 +1660,7 @@ MonoBehaviour:
     <MinDamage>k__BackingField: 0
     <MaxDamage>k__BackingField: 100
   <DamageEvents>k__BackingField:
-    DamageChanged:
+    damageChanged:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1939762841}
@@ -1675,7 +1675,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    MinDamageChanged:
+    minDamageChanged:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1939762841}
@@ -1690,7 +1690,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    MaxDamageChanged:
+    maxDamageChanged:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1939762841}
