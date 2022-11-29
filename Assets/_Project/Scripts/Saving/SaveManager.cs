@@ -109,8 +109,10 @@ namespace Template.Saving
 
             ISavableObject[] savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
             foreach (ISavableObject savableObject in savableObjects)
-                if (savableObject.ShouldAutomaticallySave)
+            {
+                if (savableObject.SaveMethod == SaveMethod.Automatic)
                     finalSaveData.Add(savableObject.DataKey, savableObject.GetSaveData());
+            }
 
             return WriteSaveDataToFile(finalSaveData, saveSlot);
         }
@@ -120,8 +122,10 @@ namespace Template.Saving
             {
                 ISavableObject[] savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
                 foreach (ISavableObject savableObject in savableObjects)
-                    if (savableObject.ShouldAutomaticallyLoad && finalSaveData.TryGetValue(savableObject.DataKey, out var saveData))
+                {
+                    if (savableObject.LoadMethod == SaveMethod.Automatic && finalSaveData.TryGetValue(savableObject.DataKey, out var saveData))
                         savableObject.LoadSaveData(saveData);
+                }
 
                 return true;
             }
