@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f51595b73a1d254aa20ba24c25226a2, type: 3}
   m_Name: AudioManagerData
   m_EditorClassIdentifier: 
+  <InitSettings>k__BackingField:
+    <IsEnabled>k__BackingField: 1
+    <IsActive>k__BackingField: 1
+    <IsStatic>k__BackingField: 1
   audioObjectPrefab: {fileID: 2627758121981109607, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
   maxNumAudioObjects: 20
   defaultAudioSettings: {fileID: 11400000, guid: 877ea08ec9dca7e4199c15c9cd8bc733, type: 2}

@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af20fa34b5c743f4a8ada32b9aa74ad5, type: 3}
   m_Name: ExtendedSceneManagerData
   m_EditorClassIdentifier: 
-  startEnabled: 1
+  <InitSettings>k__BackingField:
+    isEnabled: 1
+    isActive: 1
+    isStatic: 0
   pathToSceneFolder: Assets/_Project/Scenes

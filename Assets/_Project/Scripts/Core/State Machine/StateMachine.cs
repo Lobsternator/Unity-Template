@@ -55,12 +55,12 @@ namespace Template.Core
             if (_state == state)
                 return false;
 
-            if (_state is object)
+            if (_state is not null)
                 StartCoroutine(DisableState(_state));
 
             _state = state;
 
-            if (_state is object)
+            if (_state is not null)
                 StartCoroutine(EnableState(_state));
 
             return true;
@@ -89,17 +89,17 @@ namespace Template.Core
 
         protected virtual void Update()
         {
-            if (_state is object)
+            if (_state is not null)
                 UpdateState(_state);
         }
         protected virtual void LateUpdate()
         {
-            if (_state is object)
+            if (_state is not null)
                 LateUpdateState(_state);
         }
         protected virtual void FixedUpdate()
         {
-            if (_state is object)
+            if (_state is not null)
                 FixedUpdateState(_state);
         }
     }

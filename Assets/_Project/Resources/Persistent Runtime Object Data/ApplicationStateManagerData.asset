@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 283d43dc67c39204e853413cd3355fd1, type: 3}
   m_Name: ApplicationStateManagerData
   m_EditorClassIdentifier: 
-  <StateRunning>k__BackingField:
-    waitUntilQuit: 10
+  <InitSettings>k__BackingField:
+    isEnabled: 1
+    isActive: 1
+    isStatic: 0
+  <ApplicationStateTest>k__BackingField:
+    test: {x: 0, y: 0, z: 0}

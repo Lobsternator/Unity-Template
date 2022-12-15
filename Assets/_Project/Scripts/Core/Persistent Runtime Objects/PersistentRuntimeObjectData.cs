@@ -9,7 +9,7 @@ namespace Template.Core
 {
     public abstract class PersistentRuntimeObjectData : ScriptableObject
     {
-        public bool startEnabled = true;
+        [field: SerializeField] public PersistentRuntimeObjectInitSettings InitSettings { get; private set; }
 
 #if UNITY_EDITOR
         protected virtual void OnValidate()
@@ -23,16 +23,7 @@ namespace Template.Core
                 for (int i = 0; i < foundAssets.Length; i++)
                     assetsString += $"\n{AssetDatabase.GUIDToAssetPath(foundAssets[i])}";
 
-                Debug.LogError($"Found multiple PersistentRuntimeObjectData assets of same type \'{typeName}\'!{assetsString}");
-            }
-            else if (foundAssets.Length == 1 && name != typeName)
-            {
-                string assetPath    = AssetDatabase.GUIDToAssetPath(foundAssets[0]);
-                string renameResult = AssetDatabase.RenameAsset(assetPath, typeName);
-                name                = typeName;
-
-                if (renameResult.Length != 0)
-                    Debug.LogError(renameResult);
+                Debug.LogError($"Found multiple PersistentRuntimeObjectData assets of type \'{typeName}\', this is not allowed!{assetsString}");
             }
         }
 #endif

@@ -68,7 +68,7 @@ namespace Template.Core
             return _assemblyTypes.Where(t =>
             {
                 PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
-                RuntimeInitializeLoadType loadType         = attribute is object ? attribute.RuntimeInitializeLoadType : RuntimeInitializeLoadType.AfterSceneLoad;
+                RuntimeInitializeLoadType loadType         = attribute is not null ? attribute.RuntimeInitializeLoadType : RuntimeInitializeLoadType.AfterSceneLoad;
 
                 bool isClass      = t.IsClass;
                 bool isAbstract   = t.IsAbstract;
@@ -79,7 +79,7 @@ namespace Template.Core
             }).OrderBy(t =>
             {
                 PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
-                return attribute is object ? attribute.LoadOrder : 0;
+                return attribute is not null ? attribute.LoadOrder : 0;
             }).ToArray();
         }
 
@@ -89,7 +89,7 @@ namespace Template.Core
             foreach (Type type in inheritedTypes)
             {
                 PersistentRuntimeObjectAttribute attribute = type.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
-                string objectName                          = attribute?.Name is object ? attribute.Name : type.Name;
+                string objectName                          = attribute?.Name is not null ? attribute.Name : type.Name;
 
                 object[] parameters = new object[] { objectName };
                 type.GetMethod("CreateObjectInstance", _createObjectInstanceBindingFlags).Invoke(null, parameters);

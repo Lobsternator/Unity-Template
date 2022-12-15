@@ -238,8 +238,10 @@ namespace Template.Scenes
             UnitySceneManager.sceneLoaded   += OnSceneLoaded;
             UnitySceneManager.sceneUnloaded += OnSceneUnloaded;
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             UnitySceneManager.sceneLoaded   -= OnSceneLoaded;
             UnitySceneManager.sceneUnloaded -= OnSceneUnloaded;
         }

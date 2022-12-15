@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd2e32ac1e5e5c489fc336649db4a07, type: 3}
   m_Name: SaveManagerData
   m_EditorClassIdentifier: 
-  startEnabled: 1
+  <InitSettings>k__BackingField:
+    isEnabled: 1
+    isActive: 1
+    isStatic: 0
   savePath: Save/SaveData.sav

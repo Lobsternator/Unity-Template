@@ -31,6 +31,13 @@ namespace Template.Core
             return false;
         }
 
+        private IEnumerator ResetApplicationQuitting()
+        {
+            yield return CoroutineUtility.WaitForFrames(1);
+
+            IsApplicationQuitting = false;
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -41,6 +48,8 @@ namespace Template.Core
             Application.wantsToQuit  += () =>
             {
                 IsApplicationQuitting = true;
+                StartCoroutine(ResetApplicationQuitting());
+
                 return true;
             };
 
