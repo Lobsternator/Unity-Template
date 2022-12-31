@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using Type = System.Type;
 
@@ -54,7 +55,7 @@ namespace Template.Core
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();
-            States       = StateMachineUtility.GetStates(PersistentData);
+            States       = StateMachineUtility.GetStates(PersistentData, BindingFlags.Instance | BindingFlags.Public);
             StateMachineUtility.InitializeStates(States.Values, StateMachine);
 
             SetState<ApplicationStateTest>();

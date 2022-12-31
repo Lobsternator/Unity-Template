@@ -8,19 +8,19 @@ namespace Template.Core
 {
     public static class StateMachineUtility
     {
-        public static Dictionary<Type, TBaseState> GetStates<TStateMachine, TBaseState>(IStateContainer<TStateMachine, TBaseState> stateContainer) where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+        public static Dictionary<Type, TBaseState> GetStates<TStateMachine, TBaseState>(IStateContainer<TStateMachine, TBaseState> stateContainer, BindingFlags bindingFlags) where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
         {
             Dictionary<Type, TBaseState> states = new Dictionary<Type, TBaseState>();
 
-            foreach (PropertyInfo property in stateContainer.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            foreach (PropertyInfo property in stateContainer.GetType().GetProperties(bindingFlags))
             {
-                if (property.PropertyType.IsSubclassOf(typeof(State<TStateMachine>)) && !states.ContainsKey(property.PropertyType))
+                if (property.PropertyType.IsSubclassOf(typeof(TBaseState)) && !states.ContainsKey(property.PropertyType))
                     states.Add(property.PropertyType, (TBaseState)property.GetValue(stateContainer));
             }
 
-            foreach (FieldInfo field in stateContainer.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+            foreach (FieldInfo field in stateContainer.GetType().GetFields(bindingFlags))
             {
-                if (field.FieldType.IsSubclassOf(typeof(State<TStateMachine>)) && !states.ContainsKey(field.FieldType))
+                if (field.FieldType.IsSubclassOf(typeof(TBaseState)) && !states.ContainsKey(field.FieldType))
                     states.Add(field.FieldType, (TBaseState)field.GetValue(stateContainer));
             }
 
