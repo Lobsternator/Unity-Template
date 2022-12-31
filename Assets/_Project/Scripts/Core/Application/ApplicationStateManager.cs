@@ -48,13 +48,13 @@ namespace Template.Core
             Application.wantsToQuit  += () =>
             {
                 IsApplicationQuitting = true;
-                StartCoroutine(ResetApplicationQuitting());
+                if (this) StartCoroutine(ResetApplicationQuitting());
 
                 return true;
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();
-            States       = StateMachineUtility.GetStates<ApplicationStateMachine>(PersistentData);
+            States       = StateMachineUtility.GetStates(PersistentData);
             StateMachineUtility.InitializeStates(States.Values, StateMachine);
 
             SetState<ApplicationStateTest>();

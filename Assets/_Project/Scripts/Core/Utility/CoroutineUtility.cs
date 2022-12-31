@@ -20,25 +20,5 @@ namespace Template.Core
             for (int i = 0; i < frames; i++)
                 yield return _waitForFixedUpdate;
         }
-
-        public static IEnumerator WaitForSeconds(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-        }
-        public static IEnumerator WaitForSecondsRealtime(float seconds)
-        {
-            yield return new WaitForSecondsRealtime(seconds);
-        }
-
-        public static IEnumerator WaitUntil(params Func<bool>[] predicates)
-        {
-            foreach (Func<bool> predicate in predicates)
-                yield return new WaitUntil(predicate);
-        }
-        public static IEnumerator WaitWhile(params Func<bool>[] predicates)
-        {
-            foreach (Func<bool> predicate in predicates)
-                yield return new WaitWhile(predicate);
-        }
     }
 }

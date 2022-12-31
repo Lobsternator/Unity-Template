@@ -7,50 +7,41 @@ namespace Template.Core
 {
     public interface IStateMachine { }
 
-    public abstract class StateMachine<TStateMachine> : MonoBehaviour, IStateMachine where TStateMachine : MonoBehaviour, IStateMachine
+    public abstract class StateMachine<TStateMachine, TBaseState> : MonoBehaviour, IStateMachine where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
     {
-        protected State<TStateMachine> _state;
+        protected TBaseState _state;
 
-        public event Action<State<TStateMachine>> BeforeStateDisabled;
-        public event Action<State<TStateMachine>> BeforeStateEnabled;
-        public event Action<State<TStateMachine>> StateDisabled;
-        public event Action<State<TStateMachine>> StateEnabled;
-
-        protected virtual IEnumerator EnableState(State<TStateMachine> state)
+        protected virtual IEnumerator EnableState(TBaseState state)
         {
-            BeforeStateEnabled?.Invoke(state);
             yield return state.OnEnable();
-            StateEnabled?.Invoke(state);
         }
-        protected virtual IEnumerator DisableState(State<TStateMachine> state)
+        protected virtual IEnumerator DisableState(TBaseState state)
         {
-            BeforeStateDisabled?.Invoke(state);
             yield return state.OnDisable();
-            StateDisabled?.Invoke(state);
         }
-        protected virtual void UpdateState(State<TStateMachine> state)
+        protected virtual void UpdateState(TBaseState state)
         {
             state.OnUpdate();
         }
-        protected virtual void LateUpdateState(State<TStateMachine> state)
+        protected virtual void LateUpdateState(TBaseState state)
         {
             state.OnLateUpdate();
         }
-        protected virtual void FixedUpdateState(State<TStateMachine> state)
+        protected virtual void FixedUpdateState(TBaseState state)
         {
             state.OnFixedUpdate();
         }
 
-        public State<TStateMachine> GetState()
+        public TBaseState GetState()
         {
             return _state;
         }
-        public TState GetState<TState>() where TState : State<TStateMachine>
+        public TState GetState<TState>() where TState : TBaseState
         {
             return _state as TState;
         }
 
-        public virtual bool SetState<TState>(TState state) where TState : State<TStateMachine>
+        public virtual bool SetState<TState>(TState state) where TState : TBaseState
         {
             if (_state == state)
                 return false;
@@ -70,7 +61,7 @@ namespace Template.Core
         {
             return _state.GetType() == stateType;
         }
-        public bool HasState<TState>() where TState : State<TStateMachine>
+        public bool HasState<TState>() where TState : TBaseState
         {
             return _state is TState;
         }
@@ -80,7 +71,7 @@ namespace Template.Core
             if (_state is null)
                 return false;
 
-            State<TStateMachine> newState = _state.GetTransition(input);
+            TBaseState newState = _state.GetTransition(input);
             if (newState is null)
                 return false;
 
@@ -104,12 +95,16 @@ namespace Template.Core
         }
     }
 
-    public interface IStateManager<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine
+    public abstract class StateMachine<TStateMachine> : StateMachine<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
+
+    public interface IStateManager<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; }
-        public Dictionary<Type, State<TStateMachine>> States { get; }
+        public Dictionary<Type, TBaseState> States { get; }
 
-        public TState GetState<TState>() where TState : State<TStateMachine>;
-        public bool SetState<TState>() where TState : State<TStateMachine>;
+        public TState GetState<TState>() where TState : TBaseState;
+        public bool SetState<TState>() where TState : TBaseState;
     }
+
+    public interface IStateManager<TStateMachine> : IStateManager<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
 }

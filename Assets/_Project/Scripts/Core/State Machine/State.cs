@@ -15,13 +15,13 @@ namespace Template.Core
     }
 
     [Serializable]
-    public abstract class State<TStateMachine> : IState where TStateMachine : MonoBehaviour, IStateMachine
+    public abstract class State<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; set; }
 
-        protected Dictionary<int, State<TStateMachine>> _transitions = new Dictionary<int, State<TStateMachine>>();
+        protected Dictionary<int, TBaseState> _transitions = new Dictionary<int, TBaseState>();
 
-        public bool AddTransition(int input, State<TStateMachine> output)
+        public bool AddTransition(int input, TBaseState output)
         {
             return _transitions.TryAdd(input, output);
         }
@@ -30,7 +30,7 @@ namespace Template.Core
             return _transitions.Remove(input);
         }
 
-        public State<TStateMachine> GetTransition(int input)
+        public TBaseState GetTransition(int input)
         {
             if (_transitions.TryGetValue(input, out var state))
                 return state;
@@ -59,4 +59,10 @@ namespace Template.Core
 
         }
     }
+
+    [Serializable]
+    public abstract class State<TStateMachine> : State<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
+
+    public interface IStateContainer<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState> { }
+    public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
 }
