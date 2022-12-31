@@ -29,7 +29,10 @@ namespace Template.Core
         public static void InitializeStates<TStateMachine, TBaseState>(IEnumerable<TBaseState> states, TStateMachine stateMachine) where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
         {
             foreach (TBaseState state in states)
+            {
                 state.StateMachine = stateMachine;
+                stateMachine.StartCoroutine(state.Initialize());
+            }
         }
     }
 }

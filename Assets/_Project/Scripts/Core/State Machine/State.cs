@@ -7,6 +7,10 @@ namespace Template.Core
 {
     public interface IState
     {
+        // Run for every state (NOTE: Has to be called manually!)
+        public IEnumerator Initialize();
+
+        // Run for a single state
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
         public void OnUpdate();
@@ -25,11 +29,6 @@ namespace Template.Core
         {
             return _transitions.TryAdd(input, output);
         }
-        public bool RemoveTransition(int input)
-        {
-            return _transitions.Remove(input);
-        }
-
         public TBaseState GetTransition(int input)
         {
             if (_transitions.TryGetValue(input, out var state))
@@ -37,7 +36,24 @@ namespace Template.Core
             else
                 return null;
         }
+        public bool SetTransition(int input, TBaseState output)
+        {
+            if (_transitions.ContainsKey(input))
+                _transitions[input] = output;
+            else
+                return false;
 
+            return true;
+        }
+        public bool RemoveTransition(int input)
+        {
+            return _transitions.Remove(input);
+        }
+
+        public virtual IEnumerator Initialize()
+        {
+            yield break;
+        }
         public virtual IEnumerator OnEnable()
         {
             yield break;
