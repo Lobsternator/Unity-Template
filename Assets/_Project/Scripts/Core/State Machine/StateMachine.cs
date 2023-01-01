@@ -5,9 +5,21 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    public interface IStateMachine { }
+    public interface IStateMachine
+    {
+        public bool HasState(Type stateType);
+        public bool StateTransition(int input);
+    }
+    public interface IStateMachine<TStateMachine, TBaseState> : IStateMachine where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
+    {
+        public TBaseState GetState();
+        public TState GetState<TState>() where TState : TBaseState;
+        public bool SetState<TState>(TState state) where TState : TBaseState;
+        public bool HasState<TState>() where TState : TBaseState;
+    }
+    public interface IStateMachine<TStateMachine> : IStateMachine<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
-    public abstract class StateMachine<TStateMachine, TBaseState> : MonoBehaviour, IStateMachine where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+    public abstract class StateMachine<TStateMachine, TBaseState> : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         protected TBaseState _state;
 
@@ -94,10 +106,10 @@ namespace Template.Core
                 FixedUpdateState(_state);
         }
     }
+    public abstract class StateMachine<TStateMachine> : StateMachine<TStateMachine, State<TStateMachine>>, IStateMachine<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
-    public abstract class StateMachine<TStateMachine> : StateMachine<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
-
-    public interface IStateManager<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+    public interface IStateManager { }
+    public interface IStateManager<TStateMachine, TBaseState> : IStateManager where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; }
         public Dictionary<Type, TBaseState> States { get; }
@@ -105,6 +117,5 @@ namespace Template.Core
         public TState GetState<TState>() where TState : TBaseState;
         public bool SetState<TState>() where TState : TBaseState;
     }
-
-    public interface IStateManager<TStateMachine> : IStateManager<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
+    public interface IStateManager<TStateMachine> : IStateManager<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 }

@@ -7,20 +7,34 @@ namespace Template.Core
 {
     public interface IState
     {
-        // Run for every state (NOTE: Has to be called manually!)
+        public bool Enabled { get; }
+
+        public bool RemoveTransition(int input);
+
+        // Should be run for every state once (NOTE: Has to be called manually!)
         public IEnumerator Initialize();
 
-        // Run for a single state
+        // Should be run for a single state
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
         public void OnUpdate();
         public void OnLateUpdate();
         public void OnFixedUpdate();
     }
+    public interface IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
+    {
+        public TStateMachine StateMachine { get; set; }
+
+        public bool AddTransition(int input, TBaseState output);
+        public TBaseState GetTransition(int input);
+        public bool SetTransition(int input, TBaseState output);
+    }
+    public interface IState<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
     [Serializable]
-    public abstract class State<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+    public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
+        public bool Enabled => StateMachine.GetState() == this;
         public TStateMachine StateMachine { get; set; }
 
         protected Dictionary<int, TBaseState> _transitions = new Dictionary<int, TBaseState>();
@@ -42,7 +56,7 @@ namespace Template.Core
                 _transitions[input] = output;
             else
                 return false;
-
+            
             return true;
         }
         public bool RemoveTransition(int input)
@@ -75,10 +89,10 @@ namespace Template.Core
 
         }
     }
-
     [Serializable]
-    public abstract class State<TStateMachine> : State<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
+    public abstract class State<TStateMachine> : State<TStateMachine, State<TStateMachine>>, IState<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
-    public interface IStateContainer<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState> { }
-    public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine { }
+    public interface IStateContainer { }
+    public interface IStateContainer<TStateMachine, TBaseState> : IStateContainer where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState> { }
+    public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 }

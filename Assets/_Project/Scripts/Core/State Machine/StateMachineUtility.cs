@@ -8,7 +8,7 @@ namespace Template.Core
 {
     public static class StateMachineUtility
     {
-        public static Dictionary<Type, TBaseState> GetStates<TStateMachine, TBaseState>(IStateContainer<TStateMachine, TBaseState> stateContainer, BindingFlags bindingFlags) where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+        public static Dictionary<Type, TBaseState> GetStates<TStateMachine, TBaseState>(IStateContainer<TStateMachine, TBaseState> stateContainer, BindingFlags bindingFlags) where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
         {
             Dictionary<Type, TBaseState> states = new Dictionary<Type, TBaseState>();
 
@@ -26,7 +26,7 @@ namespace Template.Core
 
             return states;
         }
-        public static void InitializeStates<TStateMachine, TBaseState>(IEnumerable<TBaseState> states, TStateMachine stateMachine) where TStateMachine : MonoBehaviour, IStateMachine where TBaseState : State<TStateMachine, TBaseState>
+        public static void InitializeStates<TStateMachine, TBaseState>(IEnumerable<TBaseState> states, TStateMachine stateMachine) where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
         {
             foreach (TBaseState state in states)
             {
