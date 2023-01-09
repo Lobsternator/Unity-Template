@@ -2,24 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD.Studio;
+using FMODUnity;
 using Template.Core;
 
 namespace Template.Audio
 {
-    [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(StudioEventEmitter))]
     public class AudioObject : MonoBehaviour
     {
-        private AudioSource _audioSource;
-        public AudioSource AudioSource
-        {
-            get
-            {
-                if (!_audioSource)
-                    _audioSource = GetComponent<AudioSource>();
-
-                return _audioSource;
-            }
-        }
+        public StudioEventEmitter EventEmitter { get; private set; }
 
         public event Action<AudioObject> StartedPlaying;
         public event Action<AudioObject> StoppedPlaying;
@@ -29,7 +21,7 @@ namespace Template.Audio
 
         private void StopFadeout()
         {
-            _audioSource.volume = _fadeoutStartVolume;
+            EventEmitter.EventInstance.setVolume(_fadeoutStartVolume);
 
             if (_fadeoutCoroutine is not null)
                 StopCoroutine(_fadeoutCoroutine);
@@ -38,11 +30,15 @@ namespace Template.Audio
         }
         private IEnumerator Fadeout(float duration)
         {
-            while (!Mathf.Approximately(_audioSource.volume, 0.0f))
+            float instanceVolume;
+            EventEmitter.EventInstance.getVolume(out instanceVolume);
+
+            while (!Mathf.Approximately(instanceVolume, 0.0f))
             {
                 yield return CoroutineUtility.WaitForFrames(1);
 
-                _audioSource.volume += Time.deltaTime / duration * _fadeoutStartVolume;
+                EventEmitter.EventInstance.getVolume(out instanceVolume);
+                EventEmitter.EventInstance.setVolume(instanceVolume - Time.deltaTime / duration * _fadeoutStartVolume);
             }
 
             enabled = false;
@@ -55,7 +51,6 @@ namespace Template.Audio
         }
         public void Stop()
         {
-            StopFadeout();
             enabled = false;
         }
         public void Stop(float fadeout)
@@ -66,23 +61,27 @@ namespace Template.Audio
 
         private void OnEnable()
         {
-            _audioSource.Play();
+            EventEmitter.Play();
             StartedPlaying?.Invoke(this);
         }
         private void OnDisable()
         {
-            _audioSource.Stop();
+            StopFadeout();
+            EventEmitter.Stop();
             StoppedPlaying?.Invoke(this);
         }
 
         private void Awake()
         {
-            _audioSource = gameObject.GetComponent<AudioSource>();
+            EventEmitter = GetComponent<StudioEventEmitter>();
         }
 
         private void Update()
         {
-            if (!_audioSource.isPlaying)
+            PLAYBACK_STATE playbackState;
+            EventEmitter.EventInstance.getPlaybackState(out playbackState);
+
+            if (playbackState == PLAYBACK_STATE.STOPPED)
                 enabled = false;
         }
     }

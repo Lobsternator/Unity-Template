@@ -8,8 +8,8 @@ namespace Template.Audio
     [CreateAssetMenu(fileName = "AudioManagerData", menuName = "PersistentRuntimeObjectData/AudioManager")]
     public class AudioManagerData : PersistentRuntimeObjectData
     {
+        public GameObject bankLoaderPrefab;
         public GameObject audioObjectPrefab;
         public int maxNumAudioObjects;
-        public AudioObjectSettings defaultAudioSettings;
     }
 }

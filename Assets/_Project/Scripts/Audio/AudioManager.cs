@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using FMODUnity;
 using Template.Core;
 
 namespace Template.Audio
@@ -15,27 +16,37 @@ namespace Template.Audio
         public event Action<AudioObject> OnAudioStartedPlaying;
         public event Action<AudioObject> OnAudioStoppedPlaying;
 
-        private AudioObject PlaySound_Internal(AudioObject audioObject, AudioClip audioClip, AudioObjectSettings settings)
+        private AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch)
         {
-            AudioSource audioSource = audioObject.AudioSource;
-            audioSource.volume      = settings.volume;
-            audioSource.clip        = audioClip;
+            StudioEventEmitter eventEmitter = audioObject.EventEmitter;
+            eventEmitter.EventReference     = eventReference;
 
             audioObject.Play();
             OnAudioStartedPlaying?.Invoke(audioObject);
 
+            eventEmitter.EventInstance.setVolume(volume);
+            eventEmitter.EventInstance.setPitch(pitch);
+
             return audioObject;
         }
 
-        public AudioObject PlaySound(AudioClip audioClip, AudioObjectSettings settings)
+        public AudioObject PlaySound(EventReference eventReference, float volume, float pitch)
         {
             AudioObject audioObject = _audioObjectPool.Get();
 
-            return PlaySound_Internal(audioObject, audioClip, settings);
+            return PlaySound_Internal(audioObject, eventReference, volume, pitch);
         }
-        public AudioObject PlaySound(AudioClip audioClip)
+        public AudioObject PlaySound(EventReference eventReference, float volume)
         {
-            return PlaySound(audioClip, PersistentData.defaultAudioSettings);
+            return PlaySound(eventReference, volume, 1.0f);
+        }
+        public AudioObject PlaySound(EventReference eventReference)
+        {
+            return PlaySound(eventReference, 1.0f, 1.0f);
+        }
+        public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings)
+        {
+            return PlaySound(eventReference, settings.volume, settings.pitch);
         }
 
         private AudioObject OnAudioObjectCreate()
@@ -78,6 +89,8 @@ namespace Template.Audio
                 OnAudioObjectDestroy,
                 defaultCapacity: PersistentData.maxNumAudioObjects,
                 maxSize: PersistentData.maxNumAudioObjects);
+
+            Instantiate(PersistentData.bankLoaderPrefab, transform);
         }
     }
 }
