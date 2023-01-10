@@ -37,7 +37,7 @@ namespace Template.Core
 
         public TValue Value
         {
-            get { return useConstant ? constant : reference.Value; }
+            get { return useConstant ? constant : reference != null ? reference.Value : default; }
             set 
             { 
                 if (useConstant)

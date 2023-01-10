@@ -75,6 +75,10 @@ namespace Template.Audio
         {
             EventEmitter = GetComponent<StudioEventEmitter>();
         }
+        private void OnDestroy()
+        {
+            EventEmitter.EventInstance.release();
+        }
 
         private void Update()
         {
