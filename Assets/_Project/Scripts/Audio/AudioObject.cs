@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using Template.Core;
+using System.Linq;
 
 namespace Template.Audio
 {
@@ -57,6 +59,15 @@ namespace Template.Audio
         {
             if (_fadeoutCoroutine is null)
                 _fadeoutCoroutine = StartCoroutine(Fadeout(fadeout));
+        }
+
+        public RESULT GetParameter(string name, out float value)
+        {
+            return EventEmitter.EventInstance.getParameterByName(name, out value);
+        }
+        public RESULT SetParameter(string name, float value)
+        {
+            return EventEmitter.EventInstance.setParameterByName(name, value);
         }
 
         private void OnEnable()
