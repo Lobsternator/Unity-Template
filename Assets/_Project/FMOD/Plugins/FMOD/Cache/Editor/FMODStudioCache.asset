@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4903281310009712856
+--- !u!114 &-8539245947997464963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/rr
+  m_Name: event:/Test
   m_EditorClassIdentifier: 
-  Path: event:/rr
+  Path: event:/Test
   Guid:
     Data1: -224759329
     Data2: 1330784603
@@ -24,61 +24,10 @@ MonoBehaviour:
   Is3D: 1
   IsOneShot: 1
   Parameters:
-  - {fileID: -4600473385848433050}
+  - {fileID: -219837884471708852}
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-4600473385848433050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/rr/Lmao
-  m_EditorClassIdentifier: 
-  Name: Lmao
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 221692420
-    data2: 3508284374
-  Type: 0
-  IsGlobal: 0
-  Labels: []
-  Exists: 1
---- !u!114 &-3079782089733600794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Walking
-  m_EditorClassIdentifier: 
-  Path: event:/Walking
-  Guid:
-    Data1: 453719906
-    Data2: 1264774429
-    Data3: -113327944
-    Data4: 1363076757
-  Banks:
-  - {fileID: -2183842069165163913}
-  IsStream: 0
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 451
 --- !u!114 &-2183842069165163913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,10 +43,34 @@ MonoBehaviour:
   Path: Assets/_Project/FMOD/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638089487308393658
+  lastModified: 638089562855456891
   FileSizes:
   - Name: Desktop
-    Value: 46400
+    Value: 45088
+  Exists: 1
+--- !u!114 &-219837884471708852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Test/Test
+  m_EditorClassIdentifier: 
+  Name: Test
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 221692420
+    data2: 3508284374
+  Type: 0
+  IsGlobal: 0
+  Labels: []
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -115,17 +88,16 @@ MonoBehaviour:
   - {fileID: 6555497192938450992}
   - {fileID: -2183842069165163913}
   EditorEvents:
-  - {fileID: -3079782089733600794}
-  - {fileID: 5020374957683404400}
-  - {fileID: -4903281310009712856}
+  - {fileID: 8915092379764028315}
+  - {fileID: -8539245947997464963}
   EditorParameters: []
   MasterBanks:
   - {fileID: -2183842069165163913}
   StringsBanks:
   - {fileID: 6555497192938450992}
-  cacheTime: 638089487308413679
+  cacheTime: 638089562855466892
   cacheVersion: 131601
---- !u!114 &5020374957683404400
+--- !u!114 &1766985293332434065
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,24 +106,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Sprinting
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Movement/Sprinting
   m_EditorClassIdentifier: 
-  Path: event:/Sprinting
-  Guid:
-    Data1: 1414113928
-    Data2: 1214552188
-    Data3: -725414734
-    Data4: -1201121414
-  Banks:
-  - {fileID: -2183842069165163913}
-  IsStream: 0
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 301
+  Name: Sprinting
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 138220109
+    data2: 87312434
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &6555497192938450992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,8 +136,36 @@ MonoBehaviour:
   Path: Assets/_Project/FMOD/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638089487308413679
+  lastModified: 638089562855466892
   FileSizes:
   - Name: Desktop
-    Value: 888
+    Value: 902
   Exists: 1
+--- !u!114 &8915092379764028315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Movement
+  m_EditorClassIdentifier: 
+  Path: event:/Movement
+  Guid:
+    Data1: -1402074411
+    Data2: 1329223690
+    Data3: -439004282
+    Data4: -1624464247
+  Banks:
+  - {fileID: -2183842069165163913}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 1766985293332434065}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0

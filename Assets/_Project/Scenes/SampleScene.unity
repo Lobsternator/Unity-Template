@@ -1310,7 +1310,7 @@ MonoBehaviour:
       Data2: 1330784603
       Data3: -163437651
       Data4: 1657399336
-    Path: event:/rr
+    Path: event:/Test
   <ImpactSoundVolume>k__BackingField: 25
   <ImpactHitstopSettings>k__BackingField:
     duration: 0.75
@@ -1588,7 +1588,7 @@ MonoBehaviour:
       Data2: 1330784603
       Data3: -163437651
       Data4: 1657399336
-    Path: event:/rr
+    Path: event:/Test
   <ImpactSoundVolume>k__BackingField: 25
   <ImpactHitstopSettings>k__BackingField:
     duration: 0.4
