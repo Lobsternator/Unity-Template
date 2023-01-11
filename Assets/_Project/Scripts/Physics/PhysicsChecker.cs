@@ -6,7 +6,7 @@ using Template.Core;
 
 namespace Template.Physics
 {
-    [RequireComponent(typeof(ContactChecker))]
+    [RequireComponent(typeof(Rigidbody), typeof(ContactChecker))]
     public class PhysicsChecker : MonoBehaviour
     {
         private class CollisionInfo
@@ -41,6 +41,9 @@ namespace Template.Physics
             get => _forceGroundedState;
             set
             {
+                if (_forceGroundedState == value)
+                    return;
+
                 _forceGroundedState = value;
 
                 if (HasDoneInitialStateCheck)
@@ -87,6 +90,8 @@ namespace Template.Physics
 
         public void UpdateGroundedState()
         {
+            _contactChecker.ClearDeadColliders();
+
             if (_forceGroundedState == ForceGroundedStateMode.Grounded && !IsGrounded)
                 OnBecameGrounded();
             else if (_forceGroundedState == ForceGroundedStateMode.Airborn && IsGrounded)
@@ -236,9 +241,11 @@ namespace Template.Physics
         {
             _rigidbody      = GetComponent<Rigidbody>();
             _contactChecker = GetComponent<ContactChecker>();
+
+            _contactChecker.PhysicsFrameProcessed += OnContactCheckerPhysicsFrameProcessed;
         }
 
-        private void FixedUpdate()
+        private void OnContactCheckerPhysicsFrameProcessed()
         {
             if (!HasDoneInitialStateCheck)
                 return;

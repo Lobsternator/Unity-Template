@@ -6,13 +6,24 @@ using UnityEngine;
 
 namespace Template.Physics
 {
-    [RequireComponent(typeof(Rigidbody2D))]
     public class ContactChecker2D : MonoBehaviour
     {
         private List<Collider2D> _touchingColliders             = new List<Collider2D>();
         public ReadOnlyCollection<Collider2D> TouchingColliders => _touchingColliders.AsReadOnly();
 
         public event Action FrameProcessed;
+        public event Action PhysicsFrameProcessed;
+
+        public void ClearDeadColliders()
+        {
+            for (int i = 0; i < _touchingColliders.Count; i++)
+            {
+                Collider2D collider = _touchingColliders[i];
+
+                if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
+                    _touchingColliders.RemoveAt(i--);
+            }
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -40,15 +51,15 @@ namespace Template.Physics
 
         private void Update()
         {
-            for (int i = 0; i < _touchingColliders.Count; i++)
-            {
-                Collider2D collider = _touchingColliders[i];
-
-                if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
-                    _touchingColliders.RemoveAt(i--);
-            }
+            ClearDeadColliders();
 
             FrameProcessed?.Invoke();
+        }
+        private void FixedUpdate()
+        {
+            ClearDeadColliders();
+
+            PhysicsFrameProcessed?.Invoke();
         }
     }
 }

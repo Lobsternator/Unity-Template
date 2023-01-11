@@ -6,7 +6,7 @@ using Template.Core;
 
 namespace Template.Physics
 {
-    [RequireComponent(typeof(ContactChecker2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(ContactChecker2D))]
     public class PhysicsChecker2D : MonoBehaviour
     {
         private class CollisionInfo
