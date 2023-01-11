@@ -9,6 +9,7 @@ using Template.Core;
 
 namespace Template.Audio
 {
+    [Serializable]
     public struct ParameterValue
     {
         public string name;
@@ -65,7 +66,9 @@ namespace Template.Audio
         }
         public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params ParameterValue[] parameters)
         {
-            return PlaySound(eventReference, settings.volume, settings.pitch, parameters);
+            settings.parameters.AddRange(parameters);
+
+            return PlaySound(eventReference, settings.volume, settings.pitch, settings.parameters.ToArray());
         }
 
         private AudioObject OnAudioObjectCreate()

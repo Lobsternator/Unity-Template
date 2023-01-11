@@ -7,7 +7,7 @@ namespace Template.Physics
     [RequireComponent(typeof(Collider2D))]
     public class GroundedOverrideTargetedTrigger2D : MonoBehaviour
     {
-        [field: SerializeField] public PhysicsChecker2D PhysicsChecker { get; private set; }
+        [field: SerializeField] public ForceGroundedStateTallyCounter2D TallyCounter { get; private set; }
         [field: SerializeField] public bool InteractWithTriggers { get; set; } = false;
         [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
@@ -15,7 +15,7 @@ namespace Template.Physics
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!PhysicsChecker || (other.isTrigger && !InteractWithTriggers) || !enabled)
+            if (!TallyCounter || (other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
 
             if (_touchingColliders.ContainsKey(other))
@@ -23,16 +23,16 @@ namespace Template.Physics
             else
                 _touchingColliders.Add(other, ForceGroundedState);
 
-            PhysicsChecker.AddForceGroundedStateTally(ForceGroundedState, 1);
+            TallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!PhysicsChecker || (other.isTrigger && !InteractWithTriggers) || !enabled)
+            if (!TallyCounter || (other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
-
+            
             if (_touchingColliders.ContainsKey(other))
             {
-                PhysicsChecker.AddForceGroundedStateTally(_touchingColliders[other], -1);
+                TallyCounter.AddForceGroundedStateTally(_touchingColliders[other], -1);
                 _touchingColliders.Remove(other);
             }
         }
@@ -40,21 +40,21 @@ namespace Template.Physics
         private void OnDisable()
         {
             foreach (var (collider, forceGroundedState) in _touchingColliders)
-                PhysicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+                TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
 
             _touchingColliders.Clear();
         }
         private void OnDestroy()
         {
             foreach (var (collider, forceGroundedState) in _touchingColliders)
-                PhysicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+                TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
 
             _touchingColliders.Clear();
         }
 
         private void FixedUpdate()
         {
-            if (!PhysicsChecker)
+            if (!TallyCounter)
             {
                 _touchingColliders.Clear();
                 return;
@@ -69,7 +69,7 @@ namespace Template.Physics
                 if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
                 {
                     collidersToRemove.Add(collider);
-                    PhysicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+                    TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
                 }
             }
 

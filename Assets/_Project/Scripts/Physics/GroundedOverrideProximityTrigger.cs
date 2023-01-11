@@ -10,37 +10,37 @@ namespace Template.Physics
         [field: SerializeField] public bool InteractWithTriggers { get; set; } = false;
         [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
-        private Dictionary<(Collider, PhysicsChecker), ForceGroundedStateMode> _touchingColliders = new Dictionary<(Collider, PhysicsChecker), ForceGroundedStateMode>();
+        private Dictionary<(Collider, ForceGroundedStateTallyCounter), ForceGroundedStateMode> _touchingColliders = new Dictionary<(Collider, ForceGroundedStateTallyCounter), ForceGroundedStateMode>();
 
         private void OnTriggerEnter(Collider other)
         {
             if ((other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
 
-            PhysicsChecker physicsChecker = other.GetComponent<PhysicsChecker>();
-            if (!physicsChecker)
+            ForceGroundedStateTallyCounter tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter>();
+            if (!tallyCounter)
                 return;
 
-            if (_touchingColliders.ContainsKey((other, physicsChecker)))
-                _touchingColliders[(other, physicsChecker)] = ForceGroundedState;
+            if (_touchingColliders.ContainsKey((other, tallyCounter)))
+                _touchingColliders[(other, tallyCounter)] = ForceGroundedState;
             else
-                _touchingColliders.Add((other, physicsChecker), ForceGroundedState);
+                _touchingColliders.Add((other, tallyCounter), ForceGroundedState);
 
-            physicsChecker.AddForceGroundedStateTally(ForceGroundedState, 1);
+            tallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
         private void OnTriggerExit(Collider other)
         {
             if ((other.isTrigger && !InteractWithTriggers) || !enabled)
                 return;
 
-            PhysicsChecker physicsChecker = other.GetComponent<PhysicsChecker>();
-            if (!physicsChecker)
+            ForceGroundedStateTallyCounter tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter>();
+            if (!tallyCounter)
                 return;
 
-            if (_touchingColliders.ContainsKey((other, physicsChecker)))
+            if (_touchingColliders.ContainsKey((other, tallyCounter)))
             {
-                physicsChecker.AddForceGroundedStateTally(_touchingColliders[(other, physicsChecker)], -1);
-                _touchingColliders.Remove((other, physicsChecker));
+                tallyCounter.AddForceGroundedStateTally(_touchingColliders[(other, tallyCounter)], -1);
+                _touchingColliders.Remove((other, tallyCounter));
             }
         }
 
@@ -64,23 +64,23 @@ namespace Template.Physics
             if (_touchingColliders.Count == 0)
                 return;
 
-            List<(Collider, PhysicsChecker)> collidersToRemove = new List<(Collider, PhysicsChecker)>();
+            List<(Collider, ForceGroundedStateTallyCounter)> collidersToRemove = new List<(Collider, ForceGroundedStateTallyCounter)>();
             foreach (var (physicsCheckerColliderPair, forceGroundedState) in _touchingColliders)
             {
-                Collider collider             = physicsCheckerColliderPair.Item1;
-                PhysicsChecker physicsChecker = physicsCheckerColliderPair.Item2;
+                Collider collider                           = physicsCheckerColliderPair.Item1;
+                ForceGroundedStateTallyCounter tallyCounter = physicsCheckerColliderPair.Item2;
 
-                if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy || !physicsChecker)
+                if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy || !tallyCounter)
                 {
-                    collidersToRemove.Add((collider, physicsChecker));
+                    collidersToRemove.Add((collider, tallyCounter));
 
-                    if (physicsChecker)
-                        physicsChecker.AddForceGroundedStateTally(forceGroundedState, -1);
+                    if (tallyCounter)
+                        tallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
                 }
             }
 
-            foreach (var colliderPhysicsCheckerPair in collidersToRemove)
-                _touchingColliders.Remove(colliderPhysicsCheckerPair);
+            foreach (var colliderTallyCounterPair in collidersToRemove)
+                _touchingColliders.Remove(colliderTallyCounterPair);
         }
     }
 }

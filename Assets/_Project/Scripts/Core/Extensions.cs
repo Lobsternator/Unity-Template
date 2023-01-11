@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,5 +70,18 @@ namespace Template.Core
             return closestContactNormal;
         }
         #endregion Physics
+
+        #region Collections
+        public static int Count<T>(this IList<T> list, Func<T, bool> predicate)
+        {
+            int count = 0;
+
+            for (int i = 0; i < list.Count; i++)
+                if (predicate(list[i]))
+                    count++;
+
+            return count;
+        }
+        #endregion Collections
     }
 }
