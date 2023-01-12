@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c5176767f8f39a4788ac1af56a808e5, type: 3}
-  m_Name: TestMaterial
+  m_Script: {fileID: 11500000, guid: 469c50d40a886484f8fa60667fd69468, type: 3}
+  m_Name: TestMaterial2D
   m_EditorClassIdentifier: 
   <BaseMaterial>k__BackingField: {fileID: 0}
-  _dynamicFriction: 0.6
-  _staticFriction: 0.6
+  _friction: 0.4
   _bounciness: 0
   _linearDrag: 0
   _angularDrag: 0
-  _frictionCombine: 0
-  _bounceCombine: 0

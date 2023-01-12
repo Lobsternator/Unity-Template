@@ -8,6 +8,8 @@ namespace Template.Physics
 {
     public class ContactChecker : MonoBehaviour
     {
+        public bool ignoreTriggerOverlaps = true;
+
         private List<Collider> _touchingColliders             = new List<Collider>();
         public ReadOnlyCollection<Collider> TouchingColliders => _touchingColliders.AsReadOnly();
 
@@ -36,14 +38,14 @@ namespace Template.Physics
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.isTrigger)
+            if (other.isTrigger && ignoreTriggerOverlaps)
                 return;
 
             _touchingColliders.Add(other);
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!other.isTrigger)
+            if (other.isTrigger && ignoreTriggerOverlaps)
                 return;
 
             _touchingColliders.Remove(other);
