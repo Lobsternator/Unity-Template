@@ -29,9 +29,10 @@
 
 # Ignore the Cache folder since it is updated locally.
 /[Aa]ssets/_External/FMOD/Plugins/FMOD/Cache/*
+/[Aa]ssets/_External/FMOD/Plugins/FMOD/Cache.meta
 
 # Ignore StreamingAssets folder.
-[Aa]ssets/[Ss]treaming[Aa]ssets
+/[Aa]ssets/[Ss]treaming[Aa]ssets
 /[Aa]ssets/[Ss]treaming[Aa]ssets.meta
 
 # If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
