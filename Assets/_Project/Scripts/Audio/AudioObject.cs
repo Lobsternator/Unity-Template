@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace Template.Audio
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(StudioEventEmitter))]
     public class AudioObject : MonoBehaviour
     {

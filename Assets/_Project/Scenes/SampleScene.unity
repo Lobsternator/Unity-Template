@@ -773,18 +773,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!134 &552110642
-PhysicMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: TestMaterial
-  dynamicFriction: 0.6
-  staticFriction: 0.6
-  bounciness: 0
-  frictionCombine: 0
-  bounceCombine: 0
 --- !u!1 &590316332
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,7 +819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <TallyCounter>k__BackingField: {fileID: 1803585297}
-  <InteractWithTriggers>k__BackingField: 0
+  <IgnoreTriggerOverlaps>k__BackingField: 1
   <ForceGroundedState>k__BackingField: 0
 --- !u!58 &590316335
 CircleCollider2D:
@@ -945,7 +933,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 706941541}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 1649154496}
+  m_Material: {fileID: 1738641634}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -974,11 +962,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71168fef66f3d7d4d8b398d17ed1808a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _contactChecker: {fileID: 706941546}
-  _physicMaterial: {fileID: 11400000, guid: 925fecf3b7bc28243ac9456e6c3470c6, type: 2}
+  _physicsMaterial: {fileID: 11400000, guid: 925fecf3b7bc28243ac9456e6c3470c6, type: 2}
   ignoreTriggerOverlaps: 1
-  _affectedColliders:
-  - {fileID: 706941544}
 --- !u!114 &706941546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -991,7 +976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9925ecdd357cd1245ad45c1901af2063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTriggerOverlaps: 1
 --- !u!1 &734754814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,7 +1389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d04296c53a21f848a10a9fa00e75c6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTriggerOverlaps: 1
 --- !u!114 &1278136490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1464,7 +1447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <TallyCounter>k__BackingField: {fileID: 1278136490}
-  <InteractWithTriggers>k__BackingField: 0
+  <IgnoreTriggerOverlaps>k__BackingField: 1
   <ForceGroundedState>k__BackingField: 0
 --- !u!135 &1317541307
 SphereCollider:
@@ -1479,7 +1462,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.49
   m_Center: {x: 0, y: -0.15, z: 0}
---- !u!62 &1649154496
+--- !u!62 &1738641634
 PhysicsMaterial2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1745,7 +1728,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9925ecdd357cd1245ad45c1901af2063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTriggerOverlaps: 1
+--- !u!134 &1894357397
+PhysicMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TestMaterial
+  dynamicFriction: 0.6
+  staticFriction: 0.6
+  bounciness: 0
+  frictionCombine: 0
+  bounceCombine: 0
 --- !u!1 &1939762839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1897,7 +1891,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054527120}
-  m_Material: {fileID: 552110642}
+  m_Material: {fileID: 1894357397}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1965,11 +1959,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5630d194ca1e6f408630db9ba4a30fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _contactChecker: {fileID: 2054527126}
-  _physicMaterial: {fileID: 11400000, guid: 99ce6db45662f0248936c5908b42d3a5, type: 2}
+  _physicsMaterial: {fileID: 11400000, guid: 99ce6db45662f0248936c5908b42d3a5, type: 2}
   ignoreTriggerOverlaps: 1
-  _affectedColliders:
-  - {fileID: 2054527122}
 --- !u!114 &2054527126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1982,7 +1973,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d04296c53a21f848a10a9fa00e75c6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTriggerOverlaps: 1
 --- !u!1 &2070104426
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,86 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using UnityEngine;
-using Template.Core;
 
 namespace Template.Physics
 {
-    [RequireComponent(typeof(Collider), typeof(ContactChecker))]
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(ContactChecker))]
     public class ExtendedPhysics : MonoBehaviour
     {
-        private ContactChecker _oldContactChecker;
-        [SerializeField] private ContactChecker _contactChecker;
-        [SerializeField] public ContactChecker ContactChecker
+        [SerializeField] private ExtendedPhysicsMaterial _physicsMaterial;
+        public ExtendedPhysicsMaterial PhysicsMaterial
         {
-            get => _contactChecker;
+            get => _physicsMaterial;
             set
             {
-                if (value && value.gameObject != gameObject)
-                {
-                    Debug.LogWarning($"Cannot assign {typeof(ContactChecker).Name} from a different object!");
-                    return;
-                }
-
-                _contactChecker = value;
-            }
-        }
-
-        [SerializeField] private ExtendedPhysicsMaterial _physicMaterial;
-        public ExtendedPhysicsMaterial PhysicMaterial
-        {
-            get => _physicMaterial;
-            set
-            {
-                _physicMaterial = value;
-                UpdateAffectedColliders();
+                _physicsMaterial = value;
+                UpdateColliderMaterials();
             }
         }
 
         public bool ignoreTriggerOverlaps = true;
+        
+        private ContactChecker _contactChecker;
 
-        [SerializeField] private List<Collider> _affectedColliders = new List<Collider>();
-        public ReadOnlyCollection<Collider> AffectedColliders => _affectedColliders.AsReadOnly();
-
-        public void UpdateAffectedColliders()
+        public void UpdateColliderMaterials()
         {
-            for (int i = 0; i < _affectedColliders.Count; i++)
+            Collider[] colliders = GetComponents<Collider>();
+            for (int i = 0; i < colliders.Length; i++)
             {
-                Collider collider = _affectedColliders[i];
-                if (!collider)
-                    continue;
+                Collider collider              = colliders[i];
+                PhysicMaterial physicsMaterial = _physicsMaterial ? _physicsMaterial.BaseMaterial : null;
 
-                collider.sharedMaterial = _physicMaterial ? _physicMaterial.BaseMaterial : null;
+                if (collider.sharedMaterial != physicsMaterial)
+                    collider.sharedMaterial = physicsMaterial;
             }
-        }
-
-        private void Awake()
-        {
-            UpdateAffectedColliders();
         }
 
 #if UNITY_EDITOR
-        private void Reset()
-        {
-            ContactChecker = GetComponent<ContactChecker>();
-        }
-
         private void OnValidate()
         {
-            if (ContactChecker && ContactChecker.gameObject != gameObject)
-            {
-                Debug.LogWarning($"Cannot assign {typeof(ContactChecker).Name} from a different object!", gameObject);
-                ContactChecker = _oldContactChecker;
-            }
-
-            _oldContactChecker = _contactChecker;
-
-            _affectedColliders.RemoveAll((c) => !c || c.gameObject != gameObject);
-            _affectedColliders = _affectedColliders.Distinct().ToList();
-            UpdateAffectedColliders();
+            UpdateColliderMaterials();
         }
 #endif
+
+        private void Awake()
+        {
+            _contactChecker = GetComponent<ContactChecker>();
+        }
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -94,15 +60,15 @@ namespace Template.Physics
 
             for (int i = 0; i < contacts.Length; i++)
             {
-                ref ContactPoint contact             = ref contacts[i];
-                Collider ourCollider                 = contact.thisCollider;
-                Collider otherCollider               = contact.otherCollider;
+                ref ContactPoint contact = ref contacts[i];
+                Collider ourCollider     = contact.thisCollider;
+                Collider otherCollider   = contact.otherCollider;
 
                 PhysicMaterialCombine bounceCombine = otherCollider.sharedMaterial ? otherCollider.sharedMaterial.bounceCombine : PhysicMaterialCombine.Average;
                 float ourBaseBounciness             = ourCollider.sharedMaterial ? ourCollider.sharedMaterial.bounciness : 0.0f;
-                float ourExtendedBounciness         = AffectedColliders.Contains(ourCollider) ? PhysicMaterial ? PhysicMaterial.Bounciness : ourBaseBounciness : ourBaseBounciness;
+                float ourExtendedBounciness         = PhysicsMaterial ? PhysicsMaterial.Bounciness : ourBaseBounciness;
                 float otherBaseBounciness           = otherCollider.sharedMaterial ? otherCollider.sharedMaterial.bounciness : 0.0f;
-                float otherExtendedBounciness       = otherExtendedPhysics ? otherExtendedPhysics.AffectedColliders.Contains(otherCollider) ? otherExtendedPhysics.PhysicMaterial ? otherExtendedPhysics.PhysicMaterial.Bounciness : otherBaseBounciness : otherBaseBounciness : otherBaseBounciness;
+                float otherExtendedBounciness       = otherExtendedPhysics ? otherExtendedPhysics.PhysicsMaterial ? otherExtendedPhysics.PhysicsMaterial.Bounciness : otherBaseBounciness : otherBaseBounciness;
 
                 float baseFinalBounciness;
                 float extendedFinalBounciness;
@@ -131,6 +97,9 @@ namespace Template.Physics
                     throw new System.NotImplementedException();
 
                 float residualBounciness = baseFinalBounciness - extendedFinalBounciness;
+                if (Mathf.Approximately(residualBounciness, 0.0f))
+                    continue;
+
                 Vector3 relativeVelocity = otherRigidbody.GetRelativePointVelocity(contact.point);
 
                 otherRigidbody.AddForceAtPosition(contact.normal * (relativeVelocity.magnitude * residualBounciness * 2.0f), contact.point, ForceMode.VelocityChange);
@@ -139,20 +108,20 @@ namespace Template.Physics
 
         private void FixedUpdate()
         {
-            if (!PhysicMaterial)
+            if (!PhysicsMaterial)
                 return;
 
             HashSet<Rigidbody> affectedBodies = new HashSet<Rigidbody>();
-            for (int i = 0; i < ContactChecker.TouchingColliders.Count; i++)
+            for (int i = 0; i < _contactChecker.Contacts.Count; i++)
             {
-                Collider collider   = ContactChecker.TouchingColliders[i];
-                Rigidbody rigidbody = collider.attachedRigidbody;
+                Rigidbody rigidbody     = _contactChecker.Contacts[i].Collider.attachedRigidbody;
+                ContactType contactType = _contactChecker.Contacts[i].ContactType;
 
-                if (collider.isTrigger && ignoreTriggerOverlaps || rigidbody == null || affectedBodies.Contains(rigidbody))
+                if ((contactType == ContactType.Trigger && ignoreTriggerOverlaps) || rigidbody == null || affectedBodies.Contains(rigidbody))
                     continue;
 
-                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicMaterial.LinearDrag + 1.0f), Time.fixedDeltaTime);
-                rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
+                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag + 1.0f), Time.fixedDeltaTime);
+                rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicsMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
 
                 affectedBodies.Add(rigidbody);
             }

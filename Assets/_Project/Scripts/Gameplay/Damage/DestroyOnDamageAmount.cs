@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Template.Gameplay
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(DamageableObject))]
     public class DestroyOnDamageAmount : MonoBehaviour
     {

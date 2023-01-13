@@ -6,60 +6,53 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    [DisallowMultipleComponent]
     public class ContactChecker2D : MonoBehaviour
     {
-        public bool ignoreTriggerOverlaps = true;
-
-        private List<Collider2D> _touchingColliders             = new List<Collider2D>();
-        public ReadOnlyCollection<Collider2D> TouchingColliders => _touchingColliders.AsReadOnly();
+        private List<ContactInfo2D> _contacts = new List<ContactInfo2D>();
+        public ReadOnlyCollection<ContactInfo2D> Contacts => _contacts.AsReadOnly();
 
         public event Action FrameProcessed;
         public event Action PhysicsFrameProcessed;
 
-        public void ClearDeadColliders()
+        public void ClearDeadContacts()
         {
-            for (int i = 0; i < _touchingColliders.Count; i++)
+            for (int i = 0; i < _contacts.Count; i++)
             {
-                Collider2D collider = _touchingColliders[i];
+                Collider2D collider = _contacts[i].Collider;
 
                 if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
-                    _touchingColliders.RemoveAt(i--);
+                    _contacts.RemoveAt(i--);
             }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            _touchingColliders.Add(collision.collider);
+            _contacts.Add(new ContactInfo2D(collision.collider, ContactType.Collision));
         }
         private void OnCollisionExit2D(Collision2D collision)
         {
-            _touchingColliders.Remove(collision.collider);
+            _contacts.Remove(new ContactInfo2D(collision.collider, ContactType.Collision));
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.isTrigger && ignoreTriggerOverlaps)
-                return;
-
-            _touchingColliders.Add(other);
+            _contacts.Add(new ContactInfo2D(other, ContactType.Trigger));
         }
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.isTrigger && ignoreTriggerOverlaps)
-                return;
-
-            _touchingColliders.Remove(other);
+            _contacts.Remove(new ContactInfo2D(other, ContactType.Trigger));
         }
 
         private void Update()
         {
-            ClearDeadColliders();
+            ClearDeadContacts();
 
             FrameProcessed?.Invoke();
         }
         private void FixedUpdate()
         {
-            ClearDeadColliders();
+            ClearDeadContacts();
 
             PhysicsFrameProcessed?.Invoke();
         }

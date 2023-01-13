@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(PhysicsChecker))]
     public class ForceGroundedStateTallyCounter : MonoBehaviour
     {
@@ -55,17 +56,26 @@ namespace Template.Physics
         public void SetForceGroundedStateTally(ForceGroundedStateMode forceGroundedState, int tally)
         {
             _forceGroundedStateTallyCount[forceGroundedState] = tally;
-            UpdateGroundedState();
+
+            if (enabled)
+                UpdateGroundedState();
         }
         public void AddForceGroundedStateTally(ForceGroundedStateMode forceGroundedState, int tally)
         {
             _forceGroundedStateTallyCount[forceGroundedState] += tally;
-            UpdateGroundedState();
+
+            if (enabled)
+                UpdateGroundedState();
         }
 
         public void UpdateGroundedState()
         {
             _physicsChecker.ForceGroundedState = GetForceGroundedState();
+        }
+
+        private void OnEnable()
+        {
+            UpdateGroundedState();
         }
 
         private void Awake()

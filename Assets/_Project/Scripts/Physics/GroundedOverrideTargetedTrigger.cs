@@ -4,18 +4,19 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Collider))]
     public class GroundedOverrideTargetedTrigger : MonoBehaviour
     {
         [field: SerializeField] public ForceGroundedStateTallyCounter TallyCounter { get; private set; }
-        [field: SerializeField] public bool InteractWithTriggers { get; set; } = false;
+        [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
         [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
         private Dictionary<Collider, ForceGroundedStateMode> _touchingColliders = new Dictionary<Collider, ForceGroundedStateMode>();
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!TallyCounter || (other.isTrigger && !InteractWithTriggers) || !enabled)
+            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
                 return;
 
             if (_touchingColliders.ContainsKey(other))
@@ -27,7 +28,7 @@ namespace Template.Physics
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!TallyCounter || (other.isTrigger && !InteractWithTriggers) || !enabled)
+            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
                 return;
             
             if (_touchingColliders.ContainsKey(other))

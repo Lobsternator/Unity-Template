@@ -6,6 +6,7 @@ using Template.Core;
 
 namespace Template.Physics
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody2D), typeof(ContactChecker2D))]
     public class PhysicsChecker2D : MonoBehaviour
     {
@@ -57,7 +58,7 @@ namespace Template.Physics
         {
             get
             {
-                int touchingColliderCount = _contactChecker.TouchingColliders.Count((c) => !c.isTrigger);
+                int touchingColliderCount = _contactChecker.Contacts.Count((c) => c.ContactType == ContactType.Collision);
 
                 return touchingColliderCount > 0                             &&
                        !IsGrounded                                           &&
@@ -70,7 +71,7 @@ namespace Template.Physics
         {
             get
             {
-                int touchingColliderCount = _contactChecker.TouchingColliders.Count((c) => !c.isTrigger);
+                int touchingColliderCount = _contactChecker.Contacts.Count((c) => c.ContactType == ContactType.Collision);
 
                 return ((touchingColliderCount == 0 && IsGrounded)            ||
                        (IsGrounded && !_isBelowMaxSteepness))                 &&
@@ -182,7 +183,7 @@ namespace Template.Physics
         {
             yield return new WaitForFixedUpdate();
 
-            int touchingColliderCount = _contactChecker.TouchingColliders.Count((c) => !c.isTrigger);
+            int touchingColliderCount = _contactChecker.Contacts.Count((c) => c.ContactType == ContactType.Collision);
 
             CollisionChecking();
 
