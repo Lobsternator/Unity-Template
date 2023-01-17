@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,77 +6,127 @@ using UnityEngine;
 namespace Template.Physics
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Collider))]
     public class GroundedOverrideTargetedTrigger : MonoBehaviour
     {
+        private struct OverrideContact : IEquatable<OverrideContact>
+        {
+            public Collider Collider { get; }
+            public ForceGroundedStateMode ForceGroundedState { get; set; }
+
+            public OverrideContact(Collider collider, ForceGroundedStateMode forceGroundedState)
+            {
+                Collider           = collider;
+                ForceGroundedState = forceGroundedState;
+            }
+
+            public bool Equals(OverrideContact other)
+            {
+                return Collider == other.Collider && ForceGroundedState == other.ForceGroundedState;
+            }
+        }
+
         [field: SerializeField] public ForceGroundedStateTallyCounter TallyCounter { get; private set; }
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
-        [field: SerializeField] public ForceGroundedStateMode ForceGroundedState { get; private set; } = ForceGroundedStateMode.Either;
 
-        private Dictionary<Collider, ForceGroundedStateMode> _touchingColliders = new Dictionary<Collider, ForceGroundedStateMode>();
+        [SerializeField, HideInInspector] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
+        [SerializeField] private ForceGroundedStateMode _forceGroundedState                     = ForceGroundedStateMode.Either;
+        public ForceGroundedStateMode ForceGroundedState
+        {
+            get => _forceGroundedState;
+            set
+            {
+                if (value == _forceGroundedState)
+                    return;
+
+                _forceGroundedState = value;
+                UpdateTally();
+            }
+        }
+
+        private List<OverrideContact> _overrideContacts = new List<OverrideContact>();
+
+        public void UpdateTally()
+        {
+            for (int i = 0; i < _overrideContacts.Count; i++)
+            {
+                OverrideContact overrideContact              = _overrideContacts[i];
+                ForceGroundedStateMode oldForceGroundedState = overrideContact.ForceGroundedState;
+
+                if (TallyCounter && oldForceGroundedState != _forceGroundedState)
+                {
+                    TallyCounter.AddForceGroundedStateTally(oldForceGroundedState, -1);
+                    TallyCounter.AddForceGroundedStateTally(_forceGroundedState, 1);
+
+                    overrideContact.ForceGroundedState = _forceGroundedState;
+                    _overrideContacts[i]               = overrideContact;
+                }
+            }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
+            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
 
-            if (_touchingColliders.ContainsKey(other))
-                _touchingColliders[other] = ForceGroundedState;
-            else
-                _touchingColliders.Add(other, ForceGroundedState);
-
+            _overrideContacts.Add(new OverrideContact(other, ForceGroundedState));
             TallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
+            if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
-            
-            if (_touchingColliders.ContainsKey(other))
+
+            int findIndex = _overrideContacts.IndexOf(new OverrideContact(other, ForceGroundedState));
+            if (findIndex != -1)
             {
-                TallyCounter.AddForceGroundedStateTally(_touchingColliders[other], -1);
-                _touchingColliders.Remove(other);
+                TallyCounter.AddForceGroundedStateTally(ForceGroundedState, -1);
+                _overrideContacts.RemoveAt(findIndex);
             }
         }
 
         private void OnDisable()
         {
-            foreach (var (collider, forceGroundedState) in _touchingColliders)
-                TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
+            for (int i = 0; i < _overrideContacts.Count; i++)
+            {
+                if (TallyCounter)
+                    TallyCounter.AddForceGroundedStateTally(ForceGroundedState, -1);
+            }
 
-            _touchingColliders.Clear();
-        }
-        private void OnDestroy()
-        {
-            foreach (var (collider, forceGroundedState) in _touchingColliders)
-                TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
-
-            _touchingColliders.Clear();
+            _overrideContacts.Clear();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
+            if (_overrideContacts.Count == 0)
+                return;
+
             if (!TallyCounter)
             {
-                _touchingColliders.Clear();
+                _overrideContacts.Clear();
                 return;
             }
 
-            if (_touchingColliders.Count == 0)
-                return;
-
-            List<Collider> collidersToRemove = new List<Collider>();
-            foreach (var (collider, forceGroundedState) in _touchingColliders)
+            for (int i = 0; i < _overrideContacts.Count; i++)
             {
+                Collider collider = _overrideContacts[i].Collider;
+
                 if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
                 {
-                    collidersToRemove.Add(collider);
-                    TallyCounter.AddForceGroundedStateTally(forceGroundedState, -1);
+                    TallyCounter.AddForceGroundedStateTally(ForceGroundedState, -1);
+                    _overrideContacts.RemoveAt(i--);
                 }
             }
-
-            foreach (Collider collider in collidersToRemove)
-                _touchingColliders.Remove(collider);
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_forceGroundedState == _oldForceGroundedState)
+                return;
+
+            _oldForceGroundedState = _forceGroundedState;
+            UpdateTally();
+        }
+#endif
     }
 }
