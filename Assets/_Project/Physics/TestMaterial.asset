@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c5176767f8f39a4788ac1af56a808e5, type: 3}
   m_Name: TestMaterial
   m_EditorClassIdentifier: 
-  <BaseMaterial>k__BackingField: {fileID: 0}
+  _lastBaseMaterial: {fileID: 13400000, guid: 5f2f570089a8ad341ad453838ac9ada7, type: 2}
+  <BaseMaterial>k__BackingField: {fileID: 13400000, guid: 5f2f570089a8ad341ad453838ac9ada7, type: 2}
   _dynamicFriction: 0.6
   _staticFriction: 0.6
   _bounciness: 0

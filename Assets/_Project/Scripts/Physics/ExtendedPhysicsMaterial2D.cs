@@ -7,7 +7,8 @@ namespace Template.Physics
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial2D", menuName = "Physics/ExtendedMaterial2D")]
     public class ExtendedPhysicsMaterial2D : ScriptableObject
     {
-        [field: SerializeField, HideInInspector] public PhysicsMaterial2D BaseMaterial { get; private set; }
+        [SerializeField, HideInInspector] private PhysicsMaterial2D _lastBaseMaterial;
+        [field: SerializeField] public PhysicsMaterial2D BaseMaterial { get; private set; }
 
         [SerializeField] private float _friction = 0.4f;
         public float Friction
@@ -48,15 +49,12 @@ namespace Template.Physics
         }
 
 #if UNITY_EDITOR
-        private void Awake()
-        {
-            BaseMaterial = new PhysicsMaterial2D(name);
-        }
-
         private void OnValidate()
         {
-            if (!BaseMaterial)
-                BaseMaterial = new PhysicsMaterial2D(name);
+            if (_lastBaseMaterial && BaseMaterial != _lastBaseMaterial)
+                _lastBaseMaterial.hideFlags = HideFlags.None;
+
+            _lastBaseMaterial = BaseMaterial;
 
             _friction    = Mathf.Max(_friction, 0.0f);
             _bounciness  = Mathf.Max(_bounciness, 0.0f);
@@ -67,7 +65,7 @@ namespace Template.Physics
             {
                 BaseMaterial.friction   = Mathf.Max(_friction, 0.0f);
                 BaseMaterial.bounciness = Mathf.Max(_bounciness, 0.0f);
-                BaseMaterial.name       = name;
+                BaseMaterial.hideFlags  = HideFlags.NotEditable;
             }
         }
 #endif

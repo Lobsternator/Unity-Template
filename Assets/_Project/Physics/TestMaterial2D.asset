@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c50d40a886484f8fa60667fd69468, type: 3}
   m_Name: TestMaterial2D
   m_EditorClassIdentifier: 
-  <BaseMaterial>k__BackingField: {fileID: 0}
+  _lastBaseMaterial: {fileID: 6200000, guid: 80d2b5576f0b725488661b12daa55d46, type: 2}
+  <BaseMaterial>k__BackingField: {fileID: 6200000, guid: 80d2b5576f0b725488661b12daa55d46, type: 2}
   _friction: 0.4
   _bounciness: 0
   _linearDrag: 0

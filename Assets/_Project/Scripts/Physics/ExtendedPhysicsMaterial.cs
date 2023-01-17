@@ -7,7 +7,8 @@ namespace Template.Physics
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
     {
-        [field: SerializeField, HideInInspector] public PhysicMaterial BaseMaterial { get; private set; }
+        [SerializeField, HideInInspector] private PhysicMaterial _lastBaseMaterial;
+        [field: SerializeField] public PhysicMaterial BaseMaterial { get; private set; }
 
         [SerializeField] private float _dynamicFriction = 0.6f;
         public float DynamicFriction
@@ -84,15 +85,12 @@ namespace Template.Physics
         }
 
 #if UNITY_EDITOR
-        private void Awake()
-        {
-            BaseMaterial = new PhysicMaterial(name);
-        }
-
         private void OnValidate()
         {
-            if (!BaseMaterial)
-                BaseMaterial = new PhysicMaterial(name);
+            if (_lastBaseMaterial && BaseMaterial != _lastBaseMaterial)
+                _lastBaseMaterial.hideFlags = HideFlags.None;
+
+            _lastBaseMaterial = BaseMaterial;
 
             _dynamicFriction = Mathf.Max(_dynamicFriction, 0.0f);
             _staticFriction  = Mathf.Max(_staticFriction, 0.0f);
@@ -107,7 +105,7 @@ namespace Template.Physics
                 BaseMaterial.bounciness      = Mathf.Clamp01(_bounciness);
                 BaseMaterial.frictionCombine = _frictionCombine;
                 BaseMaterial.bounceCombine   = _bounceCombine;
-                BaseMaterial.name            = name;
+                BaseMaterial.hideFlags       = HideFlags.NotEditable;
             }
         }
 #endif
