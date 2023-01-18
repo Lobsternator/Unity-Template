@@ -40,7 +40,10 @@ namespace Template.Physics
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
     {
+#if UNITY_EDITOR
         [SerializeField, HideInInspector] private PhysicMaterial _lastBaseMaterial;
+#endif
+
         [field: SerializeField] public PhysicMaterial BaseMaterial { get; private set; }
 
         [SerializeField] private float _dynamicFriction = 0.6f;

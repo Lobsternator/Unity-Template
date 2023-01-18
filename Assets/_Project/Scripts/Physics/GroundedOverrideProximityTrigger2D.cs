@@ -29,8 +29,11 @@ namespace Template.Physics
 
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
 
+#if UNITY_EDITOR
         [SerializeField, HideInInspector] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
-        [SerializeField] private ForceGroundedStateMode _forceGroundedState                     = ForceGroundedStateMode.Either;
+#endif
+        
+        [SerializeField] private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
         public ForceGroundedStateMode ForceGroundedState
         {
             get => _forceGroundedState;
