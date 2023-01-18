@@ -1,9 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Template.Physics
 {
+#if UNITY_EDITOR
+    public static class ExtendedPhysicsMaterialReferenceChecker
+    {
+        public static void OnValidate(string[] searchInFolders)
+        {
+            HashSet<PhysicMaterial> basePhysicsMaterials =
+                AssetDatabase.FindAssets($"t: {typeof(ExtendedPhysicsMaterial).Name}", searchInFolders)
+                .Select((guid) => AssetDatabase.LoadAssetAtPath<ExtendedPhysicsMaterial>(AssetDatabase.GUIDToAssetPath(guid)).BaseMaterial)
+                .ToHashSet();
+
+            PhysicMaterial[] physicsMaterials =
+                AssetDatabase.FindAssets($"t: {typeof(PhysicMaterial).Name}", searchInFolders)
+                .Select((guid) => AssetDatabase.LoadAssetAtPath<PhysicMaterial>(AssetDatabase.GUIDToAssetPath(guid)))
+                .ToArray();
+
+            for (int i = 0; i < physicsMaterials.Length; i++)
+            {
+                PhysicMaterial physicsMaterial = physicsMaterials[i];
+
+                if (basePhysicsMaterials.Contains(physicsMaterial))
+                    physicsMaterial.hideFlags = HideFlags.NotEditable;
+                else
+                    physicsMaterial.hideFlags = HideFlags.None;
+            }
+        }
+    }
+#endif
+
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
     {
@@ -87,10 +120,12 @@ namespace Template.Physics
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_lastBaseMaterial && BaseMaterial != _lastBaseMaterial)
-                _lastBaseMaterial.hideFlags = HideFlags.None;
-
-            _lastBaseMaterial = BaseMaterial;
+            if (_lastBaseMaterial != BaseMaterial)
+            {
+                ExtendedPhysicsMaterialReferenceChecker.OnValidate(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
+                _lastBaseMaterial = BaseMaterial;
+                EditorUtility.SetDirty(this);
+            }
 
             _dynamicFriction = Mathf.Max(_dynamicFriction, 0.0f);
             _staticFriction  = Mathf.Max(_staticFriction, 0.0f);
@@ -105,7 +140,6 @@ namespace Template.Physics
                 BaseMaterial.bounciness      = Mathf.Clamp01(_bounciness);
                 BaseMaterial.frictionCombine = _frictionCombine;
                 BaseMaterial.bounceCombine   = _bounceCombine;
-                BaseMaterial.hideFlags       = HideFlags.NotEditable;
             }
         }
 #endif
