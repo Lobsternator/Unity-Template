@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Template.Physics
 {
 #if UNITY_EDITOR
-    public static class ExtendedPhysicsMaterial2DReferenceChecker
+    public static class ExtendedPhysicsMaterialReferenceChecker2D
     {
         public static void OnValidate(string[] searchInFolders)
         {
@@ -89,7 +89,7 @@ namespace Template.Physics
         {
             if (_lastBaseMaterial != BaseMaterial)
             {
-                ExtendedPhysicsMaterial2DReferenceChecker.OnValidate(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
+                ExtendedPhysicsMaterialReferenceChecker2D.OnValidate(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
                 _lastBaseMaterial = BaseMaterial;
                 EditorUtility.SetDirty(this);
             }
