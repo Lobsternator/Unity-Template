@@ -12,11 +12,11 @@ namespace Template.Physics
     {
         private class CollisionInfo
         {
-            public Vector2 contactNormal;
+            public Vector2 ContactNormal { get; }
 
             public CollisionInfo(Collision2D collision)
             {
-                contactNormal = collision.GetClosestContactNormal(Vector2.up);
+                ContactNormal = collision.GetClosestContactNormal(Vector2.up);
             }
         }
 
@@ -131,12 +131,12 @@ namespace Template.Physics
 
             foreach (CollisionInfo collision in _collisionsToHandle)
             {
-                float steepness = Vector2.Dot(collision.contactNormal, Vector2.up);
+                float steepness = Vector2.Dot(collision.ContactNormal, Vector2.up);
 
                 if (steepness > finalSteepness)
                 {
                     finalSteepness     = steepness;
-                    finalContactNormal = collision.contactNormal;
+                    finalContactNormal = collision.ContactNormal;
                 }
             }
 
