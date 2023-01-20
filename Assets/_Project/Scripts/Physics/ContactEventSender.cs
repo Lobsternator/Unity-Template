@@ -64,12 +64,12 @@ namespace Template.Physics
     {
         public ContactEventSender ActiveSender { get; set; }
 
-        public ContactEventFlags enabledContactEventFlags;
+        public ContactEventFlags enabledContactEvents;
         public List<TypeRestrictedObjectReference<IContactEventReceiver>> receivers;
 
         public void OnCollisionEnter(Collision collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnCollisionEnter) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnCollisionEnter) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -85,7 +85,7 @@ namespace Template.Physics
         }
         public void OnCollisionStay(Collision collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnCollisionStay) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnCollisionStay) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -101,7 +101,7 @@ namespace Template.Physics
         }
         public void OnCollisionExit(Collision collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnCollisionExit) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnCollisionExit) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -117,7 +117,7 @@ namespace Template.Physics
         }
         public void OnParticleCollision(GameObject other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnParticleCollision) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnParticleCollision) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -133,7 +133,7 @@ namespace Template.Physics
         }
         public void OnTriggerEnter(Collider other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnTriggerEnter) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnTriggerEnter) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -149,7 +149,7 @@ namespace Template.Physics
         }
         public void OnTriggerStay(Collider other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnTriggerStay) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnTriggerStay) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -165,7 +165,7 @@ namespace Template.Physics
         }
         public void OnTriggerExit(Collider other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnTriggerExit) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnTriggerExit) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -181,7 +181,7 @@ namespace Template.Physics
         }
         public void OnParticleTrigger()
         {
-            if ((enabledContactEventFlags & ContactEventFlags.OnParticleTrigger) == 0)
+            if ((enabledContactEvents & ContactEventFlags.OnParticleTrigger) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)

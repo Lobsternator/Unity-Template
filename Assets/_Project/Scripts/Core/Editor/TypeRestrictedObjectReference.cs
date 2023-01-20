@@ -11,7 +11,7 @@ namespace Template.Core
     [Serializable]
     public class TypeRestrictedObjectReference<TRestrict>
     {
-        public UnityEngine.Object value;
+        public MonoBehaviour value;
     }
 
     [CustomPropertyDrawer(typeof(TypeRestrictedObjectReference<>), true)]
@@ -38,12 +38,12 @@ namespace Template.Core
                 else
                     DragAndDrop.visualMode = DragAndDropVisualMode.Link;
             }
-            else if (draggedObject is Component)
+            else if (draggedObject is MonoBehaviour)
             {
-                Component component = (Component)draggedObject;
-                Type componentType  = component.GetType();
+                MonoBehaviour behaviour = (MonoBehaviour)draggedObject;
+                Type behaviourType      = behaviour.GetType();
 
-                if (!(componentType.IsSubclassOf(restrictedType) || componentType.GetInterfaces().Contains(restrictedType)))
+                if (!(behaviourType.IsSubclassOf(restrictedType) || behaviourType.GetInterfaces().Contains(restrictedType)))
                     DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
             }
             else
@@ -58,16 +58,21 @@ namespace Template.Core
 
             HandleDragAndDropLogic(position, restrictedType);
 
-            valueProperty.objectReferenceValue = EditorGUI.ObjectField(position, label, valueProperty.objectReferenceValue, restrictedType, true);
+            valueProperty.objectReferenceValue = EditorGUI.ObjectField(position, label, valueProperty.objectReferenceValue, typeof(MonoBehaviour), true);
 
             // If a value was set through other means (e.g ObjectPicker)
-            if (valueProperty.objectReferenceValue != null)
+            if (valueProperty.objectReferenceValue)
             {
-                Component component = valueProperty.objectReferenceValue as Component;
-                Type componentType  = component.GetType();
+                MonoBehaviour behaviour = valueProperty.objectReferenceValue as MonoBehaviour;
+                Type behaviourType      = behaviour.GetType();
 
-                if (component && !(componentType.IsSubclassOf(restrictedType) || componentType.GetInterfaces().Contains(restrictedType)))
-                    valueProperty.objectReferenceValue = null;
+                if (behaviour && !(behaviourType.IsSubclassOf(restrictedType) || behaviourType.GetInterfaces().Contains(restrictedType)))
+                {
+                    valueProperty.objectReferenceValue = behaviour.GetComponent(restrictedType);
+
+                    if (!valueProperty.objectReferenceValue)
+                        Debug.LogWarning($"Component needs to inherit from {restrictedType.Name}!");
+                }
             }
         }
     }

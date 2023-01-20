@@ -54,12 +54,12 @@ namespace Template.Physics
     {
         public ContactEventSender2D ActiveSender { get; set; }
 
-        public ContactEventFlags2D enabledContactEventFlags;
+        public ContactEventFlags2D enabledContactEvents;
         public List<TypeRestrictedObjectReference<IContactEventReceiver2D>> receivers;
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnCollisionEnter) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnCollisionEnter) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -75,7 +75,7 @@ namespace Template.Physics
         }
         public void OnCollisionStay2D(Collision2D collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnCollisionStay) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnCollisionStay) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -91,7 +91,7 @@ namespace Template.Physics
         }
         public void OnCollisionExit2D(Collision2D collision)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnCollisionExit) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnCollisionExit) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -107,7 +107,7 @@ namespace Template.Physics
         }
         public void OnTriggerEnter2D(Collider2D other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnTriggerEnter) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnTriggerEnter) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -123,7 +123,7 @@ namespace Template.Physics
         }
         public void OnTriggerStay2D(Collider2D other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnTriggerStay) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnTriggerStay) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
@@ -139,7 +139,7 @@ namespace Template.Physics
         }
         public void OnTriggerExit2D(Collider2D other)
         {
-            if ((enabledContactEventFlags & ContactEventFlags2D.OnTriggerExit) == 0)
+            if ((enabledContactEvents & ContactEventFlags2D.OnTriggerExit) == 0)
                 return;
 
             for (int i = 0; i < receivers.Count; i++)
