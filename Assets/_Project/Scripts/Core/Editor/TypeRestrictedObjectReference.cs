@@ -1,9 +1,10 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Template.Core
@@ -14,6 +15,7 @@ namespace Template.Core
         public MonoBehaviour value;
     }
 
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(TypeRestrictedObjectReference<>), true)]
     public class TypeRestrictedObjectReferenceDrawer : PropertyDrawer
     {
@@ -76,5 +78,5 @@ namespace Template.Core
             }
         }
     }
-}
 #endif
+}

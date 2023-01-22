@@ -6,8 +6,11 @@ using UnityEngine;
 namespace Template.Core
 {
     [DisallowMultipleComponent]
-    public class ApplicationStateMachine : StateMachine<ApplicationStateMachine>
+    public class ApplicationStateMachine : ManagedStateMachine<ApplicationStateManager, ApplicationStateMachine>
     {
-
+        private void Awake()
+        {
+            StateManager = GetComponent<ApplicationStateManager>();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using UnityEngine;
 using Type = System.Type;
@@ -14,7 +15,7 @@ namespace Template.Core
         public static bool IsApplicationQuitting { get; private set; } = false;
 
         public ApplicationStateMachine StateMachine { get; private set; }
-        public Dictionary<Type, State<ApplicationStateMachine>> States { get; private set; }
+        public ReadOnlyDictionary<Type, State<ApplicationStateMachine>> States { get; private set; }
 
         public TState GetState<TState>() where TState : State<ApplicationStateMachine>
         {
@@ -55,8 +56,13 @@ namespace Template.Core
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();
-            States       = StateMachineUtility.GetStates(PersistentData, BindingFlags.Instance | BindingFlags.Public);
-            StateMachineUtility.InitializeStates(States.Values, StateMachine);
+            States       = PersistentData.GetStates();
+
+            foreach (var state in States.Values)
+            {
+                state.StateMachine = StateMachine;
+                StateMachine.StartCoroutine(state.Initialize());
+            }
 
             SetState<ApplicationStateTest>();
         }
