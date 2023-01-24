@@ -22,7 +22,7 @@ namespace Template.Core
         public void OnLateUpdate();
         public void OnFixedUpdate();
     }
-    public interface IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
+    public interface IState<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; set; }
 
@@ -30,7 +30,7 @@ namespace Template.Core
         public TBaseState GetTransition(int input);
         public bool SetTransition(int input, TBaseState output);
     }
-    public interface IState<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
+    public interface IState<TStateMachine> : IState<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
     [Serializable]
     public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>

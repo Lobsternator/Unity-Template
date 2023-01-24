@@ -24,7 +24,6 @@ namespace Template.Core
 
             return null;
         }
-
         public bool SetState<TState>() where TState : State<ApplicationStateMachine>
         {
             if (States.TryGetValue(typeof(TState), out var state))
