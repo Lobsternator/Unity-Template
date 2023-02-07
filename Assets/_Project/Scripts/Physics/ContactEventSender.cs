@@ -78,7 +78,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionEnter(collision);
                 recipient.ActiveSender = null;
             }
@@ -94,7 +94,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionStay(collision);
                 recipient.ActiveSender = null;
             }
@@ -110,7 +110,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionExit(collision);
                 recipient.ActiveSender = null;
             }
@@ -126,7 +126,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnParticleCollision(other);
                 recipient.ActiveSender = null;
             }
@@ -142,7 +142,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerEnter(other);
                 recipient.ActiveSender = null;
             }
@@ -158,7 +158,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerStay(other);
                 recipient.ActiveSender = null;
             }
@@ -174,7 +174,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerExit(other);
                 recipient.ActiveSender = null;
             }
@@ -190,7 +190,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnParticleTrigger();
                 recipient.ActiveSender = null;
             }

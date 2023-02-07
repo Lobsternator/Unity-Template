@@ -68,7 +68,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionEnter2D(collision);
                 recipient.ActiveSender = null;
             }
@@ -84,7 +84,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionStay2D(collision);
                 recipient.ActiveSender = null;
             }
@@ -100,7 +100,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnCollisionExit2D(collision);
                 recipient.ActiveSender = null;
             }
@@ -116,7 +116,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerEnter2D(other);
                 recipient.ActiveSender = null;
             }
@@ -132,7 +132,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerStay2D(other);
                 recipient.ActiveSender = null;
             }
@@ -148,7 +148,7 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = ActiveSender;
+                recipient.ActiveSender = this;
                 recipient.OnTriggerExit2D(other);
                 recipient.ActiveSender = null;
             }

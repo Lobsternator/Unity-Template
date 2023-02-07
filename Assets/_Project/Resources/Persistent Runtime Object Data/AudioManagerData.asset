@@ -19,4 +19,3 @@ MonoBehaviour:
   bankLoaderPrefab: {fileID: 3277560898901216324, guid: ba0708c3db76527499a10524cf1babae, type: 3}
   audioObjectPrefab: {fileID: 2627758121981109607, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
   maxNumAudioObjects: 20
-  defaultAudioSettings: {fileID: 11400000, guid: 877ea08ec9dca7e4199c15c9cd8bc733, type: 2}
