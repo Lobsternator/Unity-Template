@@ -8,9 +8,17 @@ namespace Template.Core
     [DisallowMultipleComponent]
     public class ApplicationStateMachine : ManagedStateMachine<ApplicationStateManager, ApplicationStateMachine>
     {
-        private void Awake()
+        private ApplicationStateManager _stateManager;
+        public override ApplicationStateManager StateManager
         {
-            StateManager = GetComponent<ApplicationStateManager>();
+            get
+            {
+                if (!_stateManager)
+                    _stateManager = GetComponent<ApplicationStateManager>();
+
+                return _stateManager;
+            }
+            protected set => _stateManager = value;
         }
     }
 }

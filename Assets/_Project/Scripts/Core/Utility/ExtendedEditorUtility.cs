@@ -40,12 +40,11 @@ namespace Template.Core
             return cleanedPath;
         }
 
-        public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(SerializedProperty property)
+        public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(object obj, string propertyPath)
         {
-            object obj               = property.serializedObject.targetObject;
             Type type                = obj.GetType();
             FieldInfo fieldInfo      = null;
-            List<string> cleanedPath = GetCleanedSerializedPropertyPath(property.propertyPath);
+            List<string> cleanedPath = GetCleanedSerializedPropertyPath(propertyPath);
 
             for (int i = 0; i < cleanedPath.Count; i++)
             {
@@ -66,7 +65,7 @@ namespace Template.Core
                     continue;
                 }
                 else
-                    fieldInfo = type.GetField(pathSegment);
+                    fieldInfo = type.GetField(pathSegment, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                 if (fieldInfo != null)
                 {
@@ -79,6 +78,8 @@ namespace Template.Core
 
             return new SerializedPropertyPathInfo(obj, type, fieldInfo);
         }
+        public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(SerializedProperty property) => GetSerializedPropertyPathInfo(property.serializedObject.targetObject, property.propertyPath);
+
 
         public static Type GetSerializedPropertyType(SerializedProperty property)
         {

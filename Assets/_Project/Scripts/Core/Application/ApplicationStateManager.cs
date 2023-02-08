@@ -32,13 +32,6 @@ namespace Template.Core
             return false;
         }
 
-        private IEnumerator ResetApplicationQuitting()
-        {
-            yield return CoroutineUtility.WaitForFrames(1);
-
-            IsApplicationQuitting = false;
-        }
-
         protected override void Awake()
         {
             base.Awake();
@@ -49,9 +42,13 @@ namespace Template.Core
             Application.wantsToQuit  += () =>
             {
                 IsApplicationQuitting = true;
-                if (this) StartCoroutine(ResetApplicationQuitting());
+                bool shouldAllowQuit  = Application.isEditor;
+                if (StateMachine.HasState<ApplicationStateQuit>())
+                    shouldAllowQuit   = true;
 
-                return true;
+                SetState<ApplicationStateQuit>();
+
+                return shouldAllowQuit;
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();
@@ -63,7 +60,7 @@ namespace Template.Core
                 StateMachine.StartCoroutine(state.Initialize());
             }
 
-            SetState<ApplicationStateTest>();
+            SetState<ApplicationStateEntry>();
         }
     }
 }

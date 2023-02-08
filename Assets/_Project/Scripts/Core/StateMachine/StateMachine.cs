@@ -118,7 +118,7 @@ namespace Template.Core
 
     public abstract class ManagedStateMachine<TStateManager, TStateMachine, TBaseState> : StateMachine<TStateMachine, TBaseState>, IManagedStateMachine<TStateManager, TStateMachine, TBaseState> where TStateManager : IStateManager<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IManagedStateMachine<TStateManager, TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public TStateManager StateManager { get; protected set; }
+        public abstract TStateManager StateManager { get; protected set; }
     }
     public abstract class ManagedStateMachine<TStateManager, TStateMachine> : ManagedStateMachine<TStateManager, TStateMachine, State<TStateMachine>>, IManagedStateMachine<TStateManager, TStateMachine> where TStateManager : IStateManager<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IManagedStateMachine<TStateManager, TStateMachine, State<TStateMachine>> { }
 
