@@ -14,9 +14,23 @@ namespace Template.Core
 
         private Dictionary<Type, State<ApplicationStateMachine>> _states;
 
+        private void PopulateStates()
+        {
+            _states = new Dictionary<Type, State<ApplicationStateMachine>>(2)
+            {
+                { ApplicationStateTest.GetType(), ApplicationStateTest },
+                { ApplicationStateQuit.GetType(), ApplicationStateQuit }
+            };
+        }
+
         public ReadOnlyDictionary<Type, State<ApplicationStateMachine>> GetStates()
         {
             return new ReadOnlyDictionary<Type, State<ApplicationStateMachine>>(_states);
+        }
+
+        private void Awake()
+        {
+            PopulateStates();
         }
 
 #if UNITY_EDITOR
@@ -24,11 +38,7 @@ namespace Template.Core
         {
             base.OnValidate();
 
-            _states = new Dictionary<Type, State<ApplicationStateMachine>>(2)
-            {
-                { ApplicationStateTest.GetType(), ApplicationStateTest },
-                { ApplicationStateQuit.GetType(), ApplicationStateQuit }
-            };
+            PopulateStates();
         }
 #endif
     }

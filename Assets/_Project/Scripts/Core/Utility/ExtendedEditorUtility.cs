@@ -80,7 +80,6 @@ namespace Template.Core
         }
         public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(SerializedProperty property) => GetSerializedPropertyPathInfo(property.serializedObject.targetObject, property.propertyPath);
 
-
         public static Type GetSerializedPropertyType(SerializedProperty property)
         {
             return GetSerializedPropertyPathInfo(property).Type;
