@@ -19,6 +19,7 @@ namespace Template.Core
             return new ReadOnlyDictionary<Type, State<ApplicationStateMachine>>(_states);
         }
 
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
@@ -29,5 +30,6 @@ namespace Template.Core
                 { ApplicationStateQuit.GetType(), ApplicationStateQuit }
             };
         }
+#endif
     }
 }
