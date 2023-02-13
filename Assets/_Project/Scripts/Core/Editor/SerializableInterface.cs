@@ -10,14 +10,19 @@ using UnityEngine;
 namespace Template.Core
 {
     [Serializable]
-    public class TypeRestrictedObjectReference<TRestrict>
+    public sealed class SerializableInterface<TInterface> where TInterface : class
     {
-        public MonoBehaviour value;
+        [SerializeField] private MonoBehaviour _value;
+        public TInterface Value
+        {
+            get => _value as TInterface;
+            set => _value = value as MonoBehaviour;
+        }
     }
 
 #if UNITY_EDITOR
-    [CustomPropertyDrawer(typeof(TypeRestrictedObjectReference<>), true)]
-    public class TypeRestrictedObjectReferenceDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(SerializableInterface<>))]
+    public class SerializableInterfaceDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -54,11 +59,11 @@ namespace Template.Core
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            SerializedProperty valueProperty = property.FindPropertyRelative("value");
+            SerializedProperty valueProperty = property.FindPropertyRelative("_value");
             Type valueType                   = ExtendedEditorUtility.GetSerializedPropertyType(property);
-            Type restrictedType              = valueType.GenericTypeArguments[0];
+            Type interfaceType               = valueType.GenericTypeArguments[0];
 
-            HandleDragAndDropLogic(position, restrictedType);
+            HandleDragAndDropLogic(position, interfaceType);
 
             valueProperty.objectReferenceValue = EditorGUI.ObjectField(position, label, valueProperty.objectReferenceValue, typeof(MonoBehaviour), true);
 
@@ -68,12 +73,12 @@ namespace Template.Core
                 MonoBehaviour behaviour = valueProperty.objectReferenceValue as MonoBehaviour;
                 Type behaviourType      = behaviour.GetType();
 
-                if (behaviour && !(behaviourType.IsSubclassOf(restrictedType) || behaviourType.GetInterfaces().Contains(restrictedType)))
+                if (behaviour && !(behaviourType.IsSubclassOf(interfaceType) || behaviourType.GetInterfaces().Contains(interfaceType)))
                 {
-                    valueProperty.objectReferenceValue = behaviour.GetComponent(restrictedType);
+                    valueProperty.objectReferenceValue = behaviour.GetComponent(interfaceType);
 
                     if (!valueProperty.objectReferenceValue)
-                        Debug.LogWarning($"Component needs to inherit from {restrictedType.Name}!");
+                        Debug.LogWarning($"Component needs to inherit from {interfaceType.Name}!");
                 }
             }
         }

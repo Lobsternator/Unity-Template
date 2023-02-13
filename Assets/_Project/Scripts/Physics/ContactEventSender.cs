@@ -65,7 +65,7 @@ namespace Template.Physics
         public ContactEventSender ActiveSender { get; set; }
 
         public ContactEventFlags enabledContactEvents;
-        public List<TypeRestrictedObjectReference<IContactEventReceiver>> receivers;
+        public List<SerializableInterface<IContactEventReceiver>> receivers;
 
         public void OnCollisionEnter(Collision collision)
         {
@@ -74,7 +74,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -90,7 +90,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -106,7 +106,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -122,7 +122,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -138,7 +138,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -154,7 +154,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -170,7 +170,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 
@@ -186,7 +186,7 @@ namespace Template.Physics
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                IContactEventReceiver recipient = receivers[i].value as IContactEventReceiver;
+                IContactEventReceiver recipient = receivers[i].Value;
                 if (recipient == null)
                     continue;
 

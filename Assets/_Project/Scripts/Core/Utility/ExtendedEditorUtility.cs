@@ -26,6 +26,8 @@ namespace Template.Core
 
     public static class ExtendedEditorUtility
     {
+        private static Regex ArrayDataRegex = new Regex(@"data\[(\d*)\]");
+
         private static List<string> GetCleanedSerializedPropertyPath(string path)
         {
             List<string> cleanedPath = path.Split('.').ToList();
@@ -49,8 +51,7 @@ namespace Template.Core
             for (int i = 0; i < cleanedPath.Count; i++)
             {
                 string pathSegment = cleanedPath[i];
-                Regex regex        = new Regex(@"data\[(\d*)\]");
-                Match match        = regex.Match(pathSegment);
+                Match match        = ArrayDataRegex.Match(pathSegment);
 
                 if (match.Success)
                 {

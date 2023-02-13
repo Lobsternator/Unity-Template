@@ -42,13 +42,11 @@ namespace Template.Core
             Application.wantsToQuit  += () =>
             {
                 IsApplicationQuitting = true;
-                bool shouldAllowQuit  = Application.isEditor;
                 if (StateMachine.HasState<ApplicationStateQuit>())
-                    shouldAllowQuit   = true;
+                    return true;
 
                 SetState<ApplicationStateQuit>();
-
-                return shouldAllowQuit;
+                return false;
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();
