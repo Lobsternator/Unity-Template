@@ -29,7 +29,7 @@ namespace Template.Core
             return EditorGUIUtility.singleLineHeight * 1;
         }
 
-        private void HandleDragAndDropLogic(Rect position, Type restrictedType)
+        private void HandleDragAndDropLogic(Rect position, Type interfaceType)
         {
             Event e = Event.current;
             if (DragAndDrop.objectReferences.Length == 0 || !position.Contains(e.mousePosition))
@@ -40,7 +40,7 @@ namespace Template.Core
             {
                 GameObject gameObject = (GameObject)draggedObject;
 
-                if (!gameObject.GetComponent(restrictedType))
+                if (!gameObject.GetComponent(interfaceType))
                     DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
                 else
                     DragAndDrop.visualMode = DragAndDropVisualMode.Link;
@@ -50,7 +50,7 @@ namespace Template.Core
                 MonoBehaviour behaviour = (MonoBehaviour)draggedObject;
                 Type behaviourType      = behaviour.GetType();
 
-                if (!(behaviourType.IsSubclassOf(restrictedType) || behaviourType.GetInterfaces().Contains(restrictedType)))
+                if (!(behaviourType.IsSubclassOf(interfaceType) || behaviourType.GetInterfaces().Contains(interfaceType)))
                     DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
             }
             else
