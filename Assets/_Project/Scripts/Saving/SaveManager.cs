@@ -192,6 +192,8 @@ namespace Template.Saving
                 return;
 
             _fullSaveDirectoryPath = PersistentData.FullSaveDirectoryPath;
+
+            SerializationUtility.CompileAndCacheKnownCastDelegates();
         }
     }
 }

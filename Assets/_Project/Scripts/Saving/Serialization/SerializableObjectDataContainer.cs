@@ -10,7 +10,7 @@ namespace Template.Saving.Serialization
 
         public bool AddItem(string itemName, object itemValue)
         {
-            SerializationManager.Instance.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
+            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
 
             if (_items.ContainsKey(itemName))
                 return false;
@@ -20,7 +20,7 @@ namespace Template.Saving.Serialization
         }
         public bool SetItem(string itemName, object itemValue)
         {
-            SerializationManager.Instance.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
+            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
 
             if (!_items.ContainsKey(itemName))
                 return false;
@@ -34,7 +34,7 @@ namespace Template.Saving.Serialization
             if (!_items.TryGetValue(itemName, out var itemValue))
                 return false;
 
-            SerializationManager.Instance.TryConvertToKnownType(itemValue, itemValue.GetType(), out itemValue);
+            SerializationUtility.TryConvertToKnownType(itemValue, itemValue.GetType(), out itemValue);
 
             itemValueRef = (T)itemValue;
             return true;

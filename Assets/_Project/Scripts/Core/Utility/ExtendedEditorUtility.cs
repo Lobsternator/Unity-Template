@@ -26,7 +26,8 @@ namespace Template.Core
 
     public static class ExtendedEditorUtility
     {
-        private static Regex ArrayDataRegex = new Regex(@"data\[(\d*)\]");
+        private static BindingFlags _fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        private static Regex _arrayDataRegex           = new Regex(@"data\[(\d*)\]");
 
         private static List<string> GetCleanedSerializedPropertyPath(string path)
         {
@@ -51,7 +52,7 @@ namespace Template.Core
             for (int i = 0; i < cleanedPath.Count; i++)
             {
                 string pathSegment = cleanedPath[i];
-                Match match        = ArrayDataRegex.Match(pathSegment);
+                Match match        = _arrayDataRegex.Match(pathSegment);
 
                 if (match.Success)
                 {
@@ -66,7 +67,7 @@ namespace Template.Core
                     continue;
                 }
                 else
-                    fieldInfo = type.GetField(pathSegment, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    fieldInfo = type.GetField(pathSegment, _fieldBindingFlags);
 
                 if (fieldInfo != null)
                 {
