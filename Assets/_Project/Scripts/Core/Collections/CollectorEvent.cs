@@ -24,6 +24,9 @@ namespace Template.Core
 
         public TResult[] Invoke()
         {
+            if (_internalEvent is null)
+                return new TResult[0];
+
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
 
@@ -34,6 +37,17 @@ namespace Template.Core
             }
 
             return results;
+        }
+
+        public static CollectorEvent<TResult> operator +(CollectorEvent<TResult> collectorEvent, Func<TResult> func)
+        {
+            collectorEvent._internalEvent += func;
+            return collectorEvent;
+        }
+        public static CollectorEvent<TResult> operator -(CollectorEvent<TResult> collectorEvent, Func<TResult> func)
+        {
+            collectorEvent._internalEvent -= func;
+            return collectorEvent;
         }
     }
 
@@ -56,6 +70,9 @@ namespace Template.Core
 
         public TResult[] Invoke(T arg)
         {
+            if (_internalEvent is null)
+                return new TResult[0];
+
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
 
@@ -66,6 +83,17 @@ namespace Template.Core
             }
 
             return results;
+        }
+
+        public static CollectorEvent<T, TResult> operator +(CollectorEvent<T, TResult> collectorEvent, Func<T, TResult> func)
+        {
+            collectorEvent._internalEvent += func;
+            return collectorEvent;
+        }
+        public static CollectorEvent<T, TResult> operator -(CollectorEvent<T, TResult> collectorEvent, Func<T, TResult> func)
+        {
+            collectorEvent._internalEvent -= func;
+            return collectorEvent;
         }
     }
 
@@ -88,6 +116,9 @@ namespace Template.Core
 
         public TResult[] Invoke(T1 arg1, T2 arg2)
         {
+            if (_internalEvent is null)
+                return new TResult[0];
+
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
 
@@ -98,6 +129,17 @@ namespace Template.Core
             }
 
             return results;
+        }
+
+        public static CollectorEvent<T1, T2, TResult> operator +(CollectorEvent<T1, T2, TResult> collectorEvent, Func<T1, T2, TResult> func)
+        {
+            collectorEvent._internalEvent += func;
+            return collectorEvent;
+        }
+        public static CollectorEvent<T1, T2, TResult> operator -(CollectorEvent<T1, T2, TResult> collectorEvent, Func<T1, T2, TResult> func)
+        {
+            collectorEvent._internalEvent -= func;
+            return collectorEvent;
         }
     }
 
@@ -120,6 +162,9 @@ namespace Template.Core
 
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3)
         {
+            if (_internalEvent is null)
+                return new TResult[0];
+
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
 
@@ -130,6 +175,17 @@ namespace Template.Core
             }
 
             return results;
+        }
+
+        public static CollectorEvent<T1, T2, T3, TResult> operator +(CollectorEvent<T1, T2, T3, TResult> collectorEvent, Func<T1, T2, T3, TResult> func)
+        {
+            collectorEvent._internalEvent += func;
+            return collectorEvent;
+        }
+        public static CollectorEvent<T1, T2, T3, TResult> operator -(CollectorEvent<T1, T2, T3, TResult> collectorEvent, Func<T1, T2, T3, TResult> func)
+        {
+            collectorEvent._internalEvent -= func;
+            return collectorEvent;
         }
     }
 
@@ -152,6 +208,9 @@ namespace Template.Core
 
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
+            if (_internalEvent is null)
+                return new TResult[0];
+
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
 
@@ -162,6 +221,17 @@ namespace Template.Core
             }
 
             return results;
+        }
+
+        public static CollectorEvent<T1, T2, T3, T4, TResult> operator +(CollectorEvent<T1, T2, T3, T4, TResult> collectorEvent, Func<T1, T2, T3, T4, TResult> func)
+        {
+            collectorEvent._internalEvent += func;
+            return collectorEvent;
+        }
+        public static CollectorEvent<T1, T2, T3, T4, TResult> operator -(CollectorEvent<T1, T2, T3, T4, TResult> collectorEvent, Func<T1, T2, T3, T4, TResult> func)
+        {
+            collectorEvent._internalEvent -= func;
+            return collectorEvent;
         }
     }
 }

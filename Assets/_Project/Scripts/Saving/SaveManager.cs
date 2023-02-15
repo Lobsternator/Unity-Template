@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Template.Core;
@@ -15,6 +17,10 @@ namespace Template.Saving
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -700)]
     public class SaveManager : PersistentRuntimeSingleton<SaveManager, SaveManagerData>
     {
+        public static CollectorEvent<SaveData> Saving = new CollectorEvent<SaveData>();
+        public static Action<ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>> Loading;
+
+        private static StringBuilder _regexPatternBuilder = new StringBuilder();
         private string _fullSaveDirectoryPath;
 
         public static string GetSaveFileRegexPattern()
@@ -30,7 +36,13 @@ namespace Template.Saving
                 period      = @"\.";
             }
 
-            return @$"{saveFileName}[0-9]*{period}{saveFileExt}";
+            _regexPatternBuilder.Clear()
+                .Append(saveFileName)
+                .Append("[0-9]*")
+                .Append(period)
+                .Append(saveFileExt);
+
+            return _regexPatternBuilder.ToString();
         }
         public static string GetSaveFileRegexPattern(int saveSlot)
         {
@@ -45,7 +57,13 @@ namespace Template.Saving
                 period      = @"\.";
             }
 
-            return @$"{saveFileName}{saveSlot}{period}{saveFileExt}";
+            _regexPatternBuilder.Clear()
+                .Append(saveFileName)
+                .Append(saveSlot)
+                .Append(period)
+                .Append(saveFileExt);
+
+            return _regexPatternBuilder.ToString();
         }
 
         private bool WriteSaveDataToFile(Dictionary<DataKey, SerializableObjectDataContainer> saveData, int saveSlot)
@@ -105,13 +123,18 @@ namespace Template.Saving
 
         public bool SaveToSlot(int saveSlot)
         {
-            var finalSaveData = new Dictionary<DataKey, SerializableObjectDataContainer>();
+            var finalSaveData    = new Dictionary<DataKey, SerializableObjectDataContainer>();
+            SaveData[] saveDatas = Saving.Invoke();
 
-            ISavableObject[] savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
-            foreach (ISavableObject savableObject in savableObjects)
+            foreach(SaveData saveData in saveDatas)
             {
-                if (savableObject.SaveMethod == SaveMethod.Automatic)
-                    finalSaveData.Add(savableObject.DataKey, savableObject.GetSaveData());
+                if (!finalSaveData.TryAdd(saveData.Owner.DataKey, saveData.Data))
+                {
+                    UnityEngine.Object ownerAsObj = saveData.Owner as UnityEngine.Object;
+                    string ownerName              = ownerAsObj ? ownerAsObj.name : saveData.Owner.ToString();
+
+                    Debug.LogError($"Data key was not valid for object \'{ownerName}\'!", ownerAsObj);
+                }
             }
 
             return WriteSaveDataToFile(finalSaveData, saveSlot);
@@ -120,12 +143,7 @@ namespace Template.Saving
         {
             if (ReadSaveDataFromFile(saveSlot, out var finalSaveData))
             {
-                ISavableObject[] savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
-                foreach (ISavableObject savableObject in savableObjects)
-                {
-                    if (savableObject.LoadMethod == SaveMethod.Automatic && finalSaveData.TryGetValue(savableObject.DataKey, out var saveData))
-                        savableObject.LoadSaveData(saveData);
-                }
+                Loading?.Invoke(new ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>(finalSaveData));
 
                 return true;
             }
@@ -194,6 +212,14 @@ namespace Template.Saving
             _fullSaveDirectoryPath = PersistentData.FullSaveDirectoryPath;
 
             SerializationUtility.CompileAndCacheKnownCastDelegates();
+        }
+
+        protected override void OnApplicationQuit()
+        {
+            base.OnApplicationQuit();
+
+            Saving.Clear();
+            Loading = null;
         }
     }
 }

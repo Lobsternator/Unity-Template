@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Template.Core;
+using System.Text;
 
 namespace Template.Saving
 {
@@ -13,13 +14,19 @@ namespace Template.Saving
 
         public string FullSaveDirectoryPath => Path.GetDirectoryName(Path.Combine(Application.persistentDataPath, savePath));
 
+        private StringBuilder _saveFileBuilder = new StringBuilder();
+
         public string GetFullSaveFilePath(int saveSlot)
         {
-            string saveFileName     = Path.GetFileNameWithoutExtension(savePath);
-            string saveFileExt      = Path.GetExtension(savePath);
-            string fullSaveFileName = $"{saveFileName}{saveSlot}{saveFileExt}";
+            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
+            string saveFileExt  = Path.GetExtension(savePath);
 
-            return Path.Combine(FullSaveDirectoryPath, fullSaveFileName);
+            _saveFileBuilder.Clear()
+                .Append(saveFileName)
+                .Append(saveSlot)
+                .Append(saveFileExt);
+
+            return Path.Combine(FullSaveDirectoryPath, _saveFileBuilder.ToString());
         }
     }
 }

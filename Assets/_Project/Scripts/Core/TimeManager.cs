@@ -26,9 +26,9 @@ namespace Template.Core
         public bool IsTimeFrozen { get; private set; }
         public bool IsDoingHitstop => _hitstop is not null;
 
-        public event Action<float> TimeScaleChanged;
-        public event Action TimeFroze;
-        public event Action<float> TimeUnfroze;
+        public static event Action<float> TimeScaleChanged;
+        public static event Action TimeFroze;
+        public static event Action<float> TimeUnfroze;
 
         private class Hitstop
         {
@@ -130,6 +130,15 @@ namespace Template.Core
 
             else
                 SetTimeScale(_hitstop.returnTimeScale, HitstopInteraction.Cancel);
+        }
+
+        protected override void OnApplicationQuit()
+        {
+            base.OnApplicationQuit();
+
+            TimeScaleChanged = null;
+            TimeFroze        = null;
+            TimeUnfroze      = null;
         }
     }
 }

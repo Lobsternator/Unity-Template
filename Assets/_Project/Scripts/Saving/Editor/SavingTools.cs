@@ -16,7 +16,7 @@ namespace Template.Saving
 
             foreach (ISavableObject savableObject in savableObjects)
             {
-                savableObject.DataKey = DataKey.CreateNew();
+                savableObject.DataKey = new DataKey();
                 EditorUtility.SetDirty(savableObject as MonoBehaviour);
             }
         }

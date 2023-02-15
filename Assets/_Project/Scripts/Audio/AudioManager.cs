@@ -27,8 +27,8 @@ namespace Template.Audio
     {
         private ObjectPool<AudioObject> _audioObjectPool;
 
-        public event Action<AudioObject> OnAudioStartedPlaying;
-        public event Action<AudioObject> OnAudioStoppedPlaying;
+        public static event Action<AudioObject> OnAudioStartedPlaying;
+        public static event Action<AudioObject> OnAudioStoppedPlaying;
 
         private AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params ParameterValue[] parameters)
         {
@@ -113,6 +113,14 @@ namespace Template.Audio
                 maxSize: PersistentData.maxNumAudioObjects);
 
             Instantiate(PersistentData.bankLoaderPrefab, transform);
+        }
+
+        protected override void OnApplicationQuit()
+        {
+            base.OnApplicationQuit();
+
+            OnAudioStartedPlaying = null;
+            OnAudioStoppedPlaying = null;
         }
     }
 }
