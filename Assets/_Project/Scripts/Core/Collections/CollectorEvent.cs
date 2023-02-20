@@ -25,7 +25,7 @@ namespace Template.Core
         public TResult[] Invoke()
         {
             if (_internalEvent is null)
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
@@ -71,7 +71,7 @@ namespace Template.Core
         public TResult[] Invoke(T arg)
         {
             if (_internalEvent is null)
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
@@ -117,7 +117,7 @@ namespace Template.Core
         public TResult[] Invoke(T1 arg1, T2 arg2)
         {
             if (_internalEvent is null)
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
@@ -163,7 +163,7 @@ namespace Template.Core
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3)
         {
             if (_internalEvent is null)
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
@@ -209,7 +209,7 @@ namespace Template.Core
         public TResult[] Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             if (_internalEvent is null)
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             Delegate[] invocationList = _internalEvent.GetInvocationList();
             TResult[] results         = new TResult[invocationList.Length];
