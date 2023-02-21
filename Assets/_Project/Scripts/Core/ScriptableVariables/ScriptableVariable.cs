@@ -15,10 +15,10 @@ namespace Template.Core
 
             set
             {
-                _value = value;
+                if (notifyChanges && !_value.Equals(value))
+                    valueChanged?.Invoke(value);
 
-                if (notifyChanges)
-                    valueChanged?.Invoke(_value);
+                _value = value;
             }
         }
 
