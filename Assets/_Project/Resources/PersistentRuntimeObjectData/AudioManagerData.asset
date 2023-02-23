@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AudioManagerData
   m_EditorClassIdentifier: 
   <InitSettings>k__BackingField:
-    <IsEnabled>k__BackingField: 1
-    <IsActive>k__BackingField: 1
-    <IsStatic>k__BackingField: 1
+    <StartEnabled>k__BackingField: 1
+    <StartActive>k__BackingField: 1
+    <StartStatic>k__BackingField: 1
   bankLoaderPrefab: {fileID: 3277560898901216324, guid: ba0708c3db76527499a10524cf1babae, type: 3}
   audioObjectPrefab: {fileID: 2627758121981109607, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
   maxNumAudioObjects: 20

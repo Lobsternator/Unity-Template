@@ -8,8 +8,8 @@ namespace Template.Core
     [Serializable]
     public class PersistentRuntimeObjectInitSettings
     {
-        [field: SerializeField] public bool IsEnabled { get; private set; } = true;
-        [field: SerializeField] public bool IsActive  { get; private set; } = true;
-        [field: SerializeField] public bool IsStatic  { get; private set; } = false;
+        [field: SerializeField] public bool StartEnabled { get; private set; } = true;
+        [field: SerializeField] public bool StartActive  { get; private set; } = true;
+        [field: SerializeField] public bool StartStatic  { get; private set; } = false;
     }
 }

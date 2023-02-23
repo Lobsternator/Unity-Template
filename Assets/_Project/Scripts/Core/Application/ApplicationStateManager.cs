@@ -46,7 +46,7 @@ namespace Template.Core
                     return true;
 
                 SetState<ApplicationStateQuit>();
-                return false;
+                return Application.isEditor;
             };
 
             StateMachine = GetComponent<ApplicationStateMachine>();

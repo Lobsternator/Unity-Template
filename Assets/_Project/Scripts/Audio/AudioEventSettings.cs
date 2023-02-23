@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace Template.Audio
 {
-    [CreateAssetMenu(fileName = "new AudioEventSettings", menuName = "Audio/EventSettings")]
-    public class AudioEventSettings : ScriptableObject
+    [Serializable]
+    public class AudioEventSettings
     {
         public float volume;
         public float pitch;
 
-        public List<ParameterValue> parameters;
+        public List<AudioParameter> parameters;
     }
 }

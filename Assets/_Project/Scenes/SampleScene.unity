@@ -1342,7 +1342,12 @@ MonoBehaviour:
       Data3: -163437651
       Data4: 1657399336
     Path: event:/Test
-  <ImpactSoundVolume>k__BackingField: 25
+  <ImpactSoundSettings>k__BackingField:
+    volume: 25
+    pitch: 1
+    parameters:
+    - name: Test
+      value: 0
   <ImpactHitstopSettings>k__BackingField:
     duration: 0.75
     timeScaleCurve:
@@ -1647,7 +1652,12 @@ MonoBehaviour:
       Data3: -163437651
       Data4: 1657399336
     Path: event:/Test
-  <ImpactSoundVolume>k__BackingField: 25
+  <ImpactSoundSettings>k__BackingField:
+    volume: 25
+    pitch: 1
+    parameters:
+    - name: Test
+      value: 0
   <ImpactHitstopSettings>k__BackingField:
     duration: 0.4
     timeScaleCurve:

@@ -6,8 +6,10 @@ namespace Template.Physics
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ContactChecker))]
-    public class ExtendedPhysics : MonoBehaviour
+    public class ExtendedPhysics : MonoBehaviour, IContactEventReceiver
     {
+        public ContactEventSender ActiveSender { get; set; }
+
         [SerializeField] private ExtendedPhysicsMaterial _physicsMaterial;
         public ExtendedPhysicsMaterial PhysicsMaterial
         {
@@ -48,7 +50,7 @@ namespace Template.Physics
             _contactChecker = GetComponent<ContactChecker>();
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void OnCollisionEnter(Collision collision)
         {
             Rigidbody otherRigidbody = collision.rigidbody;
             if (!otherRigidbody)

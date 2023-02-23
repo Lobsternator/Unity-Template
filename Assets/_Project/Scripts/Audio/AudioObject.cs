@@ -14,7 +14,17 @@ namespace Template.Audio
     [RequireComponent(typeof(StudioEventEmitter))]
     public class AudioObject : MonoBehaviour
     {
-        public StudioEventEmitter EventEmitter { get; private set; }
+        private StudioEventEmitter _eventEmitter;
+        public StudioEventEmitter EventEmitter
+        {
+            get
+            {
+                if (!_eventEmitter)
+                    _eventEmitter = GetComponent<StudioEventEmitter>();
+
+                return _eventEmitter;
+            }
+        }
 
         public event Action<AudioObject> StartedPlaying;
         public event Action<AudioObject> StoppedPlaying;
@@ -83,10 +93,6 @@ namespace Template.Audio
             StoppedPlaying?.Invoke(this);
         }
 
-        private void Awake()
-        {
-            EventEmitter = GetComponent<StudioEventEmitter>();
-        }
         private void OnDestroy()
         {
             EventEmitter.EventInstance.release();

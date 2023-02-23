@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Template.Physics
 {
     [DisallowMultipleComponent]
-    public class GroundedOverrideTargetedTrigger2D : MonoBehaviour
+    public class GroundedOverrideTargetedTrigger2D : MonoBehaviour, IContactEventReceiver2D
     {
         private struct OverrideContact : IEquatable<OverrideContact>
         {
@@ -24,6 +24,8 @@ namespace Template.Physics
                 return Collider == other.Collider && ForceGroundedState == other.ForceGroundedState;
             }
         }
+
+        public ContactEventSender2D ActiveSender { get; set; }
 
         [field: SerializeField] public ForceGroundedStateTallyCounter2D TallyCounter { get; private set; }
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
@@ -66,7 +68,7 @@ namespace Template.Physics
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        public void OnTriggerEnter2D(Collider2D other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
@@ -74,7 +76,7 @@ namespace Template.Physics
             _overrideContacts.Add(new OverrideContact(other, ForceGroundedState));
             TallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
-        private void OnTriggerExit2D(Collider2D other)
+        public void OnTriggerExit2D(Collider2D other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;

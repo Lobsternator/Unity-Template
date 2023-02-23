@@ -7,8 +7,10 @@ using UnityEngine;
 namespace Template.Physics
 {
     [DisallowMultipleComponent]
-    public class ContactChecker2D : MonoBehaviour
+    public class ContactChecker2D : MonoBehaviour, IContactEventReceiver2D
     {
+        public ContactEventSender2D ActiveSender { get; set; }
+
         private List<ContactInfo2D> _contacts = new List<ContactInfo2D>();
         public ReadOnlyCollection<ContactInfo2D> Contacts => _contacts.AsReadOnly();
 
@@ -26,20 +28,20 @@ namespace Template.Physics
             }
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        public void OnCollisionEnter2D(Collision2D collision)
         {
             _contacts.Add(new ContactInfo2D(collision.collider, ContactType.Collision));
         }
-        private void OnCollisionExit2D(Collision2D collision)
+        public void OnCollisionExit2D(Collision2D collision)
         {
             _contacts.Remove(new ContactInfo2D(collision.collider, ContactType.Collision));
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        public void OnTriggerEnter2D(Collider2D other)
         {
             _contacts.Add(new ContactInfo2D(other, ContactType.Trigger));
         }
-        private void OnTriggerExit2D(Collider2D other)
+        public void OnTriggerExit2D(Collider2D other)
         {
             _contacts.Remove(new ContactInfo2D(other, ContactType.Trigger));
         }

@@ -67,6 +67,29 @@ namespace Template.Physics
         public ContactEventFlags enabledContactEvents;
         public List<SerializableInterface<IContactEventReceiver>> receivers;
 
+        public void AddReceiversFromGameObject(GameObject gameObject)
+        {
+            IContactEventReceiver[] receiversToAdd = gameObject.GetComponents<IContactEventReceiver>();
+            foreach (IContactEventReceiver receiver in receiversToAdd)
+            {
+                if (receivers.Find((r) => r.Value == receiver) is not null)
+                    continue;
+
+                receivers.Add(new SerializableInterface<IContactEventReceiver>(receiver));
+            }
+        }
+        public void RemoveReceiversFromGameObject(GameObject gameObject)
+        {
+            receivers.RemoveAll((r) =>
+            {
+                Component component = r.Value as Component;
+                if (!component)
+                    return false;
+
+                return component.gameObject == gameObject;
+            });
+        }
+
         public void OnCollisionEnter(Collision collision)
         {
             if ((enabledContactEvents & ContactEventFlags.OnCollisionEnter) == 0)

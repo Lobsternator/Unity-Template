@@ -83,5 +83,25 @@ namespace Template.Core
             return count;
         }
         #endregion Collections
+
+        #region Type
+        public static bool HasInterface(this Type type, Type interfaceType)
+        {
+            if (!interfaceType.IsInterface)
+                return false;
+
+            if (type.IsSubclassOf(interfaceType))
+                return true;
+
+            Type[] interfaces = type.GetInterfaces();
+            for (int i = 0; i < interfaces.Length; i++)
+            {
+                if (interfaces[i] == interfaceType)
+                    return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

@@ -38,9 +38,9 @@ namespace Template.Core
                 return;
             }
 
-            enabled = PersistentData.InitSettings.IsEnabled;
-            gameObject.SetActive(PersistentData.InitSettings.IsActive);
-            gameObject.isStatic = PersistentData.InitSettings.IsStatic;
+            enabled = PersistentData.InitSettings.StartEnabled;
+            gameObject.SetActive(PersistentData.InitSettings.StartActive);
+            gameObject.isStatic = PersistentData.InitSettings.StartStatic;
         }
     }
 
@@ -76,9 +76,9 @@ namespace Template.Core
                 return;
             }
 
-            enabled = PersistentData.InitSettings.IsEnabled;
-            gameObject.SetActive(PersistentData.InitSettings.IsActive);
-            gameObject.isStatic = PersistentData.InitSettings.IsStatic;
+            enabled = PersistentData.InitSettings.StartEnabled;
+            gameObject.SetActive(PersistentData.InitSettings.StartActive);
+            gameObject.isStatic = PersistentData.InitSettings.StartStatic;
         }
     }
 }

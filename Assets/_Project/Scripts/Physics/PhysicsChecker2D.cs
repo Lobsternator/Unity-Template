@@ -8,7 +8,7 @@ namespace Template.Physics
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody2D), typeof(ContactChecker2D))]
-    public class PhysicsChecker2D : MonoBehaviour
+    public class PhysicsChecker2D : MonoBehaviour, IContactEventReceiver2D
     {
         private class CollisionInfo
         {
@@ -19,6 +19,8 @@ namespace Template.Physics
                 ContactNormal = collision.GetClosestContactNormal(Vector2.up);
             }
         }
+        
+        public ContactEventSender2D ActiveSender { get; set; }
 
         [field: Range(0.0f, 90.0f)]
         [field: Tooltip("When the ground steepness is below this threshold the object will be considered to be \"grounded\".")]
@@ -210,11 +212,11 @@ namespace Template.Physics
         }
 #endif
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        public void OnCollisionEnter2D(Collision2D collision)
         {
             _collisionsToHandle.Add(new CollisionInfo(collision));
         }
-        private void OnCollisionStay2D(Collision2D collision)
+        public void OnCollisionStay2D(Collision2D collision)
         {
             _collisionsToHandle.Add(new CollisionInfo(collision));
         }

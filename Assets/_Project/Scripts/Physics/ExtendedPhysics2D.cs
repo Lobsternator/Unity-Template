@@ -48,7 +48,7 @@ namespace Template.Physics
             _contactChecker = GetComponent<ContactChecker2D>();
         }
 
-        private void FixedUpdate()
+        public void FixedUpdate()
         {
             if (!PhysicsMaterial)
                 return;

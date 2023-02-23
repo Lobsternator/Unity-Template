@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,18 +8,44 @@ using UnityEngine;
 namespace Template.Core
 {
     [Serializable]
-    public sealed class SerializableInterface<TInterface> where TInterface : class
+    public abstract class SerializableInterface : IEquatable<SerializableInterface>
     {
-        [SerializeField] private MonoBehaviour _value;
-        public TInterface Value
+        [SerializeField] protected UnityEngine.Object _value;
+
+        public bool Equals(SerializableInterface other)
         {
-            get => _value as TInterface;
-            set => _value = value as MonoBehaviour;
+            return _value.Equals(other._value);
         }
     }
 
+    [Serializable]
+    public class SerializableInterface<TInterface, TCovering> : SerializableInterface where TInterface : class where TCovering : UnityEngine.Object
+    {
+        public TInterface Value
+        {
+            get => _value as TInterface;
+            set => _value = value as TCovering;
+        }
+
+        public SerializableInterface()
+        {
+            _value = null;
+        }
+        public SerializableInterface(TInterface value)
+        {
+            _value = value as TCovering;
+        }
+    }
+
+    [Serializable]
+    public class SerializableInterface<TInterface> : SerializableInterface<TInterface, UnityEngine.Object> where TInterface : class
+    {
+        public SerializableInterface() : base() { }
+        public SerializableInterface(TInterface value) : base(value) { }
+    }
+
 #if UNITY_EDITOR
-    [CustomPropertyDrawer(typeof(SerializableInterface<>))]
+    [CustomPropertyDrawer(typeof(SerializableInterface<,>), true)]
     public class SerializableInterfaceDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -29,30 +53,26 @@ namespace Template.Core
             return EditorGUIUtility.singleLineHeight * 1;
         }
 
-        private void HandleDragAndDropLogic(Rect position, Type interfaceType)
+        private void HandleDragAndDropLogic(Rect position, Type interfaceType, Type coveringType)
         {
             Event e = Event.current;
             if (DragAndDrop.objectReferences.Length == 0 || !position.Contains(e.mousePosition))
                 return;
 
             var draggedObject = DragAndDrop.objectReferences[0];
+            Type objectType   = draggedObject.GetType();
+
             if (draggedObject is GameObject)
             {
                 GameObject gameObject = (GameObject)draggedObject;
 
-                if (!gameObject.GetComponent(interfaceType))
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
-                else
+                if (gameObject.GetComponent(interfaceType))
                     DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-            }
-            else if (draggedObject is MonoBehaviour)
-            {
-                MonoBehaviour behaviour = (MonoBehaviour)draggedObject;
-                Type behaviourType      = behaviour.GetType();
-
-                if (!(behaviourType.IsSubclassOf(interfaceType) || behaviourType.GetInterfaces().Contains(interfaceType)))
+                else
                     DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
             }
+            else if (objectType.IsSubclassOf(coveringType) && objectType.HasInterface(interfaceType))
+                DragAndDrop.visualMode = DragAndDropVisualMode.Link;
             else
                 DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
         }
@@ -62,23 +82,38 @@ namespace Template.Core
             SerializedProperty valueProperty = property.FindPropertyRelative("_value");
             Type valueType                   = ExtendedEditorUtility.GetSerializedPropertyType(property);
             Type interfaceType               = valueType.GenericTypeArguments[0];
+            Type coveringType                = valueType.GenericTypeArguments.Length > 1 ? valueType.GenericTypeArguments[1] : typeof(UnityEngine.Object);
 
-            HandleDragAndDropLogic(position, interfaceType);
+            HandleDragAndDropLogic(position, interfaceType, coveringType);
 
-            valueProperty.objectReferenceValue = EditorGUI.ObjectField(position, label, valueProperty.objectReferenceValue, typeof(MonoBehaviour), true);
+            valueProperty.objectReferenceValue = EditorGUI.ObjectField(position, label, valueProperty.objectReferenceValue, coveringType, true);
 
-            // If a value was set through other means (e.g ObjectPicker)
             if (valueProperty.objectReferenceValue)
             {
-                MonoBehaviour behaviour = valueProperty.objectReferenceValue as MonoBehaviour;
-                Type behaviourType      = behaviour.GetType();
+                UnityEngine.Object obj = valueProperty.objectReferenceValue;
+                Type objectType        = obj.GetType();
 
-                if (behaviour && !(behaviourType.IsSubclassOf(interfaceType) || behaviourType.GetInterfaces().Contains(interfaceType)))
+                if (obj && !objectType.HasInterface(interfaceType))
                 {
-                    valueProperty.objectReferenceValue = behaviour.GetComponent(interfaceType);
+                    bool isGameObject = obj is GameObject;
+                    if (isGameObject)
+                    {
+                        GameObject gameObject              = (GameObject)obj;
+                        valueProperty.objectReferenceValue = gameObject.GetComponent(interfaceType);
+                    }
 
-                    if (!valueProperty.objectReferenceValue)
+                    bool isComponent = objectType.IsSubclassOf(typeof(Component));
+                    if (isComponent)
+                    {
+                        Component component                = (Component)obj;
+                        valueProperty.objectReferenceValue = component.GetComponent(interfaceType);
+                    }
+
+                    if (!valueProperty.objectReferenceValue || !(isComponent || isGameObject))
+                    {
+                        valueProperty.objectReferenceValue = null;
                         Debug.LogWarning($"Component needs to inherit from {interfaceType.Name}!");
+                    }
                 }
             }
         }

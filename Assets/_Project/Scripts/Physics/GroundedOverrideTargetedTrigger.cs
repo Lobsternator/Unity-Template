@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Template.Physics
 {
     [DisallowMultipleComponent]
-    public class GroundedOverrideTargetedTrigger : MonoBehaviour
+    public class GroundedOverrideTargetedTrigger : MonoBehaviour, IContactEventReceiver
     {
         private struct OverrideContact : IEquatable<OverrideContact>
         {
@@ -25,13 +25,15 @@ namespace Template.Physics
             }
         }
 
+        public ContactEventSender ActiveSender { get; set; }
+
         [field: SerializeField] public ForceGroundedStateTallyCounter TallyCounter { get; private set; }
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
 
 #if UNITY_EDITOR
         [SerializeField, HideInInspector] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
 #endif
-        
+
         [SerializeField] private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
         public ForceGroundedStateMode ForceGroundedState
         {
@@ -66,7 +68,7 @@ namespace Template.Physics
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public void OnTriggerEnter(Collider other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
@@ -74,7 +76,7 @@ namespace Template.Physics
             _overrideContacts.Add(new OverrideContact(other, ForceGroundedState));
             TallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
-        private void OnTriggerExit(Collider other)
+        public void OnTriggerExit(Collider other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;

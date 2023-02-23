@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    [CreateAssetMenu(fileName = "ApplicationStatesData", menuName = "PersistentRuntimeObjectData/ApplicationStates")]
+    [CreateAssetMenu(fileName = "ApplicationStateManagerData", menuName = "PersistentRuntimeObjectData/ApplicationStateManager")]
     public class ApplicationStateManagerData : PersistentRuntimeObjectData, IStateContainer<ApplicationStateMachine>
     {
         [field: SerializeField] public ApplicationStateEntry ApplicationStateTest { get; set; } = new ApplicationStateEntry();

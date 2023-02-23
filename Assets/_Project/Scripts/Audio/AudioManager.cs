@@ -3,19 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using FMOD.Studio;
 using FMODUnity;
 using Template.Core;
 
 namespace Template.Audio
 {
     [Serializable]
-    public struct ParameterValue
+    public struct AudioParameter
     {
         public string name;
         public float value;
 
-        public ParameterValue(string name, float value)
+        public AudioParameter(string name, float value)
         {
             this.name  = name;
             this.value = value;
@@ -25,12 +24,12 @@ namespace Template.Audio
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -1000)]
     public class AudioManager : PersistentRuntimeSingleton<AudioManager, AudioManagerData>
     {
-        private ObjectPool<AudioObject> _audioObjectPool;
-
         public static event Action<AudioObject> OnAudioStartedPlaying;
         public static event Action<AudioObject> OnAudioStoppedPlaying;
 
-        private AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params ParameterValue[] parameters)
+        private ObjectPool<AudioObject> _audioObjectPool;
+
+        private AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
         {
             StudioEventEmitter eventEmitter = audioObject.EventEmitter;
             eventEmitter.EventReference     = eventReference;
@@ -50,22 +49,34 @@ namespace Template.Audio
             return audioObject;
         }
 
-        public AudioObject PlaySound(EventReference eventReference, float volume, float pitch, params ParameterValue[] parameters)
+        public AudioObject PlaySound(EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
         {
+            if (!isActiveAndEnabled)
+                return null;
+
             AudioObject audioObject = _audioObjectPool.Get();
 
             return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, float volume, params ParameterValue[] parameters)
+        public AudioObject PlaySound(EventReference eventReference, float volume, params AudioParameter[] parameters)
         {
+            if (!isActiveAndEnabled)
+                return null;
+
             return PlaySound(eventReference, volume, 1.0f, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, params ParameterValue[] parameters)
+        public AudioObject PlaySound(EventReference eventReference, params AudioParameter[] parameters)
         {
+            if (!isActiveAndEnabled)
+                return null;
+
             return PlaySound(eventReference, 1.0f, 1.0f, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params ParameterValue[] parameters)
+        public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params AudioParameter[] parameters)
         {
+            if (!isActiveAndEnabled)
+                return null;
+
             settings.parameters.AddRange(parameters);
 
             return PlaySound(eventReference, settings.volume, settings.pitch, settings.parameters.ToArray());
