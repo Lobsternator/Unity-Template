@@ -27,7 +27,7 @@ namespace Template.Physics
             }
         }
 
-        public ContactEventSender2D ActiveSender { get; set; }
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
 

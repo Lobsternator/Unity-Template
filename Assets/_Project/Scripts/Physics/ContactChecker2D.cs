@@ -9,7 +9,7 @@ namespace Template.Physics
     [DisallowMultipleComponent]
     public class ContactChecker2D : MonoBehaviour, IContactEventReceiver2D
     {
-        public ContactEventSender2D ActiveSender { get; set; }
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         private List<ContactInfo2D> _contacts = new List<ContactInfo2D>();
         public ReadOnlyCollection<ContactInfo2D> Contacts => _contacts.AsReadOnly();

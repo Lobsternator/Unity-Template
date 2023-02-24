@@ -20,7 +20,7 @@ namespace Template.Physics
             }
         }
 
-        public ContactEventSender ActiveSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         [field: Range(0.0f, 90.0f)]
         [field: Tooltip("When the ground steepness is below this threshold the object will be considered to be \"grounded\".")]
@@ -93,6 +93,9 @@ namespace Template.Physics
 
         public void UpdateGroundedState()
         {
+            if (!HasDoneInitialStateCheck)
+                return;
+            
             _contactChecker.ClearDeadContacts();
 
             if (_forceGroundedState == ForceGroundedStateMode.Grounded && !IsGrounded)
@@ -216,8 +219,7 @@ namespace Template.Physics
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (HasDoneInitialStateCheck)
-                UpdateGroundedState();
+            UpdateGroundedState();
         }
 #endif
 
@@ -234,18 +236,20 @@ namespace Template.Physics
         {
             HasDoneInitialStateCheck = false;
             StartCoroutine(InitialStateCheck());
+
+            _contactChecker.PhysicsFrameProcessed += OnContactCheckerPhysicsFrameProcessed;
         }
         private void OnDisable()
         {
             StopCoroutine(nameof(InitialStateCheck));
+
+            _contactChecker.PhysicsFrameProcessed -= OnContactCheckerPhysicsFrameProcessed;
         }
 
         private void Awake()
         {
             _rigidbody      = GetComponent<Rigidbody>();
             _contactChecker = GetComponent<ContactChecker>();
-
-            _contactChecker.PhysicsFrameProcessed += OnContactCheckerPhysicsFrameProcessed;
         }
 
         private void OnContactCheckerPhysicsFrameProcessed()

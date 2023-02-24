@@ -22,9 +22,10 @@ namespace Template.Physics
     public interface IContactEventReceiver
     {
         /// <summary>
+        /// Which sender are we currently receiving contact events from? Null if contact event originated from this object.
         /// Only set this if you absolutely know what you're doing!
         /// </summary>
-        public ContactEventSender ActiveSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         public void OnCollisionEnter(Collision collision)
         {
@@ -62,7 +63,7 @@ namespace Template.Physics
 
     public class ContactEventSender : MonoBehaviour, IContactEventReceiver
     {
-        public ContactEventSender ActiveSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         public ContactEventFlags enabledContactEvents;
         public List<SerializableInterface<IContactEventReceiver>> receivers;
@@ -72,7 +73,7 @@ namespace Template.Physics
             IContactEventReceiver[] receiversToAdd = gameObject.GetComponents<IContactEventReceiver>();
             foreach (IContactEventReceiver receiver in receiversToAdd)
             {
-                if (receivers.Find((r) => r.Value == receiver) is not null)
+                if (receivers.Find((r) => r.Equals(receiver)) is not null)
                     continue;
 
                 receivers.Add(new SerializableInterface<IContactEventReceiver>(receiver));
@@ -101,9 +102,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionEnter(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnCollisionStay(Collision collision)
@@ -117,9 +118,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionStay(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnCollisionExit(Collision collision)
@@ -133,9 +134,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionExit(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnParticleCollision(GameObject other)
@@ -149,9 +150,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnParticleCollision(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerEnter(Collider other)
@@ -165,9 +166,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerEnter(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerStay(Collider other)
@@ -181,9 +182,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerStay(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerExit(Collider other)
@@ -197,9 +198,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerExit(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnParticleTrigger()
@@ -213,9 +214,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnParticleTrigger();
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
     }

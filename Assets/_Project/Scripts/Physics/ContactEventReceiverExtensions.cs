@@ -6,21 +6,21 @@ namespace Template.Physics
 {
     public static class ContactEventReceiverExtensions
     {
-        public static ContactEventSender GetEventInstigator(this IContactEventReceiver contactEventReceiver)
+        public static ContactEventSender GetCurrentContactEventInstigator(this IContactEventReceiver contactEventReceiver)
         {
-            ContactEventSender sender = contactEventReceiver.ActiveSender;
+            ContactEventSender sender = contactEventReceiver.CurrentContactEventSender;
 
-            while ( sender && sender.ActiveSender )
-                sender = sender.ActiveSender;
+            while ( sender && sender.CurrentContactEventSender )
+                sender = sender.CurrentContactEventSender;
 
             return sender;
         }
-        public static ContactEventSender2D GetEventInstigator(this IContactEventReceiver2D contactEventReceiver)
+        public static ContactEventSender2D GetCurrentContactEventInstigator(this IContactEventReceiver2D contactEventReceiver)
         {
-            ContactEventSender2D sender = contactEventReceiver.ActiveSender;
+            ContactEventSender2D sender = contactEventReceiver.CurrentContactEventSender;
 
-            while (sender && sender.ActiveSender)
-                sender = sender.ActiveSender;
+            while (sender && sender.CurrentContactEventSender)
+                sender = sender.CurrentContactEventSender;
 
             return sender;
         }

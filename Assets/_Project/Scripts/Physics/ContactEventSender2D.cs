@@ -20,9 +20,10 @@ namespace Template.Physics
     public interface IContactEventReceiver2D
     {
         /// <summary>
+        /// Which sender are we currently receiving contact events from? Null if contact event originated from this object.
         /// Only set this if you absolutely know what you're doing!
         /// </summary>
-        public ContactEventSender2D ActiveSender { get; set; }
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
@@ -52,10 +53,33 @@ namespace Template.Physics
 
     public class ContactEventSender2D : MonoBehaviour, IContactEventReceiver2D
     {
-        public ContactEventSender2D ActiveSender { get; set; }
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         public ContactEventFlags2D enabledContactEvents;
         public List<SerializableInterface<IContactEventReceiver2D>> receivers;
+
+        public void AddReceiversFromGameObject(GameObject gameObject)
+        {
+            IContactEventReceiver2D[] receiversToAdd = gameObject.GetComponents<IContactEventReceiver2D>();
+            foreach (IContactEventReceiver2D receiver in receiversToAdd)
+            {
+                if (receivers.Find((r) => r.Equals(receiver)) is not null)
+                    continue;
+
+                receivers.Add(new SerializableInterface<IContactEventReceiver2D>(receiver));
+            }
+        }
+        public void RemoveReceiversFromGameObject(GameObject gameObject)
+        {
+            receivers.RemoveAll((r) =>
+            {
+                Component component = r.Value as Component;
+                if (!component)
+                    return false;
+
+                return component.gameObject == gameObject;
+            });
+        }
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
@@ -68,9 +92,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionEnter2D(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnCollisionStay2D(Collision2D collision)
@@ -84,9 +108,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionStay2D(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnCollisionExit2D(Collision2D collision)
@@ -100,9 +124,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnCollisionExit2D(collision);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerEnter2D(Collider2D other)
@@ -116,9 +140,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerEnter2D(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerStay2D(Collider2D other)
@@ -132,9 +156,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerStay2D(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
         public void OnTriggerExit2D(Collider2D other)
@@ -148,9 +172,9 @@ namespace Template.Physics
                 if (recipient == null)
                     continue;
 
-                recipient.ActiveSender = this;
+                recipient.CurrentContactEventSender = this;
                 recipient.OnTriggerExit2D(other);
-                recipient.ActiveSender = null;
+                recipient.CurrentContactEventSender = null;
             }
         }
     }

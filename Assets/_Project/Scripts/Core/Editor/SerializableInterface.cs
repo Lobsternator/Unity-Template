@@ -19,7 +19,7 @@ namespace Template.Core
     }
 
     [Serializable]
-    public class SerializableInterface<TInterface, TCovering> : SerializableInterface where TInterface : class where TCovering : UnityEngine.Object
+    public class SerializableInterface<TInterface, TCovering> : SerializableInterface, IEquatable<TInterface> where TInterface : class where TCovering : UnityEngine.Object
     {
         public TInterface Value
         {
@@ -34,6 +34,11 @@ namespace Template.Core
         public SerializableInterface(TInterface value)
         {
             _value = value as TCovering;
+        }
+
+        public bool Equals(TInterface other)
+        {
+            return _value.Equals(other);
         }
     }
 

@@ -25,7 +25,7 @@ namespace Template.Physics
             }
         }
 
-        public ContactEventSender ActiveSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         [field: SerializeField] public ForceGroundedStateTallyCounter TallyCounter { get; private set; }
         [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;

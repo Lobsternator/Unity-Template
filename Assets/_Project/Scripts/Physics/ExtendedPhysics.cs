@@ -8,7 +8,7 @@ namespace Template.Physics
     [RequireComponent(typeof(ContactChecker))]
     public class ExtendedPhysics : MonoBehaviour, IContactEventReceiver
     {
-        public ContactEventSender ActiveSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         [SerializeField] private ExtendedPhysicsMaterial _physicsMaterial;
         public ExtendedPhysicsMaterial PhysicsMaterial

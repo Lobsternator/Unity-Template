@@ -19,8 +19,8 @@ namespace Template.Physics
                 ContactNormal = collision.GetClosestContactNormal(Vector2.up);
             }
         }
-        
-        public ContactEventSender2D ActiveSender { get; set; }
+
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         [field: Range(0.0f, 90.0f)]
         [field: Tooltip("When the ground steepness is below this threshold the object will be considered to be \"grounded\".")]
@@ -43,6 +43,9 @@ namespace Template.Physics
             get => _forceGroundedState;
             set
             {
+                if (_forceGroundedState == value)
+                    return;
+
                 _forceGroundedState = value;
 
                 if (HasDoneInitialStateCheck)
@@ -89,6 +92,11 @@ namespace Template.Physics
 
         public void UpdateGroundedState()
         {
+            if (!HasDoneInitialStateCheck)
+                return;
+            
+            _contactChecker.ClearDeadContacts();
+
             if (_forceGroundedState == ForceGroundedStateMode.Grounded && !IsGrounded)
                 OnBecameGrounded();
             else if (_forceGroundedState == ForceGroundedStateMode.Airborn && IsGrounded)
@@ -207,8 +215,7 @@ namespace Template.Physics
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (HasDoneInitialStateCheck)
-                UpdateGroundedState();
+            UpdateGroundedState();
         }
 #endif
 
@@ -225,10 +232,14 @@ namespace Template.Physics
         {
             HasDoneInitialStateCheck = false;
             StartCoroutine(InitialStateCheck());
+
+            _contactChecker.PhysicsFrameProcessed += OnContactCheckerPhysicsFrameProcessed;
         }
         private void OnDisable()
         {
             StopCoroutine(nameof(InitialStateCheck));
+
+            _contactChecker.PhysicsFrameProcessed -= OnContactCheckerPhysicsFrameProcessed;
         }
 
         private void Awake()
@@ -237,7 +248,7 @@ namespace Template.Physics
             _contactChecker = GetComponent<ContactChecker2D>();
         }
 
-        private void FixedUpdate()
+        private void OnContactCheckerPhysicsFrameProcessed()
         {
             if (!HasDoneInitialStateCheck)
                 return;
