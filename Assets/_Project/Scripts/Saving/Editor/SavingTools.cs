@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
 using System.IO;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using Template.Core;
-using System.Text.RegularExpressions;
 
 namespace Template.Saving
 {
@@ -12,7 +13,7 @@ namespace Template.Saving
         [MenuItem("Tools/Saving/Regenerate data keys")]
         public static void RegenerateDataKeys()
         {
-            ISavableObject[] savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
+            List<ISavableObject> savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
 
             foreach (ISavableObject savableObject in savableObjects)
             {

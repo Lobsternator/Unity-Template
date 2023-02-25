@@ -6,7 +6,6 @@ using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using Template.Core;
-using System.Linq;
 
 namespace Template.Audio
 {
@@ -30,12 +29,9 @@ namespace Template.Audio
         public event Action<AudioObject> StoppedPlaying;
 
         private Coroutine _fadeoutCoroutine;
-        private float _fadeoutStartVolume;
 
-        private void StopFadeout()
+        public void StopFadeout()
         {
-            EventEmitter.EventInstance.setVolume(_fadeoutStartVolume);
-
             if (_fadeoutCoroutine is not null)
                 StopCoroutine(_fadeoutCoroutine);
 
@@ -45,17 +41,17 @@ namespace Template.Audio
         {
             float instanceVolume;
             EventEmitter.EventInstance.getVolume(out instanceVolume);
+            float instanceOriginalVolume = instanceVolume;
 
             while (!Mathf.Approximately(instanceVolume, 0.0f))
             {
                 yield return CoroutineUtility.WaitForFrames(1);
 
                 EventEmitter.EventInstance.getVolume(out instanceVolume);
-                EventEmitter.EventInstance.setVolume(instanceVolume - Time.deltaTime / duration * _fadeoutStartVolume);
+                EventEmitter.EventInstance.setVolume(instanceVolume - Time.deltaTime / duration * instanceOriginalVolume);
             }
 
             enabled = false;
-            StopFadeout();
         }
 
         public void Play()
@@ -68,7 +64,7 @@ namespace Template.Audio
         }
         public void Stop(float fadeout)
         {
-            if (_fadeoutCoroutine is null)
+            if (enabled && _fadeoutCoroutine is null)
                 _fadeoutCoroutine = StartCoroutine(Fadeout(fadeout));
         }
 
@@ -76,9 +72,40 @@ namespace Template.Audio
         {
             return EventEmitter.EventInstance.getParameterByName(name, out value);
         }
+        public RESULT GetParameter(ref AudioParameter parameter)
+        {
+            return GetParameter(parameter.name, out parameter.value);
+        }
         public RESULT SetParameter(string name, float value)
         {
             return EventEmitter.EventInstance.setParameterByName(name, value);
+        }
+        public RESULT SetParameter(AudioParameter parameter)
+        {
+            return SetParameter(parameter.name, parameter.value);
+        }
+
+        public RESULT GetVolume(out float volume)
+        {
+            return EventEmitter.EventInstance.getVolume(out volume);
+        }
+        public RESULT SetVolume(float volume)
+        {
+            return EventEmitter.EventInstance.setVolume(volume);
+        }
+
+        public RESULT GetPitch(out float pitch)
+        {
+            return EventEmitter.EventInstance.getPitch(out pitch);
+        }
+        public RESULT SetPitch(float pitch)
+        {
+            return EventEmitter.EventInstance.setPitch(pitch);
+        }
+
+        public RESULT GetPlaybackState(out PLAYBACK_STATE playbackState)
+        {
+            return EventEmitter.EventInstance.getPlaybackState(out playbackState);
         }
 
         private void OnEnable()
