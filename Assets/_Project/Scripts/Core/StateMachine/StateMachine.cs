@@ -32,18 +32,6 @@ namespace Template.Core
         {
             yield return state.OnDisable();
         }
-        protected virtual void UpdateState(TBaseState state)
-        {
-            state.OnUpdate();
-        }
-        protected virtual void LateUpdateState(TBaseState state)
-        {
-            state.OnLateUpdate();
-        }
-        protected virtual void FixedUpdateState(TBaseState state)
-        {
-            state.OnFixedUpdate();
-        }
 
         public TBaseState GetState()
         {
@@ -89,22 +77,6 @@ namespace Template.Core
                 return false;
 
             return SetState(newState);
-        }
-
-        protected virtual void Update()
-        {
-            if (_state is not null)
-                UpdateState(_state);
-        }
-        protected virtual void LateUpdate()
-        {
-            if (_state is not null)
-                LateUpdateState(_state);
-        }
-        protected virtual void FixedUpdate()
-        {
-            if (_state is not null)
-                FixedUpdateState(_state);
         }
     }
     public abstract class StateMachine<TStateMachine> : StateMachine<TStateMachine, State<TStateMachine>>, IStateMachine<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }

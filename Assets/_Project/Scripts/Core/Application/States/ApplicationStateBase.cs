@@ -6,7 +6,7 @@ using Serializable = System.SerializableAttribute;
 namespace Template.Core
 {
     [Serializable]
-    public class ApplicationStateEntry : ApplicationStateBase
+    public class ApplicationStateBase : State<ApplicationStateMachine, ApplicationStateBase>
     {
 
     }

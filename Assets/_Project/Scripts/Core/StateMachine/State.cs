@@ -18,9 +18,6 @@ namespace Template.Core
         // Should be run for a single state
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
-        public void OnUpdate();
-        public void OnLateUpdate();
-        public void OnFixedUpdate();
     }
     public interface IState<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
@@ -76,18 +73,6 @@ namespace Template.Core
         public virtual IEnumerator OnDisable()
         {
             yield break;
-        }
-        public virtual void OnUpdate()
-        {
-
-        }
-        public virtual void OnLateUpdate()
-        {
-
-        }
-        public virtual void OnFixedUpdate()
-        {
-
         }
     }
     [Serializable]

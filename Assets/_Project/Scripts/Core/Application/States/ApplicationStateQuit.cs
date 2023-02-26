@@ -6,7 +6,7 @@ using Serializable = System.SerializableAttribute;
 namespace Template.Core
 {
     [Serializable]
-    public class ApplicationStateQuit : State<ApplicationStateMachine>
+    public class ApplicationStateQuit : ApplicationStateBase
     {
         public override IEnumerator OnEnable()
         {

@@ -7,39 +7,25 @@ using UnityEngine;
 namespace Template.Core
 {
     [CreateAssetMenu(fileName = "ApplicationStateManagerData", menuName = "PersistentRuntimeObjectData/ApplicationStateManager")]
-    public class ApplicationStateManagerData : PersistentRuntimeObjectData, IStateContainer<ApplicationStateMachine>
+    public class ApplicationStateManagerData : PersistentRuntimeObjectData, IStateContainer<ApplicationStateMachine, ApplicationStateBase>
     {
         [field: SerializeField] public ApplicationStateEntry ApplicationStateTest { get; set; } = new ApplicationStateEntry();
         [field: SerializeField] public ApplicationStateQuit ApplicationStateQuit { get; set; }  = new ApplicationStateQuit();
 
-        private Dictionary<Type, State<ApplicationStateMachine>> _states;
+        private Dictionary<Type, ApplicationStateBase> _states;
 
-        private void PopulateStates()
+        public ApplicationStateManagerData()
         {
-            _states = new Dictionary<Type, State<ApplicationStateMachine>>(2)
+            _states = new Dictionary<Type, ApplicationStateBase>(2)
             {
                 { ApplicationStateTest.GetType(), ApplicationStateTest },
                 { ApplicationStateQuit.GetType(), ApplicationStateQuit }
             };
         }
 
-        public ReadOnlyDictionary<Type, State<ApplicationStateMachine>> GetStates()
+        public ReadOnlyDictionary<Type, ApplicationStateBase> GetStates()
         {
-            return new ReadOnlyDictionary<Type, State<ApplicationStateMachine>>(_states);
+            return new ReadOnlyDictionary<Type, ApplicationStateBase>(_states);
         }
-
-        private void Awake()
-        {
-            PopulateStates();
-        }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-
-            PopulateStates();
-        }
-#endif
     }
 }

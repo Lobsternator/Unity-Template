@@ -10,21 +10,21 @@ namespace Template.Core
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ApplicationStateMachine))]
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -100)]
-    public class ApplicationStateManager : PersistentRuntimeSingleton<ApplicationStateManager, ApplicationStateManagerData>, IStateManager<ApplicationStateMachine>
+    public class ApplicationStateManager : PersistentRuntimeSingleton<ApplicationStateManager, ApplicationStateManagerData>, IStateManager<ApplicationStateMachine, ApplicationStateBase>
     {
         public static bool IsApplicationQuitting { get; private set; } = false;
 
         public ApplicationStateMachine StateMachine { get; private set; }
-        public ReadOnlyDictionary<Type, State<ApplicationStateMachine>> States { get; private set; }
+        public ReadOnlyDictionary<Type, ApplicationStateBase> States { get; private set; }
 
-        public TState GetState<TState>() where TState : State<ApplicationStateMachine>
+        public TState GetState<TState>() where TState : ApplicationStateBase
         {
             if (States.TryGetValue(typeof(TState), out var state))
                 return (TState)state;
 
             return null;
         }
-        public bool SetState<TState>() where TState : State<ApplicationStateMachine>
+        public bool SetState<TState>() where TState : ApplicationStateBase
         {
             if (States.TryGetValue(typeof(TState), out var state))
                 return StateMachine.SetState(state);

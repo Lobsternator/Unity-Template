@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Template.Core
 {
     [DisallowMultipleComponent]
-    public class ApplicationStateMachine : ManagedStateMachine<ApplicationStateManager, ApplicationStateMachine>
+    public class ApplicationStateMachine : ManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationStateBase>
     {
         private ApplicationStateManager _stateManager;
         public override ApplicationStateManager StateManager
