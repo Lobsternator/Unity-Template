@@ -37,14 +37,11 @@ namespace Template.Audio
             audioObject.Play();
             OnAudioStartedPlaying?.Invoke(audioObject);
 
-            eventEmitter.EventInstance.setVolume(volume);
-            eventEmitter.EventInstance.setPitch(pitch);
+            audioObject.SetVolume(volume);
+            audioObject.SetPitch(pitch);
 
             for (int i = 0; i < parameters.Length; i++)
-            {
-                var parameter = parameters[i];
-                eventEmitter.SetParameter(parameter.name, parameter.value);
-            }
+                audioObject.SetParameter(parameters[i]);
 
             return audioObject;
         }
@@ -77,9 +74,11 @@ namespace Template.Audio
             if (!isActiveAndEnabled)
                 return null;
 
-            settings.parameters.AddRange(parameters);
+            AudioParameter[] allParameters = new AudioParameter[settings.parameters.Count + parameters.Length];
+            settings.parameters.CopyTo(allParameters);
+            parameters.CopyTo(allParameters, settings.parameters.Count);
 
-            return PlaySound(eventReference, settings.volume, settings.pitch, settings.parameters.ToArray());
+            return PlaySound(eventReference, settings.volume, settings.pitch, allParameters);
         }
 
         private AudioObject OnAudioObjectCreate()

@@ -40,15 +40,15 @@ namespace Template.Audio
         private IEnumerator Fadeout(float duration)
         {
             float instanceVolume;
-            EventEmitter.EventInstance.getVolume(out instanceVolume);
+            GetVolume(out instanceVolume);
             float instanceOriginalVolume = instanceVolume;
 
             while (!Mathf.Approximately(instanceVolume, 0.0f))
             {
                 yield return CoroutineUtility.WaitForFrames(1);
 
-                EventEmitter.EventInstance.getVolume(out instanceVolume);
-                EventEmitter.EventInstance.setVolume(instanceVolume - Time.deltaTime / duration * instanceOriginalVolume);
+                GetVolume(out instanceVolume);
+                SetVolume(instanceVolume - Time.deltaTime / duration * instanceOriginalVolume);
             }
 
             enabled = false;
@@ -128,7 +128,7 @@ namespace Template.Audio
         private void Update()
         {
             PLAYBACK_STATE playbackState;
-            EventEmitter.EventInstance.getPlaybackState(out playbackState);
+            GetPlaybackState(out playbackState);
 
             if (playbackState == PLAYBACK_STATE.STOPPED)
                 enabled = false;
