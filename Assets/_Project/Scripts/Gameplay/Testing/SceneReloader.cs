@@ -16,11 +16,11 @@ namespace Template.Gameplay
             {
                 yield return new WaitForSeconds(reloadInterval);
 
-                Scene activeScene = ExtendedSceneManager.Instance.GetActiveScene();
+                Scene activeScene = ExtendedSceneManager.GetActiveScene();
                 if (!activeScene.isLoaded)
                     continue;
 
-                ExtendedSceneManager.Instance.LoadSceneAsync(activeScene.buildIndex, LoadSceneMode.Single);
+                ExtendedSceneManager.LoadSceneAsync(activeScene.buildIndex, LoadSceneMode.Single);
             }
         }
 

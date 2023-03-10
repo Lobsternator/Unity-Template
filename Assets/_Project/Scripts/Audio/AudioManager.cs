@@ -60,25 +60,31 @@ namespace Template.Audio
             if (!isActiveAndEnabled)
                 return null;
 
-            return PlaySound(eventReference, volume, 1.0f, parameters);
+            AudioObject audioObject = _audioObjectPool.Get();
+
+            return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
         }
         public AudioObject PlaySound(EventReference eventReference, params AudioParameter[] parameters)
         {
             if (!isActiveAndEnabled)
                 return null;
 
-            return PlaySound(eventReference, 1.0f, 1.0f, parameters);
+            AudioObject audioObject = _audioObjectPool.Get();
+
+            return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
         }
         public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params AudioParameter[] parameters)
         {
             if (!isActiveAndEnabled)
                 return null;
 
+            AudioObject audioObject        = _audioObjectPool.Get();
             AudioParameter[] allParameters = new AudioParameter[settings.parameters.Count + parameters.Length];
+
             settings.parameters.CopyTo(allParameters);
             parameters.CopyTo(allParameters, settings.parameters.Count);
 
-            return PlaySound(eventReference, settings.volume, settings.pitch, allParameters);
+            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, allParameters);
         }
 
         private AudioObject OnAudioObjectCreate()
