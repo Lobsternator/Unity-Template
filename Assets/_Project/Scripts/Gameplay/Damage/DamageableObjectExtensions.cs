@@ -4,61 +4,52 @@ namespace Template.Gameplay
 {
     public static class DamageableObjectExtensions
     {
-        public static void SetDamage(this DamageManager damageManager, float damage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static bool IsAtMinDamage(this DamagePool damagePool)
         {
-            damageManager.ApplyDamage(damage - damageManager.Damage, null, eventInstigator, damageCauser);
+            return damagePool.DamageManager.IsAtMinDamage;
         }
-        public static void AddMinDamage(this DamageManager damageManager, float minDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static bool IsAtMaxDamage(this DamagePool damagePool)
         {
-            damageManager.SetMinDamage(damageManager.MinDamage + minDamage, eventInstigator, damageCauser);
+            return damagePool.DamageManager.IsAtMaxDamage;
         }
-        public static void AddMaxDamage(this DamageManager damageManager, float maxDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static float GetDamage(this DamagePool damagePool)
         {
-            damageManager.SetMaxDamage(damageManager.MaxDamage + maxDamage, eventInstigator, damageCauser);
+            return damagePool.DamageManager.Damage;
         }
-
-        public static bool IsDestroyed(this IDamageableObject damageableObject)
+        public static float GetMinDamage(this DamagePool damagePool)
         {
-            return damageableObject.DamageManager.IsDestroyed;
+            return damagePool.DamageManager.MinDamage;
         }
-        public static float GetDamage(this IDamageableObject damageableObject)
+        public static float GetMaxDamage(this DamagePool damagePool)
         {
-            return damageableObject.DamageManager.Damage;
-        }
-        public static float GetMinDamage(this IDamageableObject damageableObject)
-        {
-            return damageableObject.DamageManager.MinDamage;
-        }
-        public static float GetMaxDamage(this IDamageableObject damageableObject)
-        {
-            return damageableObject.DamageManager.MaxDamage;
+            return damagePool.DamageManager.MaxDamage;
         }
 
-        public static void ApplyDamage(this IDamageableObject damageableObject, float baseDamage, DamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static void SetDamage(this DamagePool damagePool, float damage, DamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            damageableObject.DamageManager.ApplyDamage(baseDamage, damageType, eventInstigator, damageCauser);
+            damagePool.DamageManager.SetDamage(damage, damageType, eventInstigator, damageCauser);
         }
-        public static void SetDamage(this IDamageableObject damageableObject, float damage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static void ApplyDamage(this DamagePool damagePool, float baseDamage, DamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            damageableObject.DamageManager.SetDamage(damage, eventInstigator, damageCauser);
-        }
-
-        public static void SetMinDamage(this IDamageableObject damageableObject, float minDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
-        {
-            damageableObject.DamageManager.SetMinDamage(minDamage, eventInstigator, damageCauser);
-        }
-        public static void AddMinDamage(this IDamageableObject damageableObject, float minDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
-        {
-            damageableObject.DamageManager.AddMinDamage(minDamage, eventInstigator, damageCauser);
+            damagePool.DamageManager.ApplyDamage(baseDamage, damageType, eventInstigator, damageCauser);
         }
 
-        public static void SetMaxDamage(this IDamageableObject damageableObject, float maxDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static void SetMinDamage(this DamagePool damagePool, float minDamage, MinDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            damageableObject.DamageManager.SetMaxDamage(maxDamage, eventInstigator, damageCauser);
+            damagePool.DamageManager.SetMinDamage(minDamage, damageType, eventInstigator, damageCauser);
         }
-        public static void AddMaxDamage(this IDamageableObject damageableObject, float maxDamage, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public static void ApplyMinDamage(this DamagePool damagePool, float baseMinDamage, MinDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            damageableObject.DamageManager.AddMaxDamage(maxDamage, eventInstigator, damageCauser);
+            damagePool.DamageManager.ApplyMinDamage(baseMinDamage, damageType, eventInstigator, damageCauser);
+        }
+
+        public static void SetMaxDamage(this DamagePool damagePool, float maxDamage, MaxDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        {
+            damagePool.DamageManager.SetMaxDamage(maxDamage, damageType, eventInstigator, damageCauser);
+        }
+        public static void ApplyMaxDamage(this DamagePool damagePool, float baseMaxDamage, MaxDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        {
+            damagePool.DamageManager.ApplyMaxDamage(baseMaxDamage, damageType, eventInstigator, damageCauser);
         }
     }
 }
