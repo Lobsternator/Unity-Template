@@ -9,10 +9,14 @@ namespace Template.Core
     [CreateAssetMenu(fileName = "ApplicationStateManagerData", menuName = "PersistentRuntimeObjectData/ApplicationStateManager")]
     public class ApplicationStateManagerData : PersistentRuntimeObjectData, IStateContainer<ApplicationStateMachine, ApplicationStateBase>
     {
+        private Dictionary<Type, ApplicationStateBase> _states;
+        public ReadOnlyDictionary<Type, ApplicationStateBase> States
+        {
+            get => new ReadOnlyDictionary<Type, ApplicationStateBase>(_states);
+        }
+
         [field: SerializeField] public ApplicationStateEntry ApplicationStateTest { get; set; } = new ApplicationStateEntry();
         [field: SerializeField] public ApplicationStateQuit ApplicationStateQuit { get; set; }  = new ApplicationStateQuit();
-
-        private Dictionary<Type, ApplicationStateBase> _states;
 
         public ApplicationStateManagerData()
         {
@@ -21,11 +25,6 @@ namespace Template.Core
                 { ApplicationStateTest.GetType(), ApplicationStateTest },
                 { ApplicationStateQuit.GetType(), ApplicationStateQuit }
             };
-        }
-
-        public ReadOnlyDictionary<Type, ApplicationStateBase> GetStates()
-        {
-            return new ReadOnlyDictionary<Type, ApplicationStateBase>(_states);
         }
     }
 }

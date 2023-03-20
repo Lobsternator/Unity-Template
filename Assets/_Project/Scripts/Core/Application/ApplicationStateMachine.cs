@@ -6,10 +6,10 @@ using UnityEngine;
 namespace Template.Core
 {
     [DisallowMultipleComponent]
-    public class ApplicationStateMachine : ManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationStateBase>
+    public class ApplicationStateMachine : StateMachine<ApplicationStateMachine, ApplicationStateBase>, IManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationStateBase>
     {
         private ApplicationStateManager _stateManager;
-        public override ApplicationStateManager StateManager
+        public ApplicationStateManager StateManager
         {
             get
             {
@@ -18,7 +18,6 @@ namespace Template.Core
 
                 return _stateManager;
             }
-            protected set => _stateManager = value;
         }
     }
 }

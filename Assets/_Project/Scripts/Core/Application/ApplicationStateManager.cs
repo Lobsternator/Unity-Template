@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using UnityEngine;
 using Type = System.Type;
 
@@ -16,6 +15,20 @@ namespace Template.Core
 
         public ApplicationStateMachine StateMachine { get; private set; }
         public ReadOnlyDictionary<Type, ApplicationStateBase> States { get; private set; }
+
+        public void Initialize()
+        {
+            StateMachine = GetComponent<ApplicationStateMachine>();
+            States       = PersistentData.States;
+
+            foreach (var state in States.Values)
+            {
+                state.StateMachine = StateMachine;
+                StateMachine.StartCoroutine(state.Initialize());
+            }
+
+            SetState<ApplicationStateEntry>();
+        }
 
         public TState GetState<TState>() where TState : ApplicationStateBase
         {
@@ -49,16 +62,7 @@ namespace Template.Core
                 return Application.isEditor;
             };
 
-            StateMachine = GetComponent<ApplicationStateMachine>();
-            States       = PersistentData.GetStates();
-
-            foreach (var state in States.Values)
-            {
-                state.StateMachine = StateMachine;
-                StateMachine.StartCoroutine(state.Initialize());
-            }
-
-            SetState<ApplicationStateEntry>();
+            Initialize();
         }
     }
 }

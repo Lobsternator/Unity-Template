@@ -12,10 +12,9 @@ namespace Template.Core
 
         public bool RemoveTransition(int input);
 
-        // Should be run for every state once (NOTE: Has to be called manually!)
+        // NOTE: Has to be called manually!
         public IEnumerator Initialize();
 
-        // Should be run for a single state
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
     }
@@ -24,7 +23,7 @@ namespace Template.Core
         public TStateMachine StateMachine { get; set; }
 
         public bool AddTransition(int input, TBaseState output);
-        public TBaseState GetTransition(int input);
+        public bool GetTransition(int input, out TBaseState state);
         public bool SetTransition(int input, TBaseState output);
     }
     public interface IState<TStateMachine> : IState<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
@@ -32,7 +31,7 @@ namespace Template.Core
     [Serializable]
     public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public bool Enabled => StateMachine.GetState() == this;
+        public bool Enabled => ReferenceEquals(StateMachine.GetState(), this);
         public TStateMachine StateMachine { get; set; }
 
         protected Dictionary<int, TBaseState> _transitions = new Dictionary<int, TBaseState>();
@@ -41,12 +40,9 @@ namespace Template.Core
         {
             return _transitions.TryAdd(input, output);
         }
-        public TBaseState GetTransition(int input)
+        public bool GetTransition(int input, out TBaseState state)
         {
-            if (_transitions.TryGetValue(input, out var state))
-                return state;
-            else
-                return null;
+            return _transitions.TryGetValue(input, out state);
         }
         public bool SetTransition(int input, TBaseState output)
         {
@@ -81,7 +77,7 @@ namespace Template.Core
     public interface IStateContainer { }
     public interface IStateContainer<TStateMachine, TBaseState> : IStateContainer where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public ReadOnlyDictionary<Type, TBaseState> GetStates();
+        public ReadOnlyDictionary<Type, TBaseState> States { get; }
     }
     public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 }

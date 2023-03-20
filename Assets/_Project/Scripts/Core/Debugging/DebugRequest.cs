@@ -13,8 +13,7 @@ namespace Template.Core
         public float startTime;
         public float duration;
 
-        public bool HasExpired         => Time.time - startTime > duration;
-        public bool HasExpiredInEditor => Time.realtimeSinceStartup - startTime > duration;
+        public bool HasExpired => Time.time - startTime > duration;
     }
 }
 #endif
