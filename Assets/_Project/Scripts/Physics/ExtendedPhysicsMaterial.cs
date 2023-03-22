@@ -9,11 +9,11 @@ using UnityEngine;
 
 namespace Template.Physics
 {
-#if UNITY_EDITOR
     public static class ExtendedPhysicsMaterialReferenceChecker
     {
-        public static void OnValidate(string[] searchInFolders)
+        public static void CheckReferences(string[] searchInFolders)
         {
+#if UNITY_EDITOR
             HashSet<PhysicMaterial> basePhysicsMaterials =
                 AssetDatabase.FindAssets($"t: {typeof(ExtendedPhysicsMaterial).Name}", searchInFolders)
                 .Select((guid) => AssetDatabase.LoadAssetAtPath<ExtendedPhysicsMaterial>(AssetDatabase.GUIDToAssetPath(guid)).BaseMaterial)
@@ -33,9 +33,9 @@ namespace Template.Physics
                 else
                     physicsMaterial.hideFlags = HideFlags.None;
             }
+#endif
         }
     }
-#endif
 
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
@@ -125,7 +125,7 @@ namespace Template.Physics
         {
             if (_lastBaseMaterial != BaseMaterial)
             {
-                ExtendedPhysicsMaterialReferenceChecker.OnValidate(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
+                ExtendedPhysicsMaterialReferenceChecker.CheckReferences(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
                 _lastBaseMaterial = BaseMaterial;
                 EditorUtility.SetDirty(this);
             }
