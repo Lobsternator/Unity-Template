@@ -14,9 +14,9 @@ namespace Template.Physics
         {
             public Vector2 ContactNormal { get; }
 
-            public CollisionInfo(Collision2D collision)
+            public CollisionInfo(Collision2D collision, Vector2 worldUp)
             {
-                ContactNormal = collision.GetClosestContactNormal(Vector2.up);
+                ContactNormal = collision.GetClosestContactNormal(worldUp);
             }
         }
 
@@ -29,13 +29,15 @@ namespace Template.Physics
         [field: Tooltip("When the velocity is above this threshold the object will be considered to be \"moving\".")]
         [field: SerializeField] public float MinVelocity { get; set; } = 0.1f;
 
+        [field: SerializeField] public WorldUpOverride WorldUpOverride { get; set; } = new WorldUpOverride();
+
         public bool IsMoving { get; private set; }   = false;
         public bool IsGrounded { get; private set; } = false;
         public Vector2 GroundNormal { get; private set; }  = Vector2.up;
         public Vector2 GroundTangent { get; private set; } = Vector2.right;
         public bool HasDoneInitialStateCheck { get; private set; } = false;
 
-        public float GroundSteepness => 1.0f - Mathf.Clamp01(Vector2.Dot(GroundNormal, Vector2.up));
+        public float GroundSteepness => 1.0f - Mathf.Clamp01(Vector2.Dot(GroundNormal, WorldUpOverride.up));
 
         private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
         public ForceGroundedStateMode ForceGroundedState
@@ -118,8 +120,8 @@ namespace Template.Physics
         private void OnBecameAirborn()
         {
             IsGrounded    = false;
-            GroundNormal  = Vector2.up;
-            GroundTangent = Vector2.right;
+            GroundNormal  = WorldUpOverride.up;
+            GroundTangent = WorldUpOverride.right;
             BecameAirborn?.Invoke();
         }
 
@@ -141,7 +143,7 @@ namespace Template.Physics
 
             foreach (CollisionInfo collision in _collisionsToHandle)
             {
-                float steepness = Vector2.Dot(collision.ContactNormal, Vector2.up);
+                float steepness = Vector2.Dot(collision.ContactNormal, WorldUpOverride.up);
 
                 if (steepness > finalSteepness)
                 {
@@ -154,12 +156,12 @@ namespace Template.Physics
             if (_isBelowMaxSteepness)
             {
                 GroundNormal  = finalContactNormal;
-                GroundTangent = Vector3.Cross(finalContactNormal, Vector3.forward);
+                GroundTangent = Vector3.Cross(finalContactNormal, WorldUpOverride.forward);
             }
             else
             {
-                GroundNormal  = Vector2.up;
-                GroundTangent = Vector2.right;
+                GroundNormal  = WorldUpOverride.up;
+                GroundTangent = WorldUpOverride.right;
             }
         }
 
@@ -193,6 +195,7 @@ namespace Template.Physics
         {
             yield return new WaitForFixedUpdate();
 
+            _contactChecker.ClearDeadContacts();
             int touchingColliderCount = _contactChecker.Contacts.Count((c) => c.ContactType == ContactType.Collision);
 
             CollisionChecking();
@@ -221,25 +224,21 @@ namespace Template.Physics
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
-            _collisionsToHandle.Add(new CollisionInfo(collision));
+            _collisionsToHandle.Add(new CollisionInfo(collision, WorldUpOverride.up));
         }
         public void OnCollisionStay2D(Collision2D collision)
         {
-            _collisionsToHandle.Add(new CollisionInfo(collision));
+            _collisionsToHandle.Add(new CollisionInfo(collision, WorldUpOverride.up));
         }
 
         private void OnEnable()
         {
             HasDoneInitialStateCheck = false;
             StartCoroutine(InitialStateCheck());
-
-            _contactChecker.PhysicsFrameProcessed += OnContactCheckerPhysicsFrameProcessed;
         }
         private void OnDisable()
         {
             StopCoroutine(nameof(InitialStateCheck));
-
-            _contactChecker.PhysicsFrameProcessed -= OnContactCheckerPhysicsFrameProcessed;
         }
 
         private void Awake()
@@ -248,7 +247,7 @@ namespace Template.Physics
             _contactChecker = GetComponent<ContactChecker2D>();
         }
 
-        private void OnContactCheckerPhysicsFrameProcessed()
+        private void FixedUpdate()
         {
             if (!HasDoneInitialStateCheck)
                 return;

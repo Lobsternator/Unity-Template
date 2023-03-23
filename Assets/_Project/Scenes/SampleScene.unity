@@ -1306,6 +1306,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxGroundSteepness>k__BackingField: 85
   <MinVelocity>k__BackingField: 0.1
+  <WorldUpOverride>k__BackingField:
+    transform: {fileID: 0}
 --- !u!54 &1278136487
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1756,6 +1758,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxGroundSteepness>k__BackingField: 85
   <MinVelocity>k__BackingField: 0.1
+  <WorldUpOverride>k__BackingField:
+    transform: {fileID: 0}
 --- !u!114 &1803585297
 MonoBehaviour:
   m_ObjectHideFlags: 0

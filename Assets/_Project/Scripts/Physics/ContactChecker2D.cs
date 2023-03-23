@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
+using Template.Core;
 
 namespace Template.Physics
 {
@@ -19,12 +20,27 @@ namespace Template.Physics
 
         public void ClearDeadContacts()
         {
-            for (int i = 0; i < _contacts.Count; i++)
-            {
-                Collider2D collider = _contacts[i].Collider;
+            _contacts.RemoveAll((c) => !c.Collider || !c.Collider.enabled || !c.Collider.gameObject.activeInHierarchy);
+        }
 
-                if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
-                    _contacts.RemoveAt(i--);
+        private IEnumerator ClearDeadContacts_UpdateRoutine()
+        {
+            while (true)
+            {
+                yield return CoroutineUtility.WaitForFrames(1);
+
+                ClearDeadContacts();
+                FrameProcessed?.Invoke();
+            }
+        }
+        private IEnumerator ClearDeadContacts_FixedRoutine()
+        {
+            while (true)
+            {
+                yield return CoroutineUtility.WaitForFixedFrames(1);
+
+                ClearDeadContacts();
+                PhysicsFrameProcessed?.Invoke();
             }
         }
 
@@ -46,17 +62,14 @@ namespace Template.Physics
             _contacts.Remove(new ContactInfo2D(other, ContactType.Trigger));
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            ClearDeadContacts();
-
-            FrameProcessed?.Invoke();
+            StartCoroutine(ClearDeadContacts_UpdateRoutine());
+            StartCoroutine(ClearDeadContacts_FixedRoutine());
         }
-        private void FixedUpdate()
+        private void OnDisable()
         {
-            ClearDeadContacts();
-
-            PhysicsFrameProcessed?.Invoke();
+            StopAllCoroutines();
         }
     }
 }

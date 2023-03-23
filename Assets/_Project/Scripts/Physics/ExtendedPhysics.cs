@@ -99,7 +99,7 @@ namespace Template.Physics
                     throw new System.NotImplementedException();
 
                 float residualBounciness = baseFinalBounciness - extendedFinalBounciness;
-                if (Mathf.Approximately(residualBounciness, 0.0f))
+                if (Mathf.Approximately(residualBounciness, 0.0f) || residualBounciness < 0.0f)
                     continue;
 
                 Vector3 relativeVelocity = otherRigidbody.GetRelativePointVelocity(contact.point);
