@@ -99,11 +99,10 @@ namespace Template.Physics
                     throw new System.NotImplementedException();
 
                 float residualBounciness = baseFinalBounciness - extendedFinalBounciness;
-                if (Mathf.Approximately(residualBounciness, 0.0f) || residualBounciness < 0.0f)
+                if (Mathf.Approximately(residualBounciness, 0.0f))
                     continue;
 
                 Vector3 relativeVelocity = otherRigidbody.GetRelativePointVelocity(contact.point);
-
                 otherRigidbody.AddForceAtPosition(contact.normal * (relativeVelocity.magnitude * residualBounciness * 2.0f), contact.point, ForceMode.VelocityChange);
             }
         }
@@ -119,10 +118,10 @@ namespace Template.Physics
                 Rigidbody rigidbody     = _contactChecker.Contacts[i].Collider.attachedRigidbody;
                 ContactType contactType = _contactChecker.Contacts[i].ContactType;
 
-                if ((contactType == ContactType.Trigger && ignoreTriggerOverlaps) || rigidbody == null || affectedBodies.Contains(rigidbody))
+                if (rigidbody == null || (contactType == ContactType.Trigger && ignoreTriggerOverlaps) || affectedBodies.Contains(rigidbody))
                     continue;
 
-                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag + 1.0f), Time.fixedDeltaTime);
+                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
                 rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicsMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
 
                 affectedBodies.Add(rigidbody);

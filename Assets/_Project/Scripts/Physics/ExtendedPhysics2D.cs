@@ -59,10 +59,10 @@ namespace Template.Physics
                 Rigidbody2D rigidbody   = _contactChecker.Contacts[i].Collider.attachedRigidbody;
                 ContactType contactType = _contactChecker.Contacts[i].ContactType;
 
-                if ((contactType == ContactType.Trigger && ignoreTriggerOverlaps) || rigidbody == null || affectedBodies.Contains(rigidbody))
+                if (rigidbody == null || (contactType == ContactType.Trigger && ignoreTriggerOverlaps) || affectedBodies.Contains(rigidbody))
                     continue;
 
-                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag + 1.0f), Time.fixedDeltaTime);
+                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
                 rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicsMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
 
                 affectedBodies.Add(rigidbody);
