@@ -7,7 +7,7 @@ namespace Template.Core
 {
     public static class CoroutineUtility
     {
-        private static WaitForEndOfFrame _waitForEndOfFrame    = new WaitForEndOfFrame();
+        private static WaitForEndOfFrame _waitForEndOfFrame   = new WaitForEndOfFrame();
         private static WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
         public static IEnumerator WaitForFrames(int frames)

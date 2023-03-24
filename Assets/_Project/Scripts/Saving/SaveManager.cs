@@ -129,10 +129,12 @@ namespace Template.Saving
             {
                 if (!finalSaveData.TryAdd(saveData.Owner.DataKey, saveData.Data))
                 {
+#if UNITY_EDITOR
                     UnityEngine.Object ownerAsObj = saveData.Owner as UnityEngine.Object;
                     string ownerName              = ownerAsObj ? ownerAsObj.name : saveData.Owner.ToString();
 
                     Debug.LogError($"Data key was not valid for object \'{ownerName}\'!", ownerAsObj);
+#endif
                 }
             }
 

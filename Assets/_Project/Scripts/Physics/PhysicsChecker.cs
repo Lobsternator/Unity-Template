@@ -26,7 +26,7 @@ namespace Template.Physics
         [field: Tooltip("When the ground steepness is below this threshold the object will be considered to be \"grounded\".")]
         [field: SerializeField] public float MaxGroundSteepness { get; set; } = 85.0f;
 
-        [field: Tooltip("When the velocity is above this threshold the object will be considered to be \"moving\".")]
+        [field: Tooltip("When the velocity is below this threshold the object will be considered to be \"not moving\".")]
         [field: SerializeField] public float MinVelocity { get; set; } = 0.1f;
 
         [field: SerializeField] public WorldUpOverride WorldUpOverride { get; set; } = new WorldUpOverride();
