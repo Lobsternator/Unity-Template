@@ -10,10 +10,7 @@ namespace Template.Core
     public class ApplicationStateManagerData : PersistentRuntimeObjectData, IStateContainer<ApplicationStateMachine, ApplicationStateBase>
     {
         private Dictionary<Type, ApplicationStateBase> _states;
-        public ReadOnlyDictionary<Type, ApplicationStateBase> States
-        {
-            get => new ReadOnlyDictionary<Type, ApplicationStateBase>(_states);
-        }
+        public ReadOnlyDictionary<Type, ApplicationStateBase> States => new ReadOnlyDictionary<Type, ApplicationStateBase>(_states);
 
         [field: SerializeField] public ApplicationStateEntry ApplicationStateTest { get; set; } = new ApplicationStateEntry();
         [field: SerializeField] public ApplicationStateQuit ApplicationStateQuit { get; set; }  = new ApplicationStateQuit();
