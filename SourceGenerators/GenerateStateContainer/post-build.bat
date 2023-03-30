@@ -1,0 +1,1 @@
+copy %1 ..\..\Assets\_Project\Libraries\%~n1%~x1

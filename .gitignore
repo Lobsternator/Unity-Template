@@ -10,13 +10,15 @@
 ![Pp]roject[Ss]ettings/
 ![Pp]ackages/
 
+[Pp]ackages/*
+![Pp]ackages/manifest.json
+![Pp]ackages/manifest_full.json
+
 [Pp]roject[Ss]ettings/*
 ![Pp]roject[Ss]ettings/ProjectVersion.txt
 ![Pp]roject[Ss]ettings/TagManager.asset
 
-[Pp]ackages/*
-![Pp]ackages/manifest.json
-![Pp]ackages/manifest_full.json
+![Ss]ource[Gg]enerators/
 
 ### FMOD IGNORE
 
