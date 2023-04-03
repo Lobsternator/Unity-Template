@@ -54,6 +54,9 @@ namespace GenerateStateContainer
             if (!(context.SyntaxContextReceiver is SyntaxReceiver receiver))
                 return;
 
+            foreach (var states in receiver.States.Values)
+                states.Sort((s1, s2) => s1.StateNameWithoutNamespace.CompareTo(s2.StateNameWithoutNamespace));
+
             for (int i = 0; i < receiver.StateContainers.Count; i++)
             {
                 StateContainerSyntax   stateContainerSyntax = receiver.StateContainers[i];
