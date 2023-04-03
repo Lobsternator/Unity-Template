@@ -30,7 +30,13 @@ namespace GenerateStateContainer
 
     internal static class GeneratorUtility
     {
-        public static string BaseNamespace { get; } = "Template";
+        public const string BaseNamespaceName                      = "Template.Core";
+        public const string ContainerAttributeNameWithoutNamespace = "GenerateStateContainer";
+        public const string ContainerAttributeName                 = BaseNamespaceName + "." + ContainerAttributeNameWithoutNamespace;
+        public const string BaseContainerNameWithoutNamespace      = "IStateContainer";
+        public const string BaseContainerName                      = BaseNamespaceName + "." + BaseContainerNameWithoutNamespace;
+        public const string BaseStateNameWithoutNamespace          = "State";
+        public const string BaseStateName                          = BaseNamespaceName + "." + BaseStateNameWithoutNamespace;
 
         public static bool TryGetContainingNamespace(INamedTypeSymbol typeSymbol, out string containingNamespace)
         {
@@ -70,9 +76,13 @@ namespace GenerateStateContainer
 
                 StringBuilder sourceBuilder = new StringBuilder();
                 sourceBuilder.AppendLine("#pragma warning disable CS0105 // Using directive appeared previously in this namespace");
+                sourceBuilder.AppendLine("// Inherited using directives");
                 foreach (string usingDirective in usingDirectives)
                     sourceBuilder.AppendLine(usingDirective);
 
+                sourceBuilder.AppendLine();
+
+                sourceBuilder.AppendLine("// Required using directives");
                 sourceBuilder.AppendLine("using System;");
                 sourceBuilder.AppendLine("using System.Collections.Generic;");
                 sourceBuilder.AppendLine("using System.Collections.ObjectModel;");
@@ -201,11 +211,12 @@ namespace GenerateStateContainer
             sourceBuilder.AppendLine("using System;");
             sourceBuilder.AppendLine();
             sourceBuilder.Append("namespace ");
-            sourceBuilder.Append(GeneratorUtility.BaseNamespace);
-            sourceBuilder.AppendLine(".Core");
+            sourceBuilder.AppendLine(GeneratorUtility.BaseNamespaceName);
             sourceBuilder.AppendLine("{");
             sourceBuilder.AppendLine("\t[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
-            sourceBuilder.AppendLine("\tpublic class GenerateStateContainerAttribute : Attribute");
+            sourceBuilder.Append("\tpublic class ");
+            sourceBuilder.Append(GeneratorUtility.ContainerAttributeNameWithoutNamespace);
+            sourceBuilder.AppendLine("Attribute : Attribute");
             sourceBuilder.AppendLine("\t{");
             sourceBuilder.AppendLine();
             sourceBuilder.AppendLine("\t}");
@@ -251,10 +262,10 @@ namespace GenerateStateContainer
             if (context.SemanticModel.GetDeclaredSymbol(classDeclSyntax).IsAbstract)
                 return;
 
-            if (!HasAttribute(classDeclSyntax, "GenerateStateContainer"))
+            if (!HasAttribute(classDeclSyntax, GeneratorUtility.ContainerAttributeNameWithoutNamespace))
                 return;
 
-            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, "IStateContainer<", true, out var baseTypeSymbol))
+            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, $"{GeneratorUtility.BaseContainerNameWithoutNamespace}<", true, out var baseTypeSymbol))
                 return;
 
             string[]             typeArgumentNames      = GetTypeArgumentNames(baseTypeSymbol, true);
@@ -263,7 +274,7 @@ namespace GenerateStateContainer
             stateContainerSyntax.SyntaxTree             = classDeclSyntax.SyntaxTree;
             stateContainerSyntax.ClassDeclarationSyntax = classDeclSyntax;
             stateContainerSyntax.StateMachineName       = typeArgumentNames[0];
-            stateContainerSyntax.BaseStateName          = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseNamespace}.Core.State<{stateContainerSyntax.StateMachineName}>";
+            stateContainerSyntax.BaseStateName          = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseStateName}<{stateContainerSyntax.StateMachineName}>";
 
             AddStateContainer(stateContainerSyntax);
         }
@@ -278,13 +289,13 @@ namespace GenerateStateContainer
             if (classDeclTypeSymbol.IsAbstract)
                 return;
 
-            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, "State<", true, out var baseTypeSymbol))
+            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, $"{GeneratorUtility.BaseStateNameWithoutNamespace}<", true, out var baseTypeSymbol))
                 return;
 
             string[]    typeArgumentNames = GetTypeArgumentNames(baseTypeSymbol, true);
             StateSyntax stateSyntax       = new StateSyntax();
             stateSyntax.StateMachineName  = typeArgumentNames[0];
-            stateSyntax.BaseStateName     = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseNamespace}.Core.State<{stateSyntax.StateMachineName}>";
+            stateSyntax.BaseStateName     = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseStateName}<{stateSyntax.StateMachineName}>";
 
             bool hasNamespace                     = GeneratorUtility.TryGetContainingNamespace(classDeclTypeSymbol, out var containingNamespace);
             stateSyntax.StateName                 = hasNamespace ? containingNamespace + "." + classDeclSyntax.Identifier.ToString() : classDeclSyntax.Identifier.ToString();
