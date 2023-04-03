@@ -25,24 +25,30 @@ namespace GenerateStateContainer
         public string StateMachineName { get; set; }
         public string BaseStateName { get; set; }
         public string StateName { get; set; }
+        public string StateNameWithoutNamespace { get; set; }
+    }
+
+    internal static class GeneratorUtility
+    {
+        public static string BaseNamespace { get; } = "Template";
+
+        public static bool TryGetContainingNamespace(INamedTypeSymbol typeSymbol, out string containingNamespace)
+        {
+            containingNamespace = string.Empty;
+            if (typeSymbol.ContainingNamespace is null)
+                return false;
+
+            containingNamespace = string.Join(".", typeSymbol.ContainingNamespace.ConstituentNamespaces);
+            if (containingNamespace == "<global namespace>")
+                return false;
+
+            return true;
+        }
     }
 
     [Generator]
     public class StateContainerGenerator : ISourceGenerator
     {
-        private const string _attributeText = @"
-using System;
-
-namespace Template.Core
-{
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class GenerateStateContainerAttribute : Attribute
-    {
-
-    }
-}
-";
-
         public void Execute(GeneratorExecutionContext context)
         {
             if (!(context.SyntaxContextReceiver is SyntaxReceiver receiver))
@@ -50,23 +56,175 @@ namespace Template.Core
 
             for (int i = 0; i < receiver.StateContainers.Count; i++)
             {
-                StateContainerSyntax   stateContainerSyntax   = receiver.StateContainers[i];
-                SemanticModel          semanticModel          = stateContainerSyntax.SemanticModel;
-                SyntaxTree             syntaxTree             = semanticModel.SyntaxTree;
-                ClassDeclarationSyntax classDeclSyntax        = stateContainerSyntax.ClassDeclarationSyntax;
-                string                 stateMachineName       = stateContainerSyntax.StateMachineName;
-                string                 baseStateName          = stateContainerSyntax.BaseStateName;
-                INamedTypeSymbol       classDeclTypeSymbol    = semanticModel.GetDeclaredSymbol(classDeclSyntax);
-                string                 constituentNamespaces  = string.Join("", classDeclTypeSymbol.ContainingNamespace.ConstituentNamespaces);
+                StateContainerSyntax   stateContainerSyntax = receiver.StateContainers[i];
+                SemanticModel          semanticModel        = stateContainerSyntax.SemanticModel;
+                ClassDeclarationSyntax classDeclSyntax      = stateContainerSyntax.ClassDeclarationSyntax;
+                string                 stateMachineName     = stateContainerSyntax.StateMachineName;
+                string                 baseStateName        = stateContainerSyntax.BaseStateName;
+                INamedTypeSymbol       classDeclTypeSymbol  = semanticModel.GetDeclaredSymbol(classDeclSyntax);
+                string[]               usingDirectives      = GetUsingDirectives(stateContainerSyntax.SyntaxTree);
+                int                    indentationLevel     = 0;
 
-                File.WriteAllText($"C:\\Diagnosis\\debug{i}.txt", string.Join("\n", receiver.States[stateMachineName].Select((s) => s.StateName)));
+                StringBuilder sourceBuilder = new StringBuilder();
+                sourceBuilder.AppendLine("#pragma warning disable CS0105 // Using directive appeared previously in this namespace");
+                foreach (string usingDirective in usingDirectives)
+                    sourceBuilder.AppendLine(usingDirective);
+
+                sourceBuilder.AppendLine("using System;");
+                sourceBuilder.AppendLine("using System.Collections.Generic;");
+                sourceBuilder.AppendLine("using System.Collections.ObjectModel;");
+                sourceBuilder.AppendLine("using UnityEngine;");
+                sourceBuilder.AppendLine("#pragma warning restore CS0105 // Using directive appeared previously in this namespace");
+
+                if (usingDirectives.Length > 0)
+                    sourceBuilder.AppendLine();
+
+                bool hasNamespace = GeneratorUtility.TryGetContainingNamespace(classDeclTypeSymbol, out var containingNamespace);
+                if (hasNamespace)
+                {
+                    sourceBuilder.Append("namespace ");
+                    sourceBuilder.AppendLine(containingNamespace);
+                    sourceBuilder.AppendLine("{");
+
+                    indentationLevel++;
+                }
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append(string.Join(" ", classDeclSyntax.Modifiers));
+                sourceBuilder.Append(" ");
+                sourceBuilder.Append(classDeclSyntax.Keyword);
+                sourceBuilder.Append(" ");
+                sourceBuilder.Append(classDeclSyntax.Identifier);
+                sourceBuilder.Append(classDeclSyntax.TypeParameterList);
+                if (!(classDeclSyntax.BaseList is null))
+                {
+                    sourceBuilder.Append(" ");
+                    sourceBuilder.Append(classDeclSyntax.BaseList);
+                }
+                if (classDeclSyntax.ConstraintClauses.Count > 0)
+                {
+                    sourceBuilder.Append(" ");
+                    sourceBuilder.Append(string.Join(" ", classDeclSyntax.ConstraintClauses));
+                }
+
+                sourceBuilder.AppendLine();
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.AppendLine("{");
+                indentationLevel++;
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append("private Dictionary<Type, ");
+                sourceBuilder.Append(baseStateName);
+                sourceBuilder.AppendLine("> _states;");
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append("public ReadOnlyDictionary<Type, ");
+                sourceBuilder.Append(baseStateName);
+                sourceBuilder.AppendLine("> States { get; }");
+
+                sourceBuilder.AppendLine();
+
+                foreach (StateSyntax stateSyntax in receiver.States[stateMachineName])
+                {
+                    AppendIndentation(sourceBuilder, indentationLevel);
+                    sourceBuilder.Append("[field: SerializeField] public ");
+                    sourceBuilder.Append(stateSyntax.StateName);
+                    sourceBuilder.Append(" ");
+                    sourceBuilder.Append(stateSyntax.StateNameWithoutNamespace);
+                    sourceBuilder.Append(" { get; private set; } = new ");
+                    sourceBuilder.Append(stateSyntax.StateName);
+                    sourceBuilder.AppendLine("();");
+                }
+
+                sourceBuilder.AppendLine();
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append("public ");
+                sourceBuilder.Append(classDeclSyntax.Identifier.ToString());
+                sourceBuilder.AppendLine("()");
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.AppendLine("{");
+                indentationLevel++;
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append("_states = new Dictionary<Type, ");
+                sourceBuilder.Append(baseStateName);
+                sourceBuilder.Append(">(");
+                sourceBuilder.Append(receiver.States[stateMachineName].Count);
+                sourceBuilder.Append(")");
+                sourceBuilder.AppendLine();
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.AppendLine("{");
+                indentationLevel++;
+
+                foreach (StateSyntax stateSyntax in receiver.States[stateMachineName])
+                {
+                    AppendIndentation(sourceBuilder, indentationLevel);
+                    sourceBuilder.Append("{ typeof(");
+                    sourceBuilder.Append(stateSyntax.StateName);
+                    sourceBuilder.Append("), ");
+                    sourceBuilder.Append(stateSyntax.StateNameWithoutNamespace);
+                    sourceBuilder.AppendLine(" },");
+                }
+
+                indentationLevel--;
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.AppendLine("};");
+
+                sourceBuilder.AppendLine();
+
+                AppendIndentation(sourceBuilder, indentationLevel);
+                sourceBuilder.Append("States = new ReadOnlyDictionary<Type, ");
+                sourceBuilder.Append(baseStateName);
+                sourceBuilder.AppendLine(">(_states);");
+
+                for (int j = indentationLevel; j > 0; j--)
+                {
+                    AppendIndentation(sourceBuilder, j - 1);
+                    sourceBuilder.AppendLine("}");
+                }
+
+                string sourceName = hasNamespace ? containingNamespace + "." + classDeclSyntax.Identifier.ToString() : classDeclSyntax.Identifier.ToString();
+                context.AddSource($"{sourceName}_g.cs", SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
+
+                //File.WriteAllText($"C:\\Diagnosis\\StateContainer_{sourceName}.txt", string.Join("\n", sourceBuilder.ToString()));
             }
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            context.RegisterForPostInitialization(i => i.AddSource("GenerateStateContainerAttribute_g.cs", _attributeText));
+            StringBuilder sourceBuilder = new StringBuilder();
+            sourceBuilder.AppendLine("using System;");
+            sourceBuilder.AppendLine();
+            sourceBuilder.Append("namespace ");
+            sourceBuilder.Append(GeneratorUtility.BaseNamespace);
+            sourceBuilder.AppendLine(".Core");
+            sourceBuilder.AppendLine("{");
+            sourceBuilder.AppendLine("\t[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
+            sourceBuilder.AppendLine("\tpublic class GenerateStateContainerAttribute : Attribute");
+            sourceBuilder.AppendLine("\t{");
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine("\t}");
+            sourceBuilder.AppendLine("}");
+
+            context.RegisterForPostInitialization(i => i.AddSource("GenerateStateContainerAttribute_g.cs", sourceBuilder.ToString()));
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+        }
+
+        private string[] GetUsingDirectives(SyntaxTree syntaxTree)
+        {
+            return syntaxTree
+                .GetRoot()
+                .DescendantNodesAndSelf()
+                .Where((n) => n is UsingDirectiveSyntax)
+                .Select((n) => n.ToString())
+                .ToArray();
+        }
+
+        private void AppendIndentation(StringBuilder stringBuilder, int indentation)
+        {
+            for (int i = 0; i < indentation; i++) stringBuilder.Append("\t");
         }
     }
 
@@ -102,7 +260,7 @@ namespace Template.Core
             stateContainerSyntax.SyntaxTree             = classDeclSyntax.SyntaxTree;
             stateContainerSyntax.ClassDeclarationSyntax = classDeclSyntax;
             stateContainerSyntax.StateMachineName       = typeArgumentNames[0];
-            stateContainerSyntax.BaseStateName          = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"State<{stateContainerSyntax.StateMachineName}>";
+            stateContainerSyntax.BaseStateName          = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseNamespace}.Core.State<{stateContainerSyntax.StateMachineName}>";
 
             AddStateContainer(stateContainerSyntax);
         }
@@ -112,8 +270,9 @@ namespace Template.Core
             if (!(context.Node is ClassDeclarationSyntax))
                 return;
 
-            ClassDeclarationSyntax classDeclSyntax = (ClassDeclarationSyntax)context.Node;
-            if (context.SemanticModel.GetDeclaredSymbol(classDeclSyntax).IsAbstract)
+            ClassDeclarationSyntax classDeclSyntax     = (ClassDeclarationSyntax)context.Node;
+            INamedTypeSymbol       classDeclTypeSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclSyntax);
+            if (classDeclTypeSymbol.IsAbstract)
                 return;
 
             if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, "State<", true, out var baseTypeSymbol))
@@ -122,8 +281,11 @@ namespace Template.Core
             string[]    typeArgumentNames = GetTypeArgumentNames(baseTypeSymbol, true);
             StateSyntax stateSyntax       = new StateSyntax();
             stateSyntax.StateMachineName  = typeArgumentNames[0];
-            stateSyntax.BaseStateName     = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"State<{stateSyntax.StateMachineName}>";
-            stateSyntax.StateName         = classDeclSyntax.Identifier.ToString();
+            stateSyntax.BaseStateName     = typeArgumentNames.Length > 1 ? typeArgumentNames[1] : $"{GeneratorUtility.BaseNamespace}.Core.State<{stateSyntax.StateMachineName}>";
+
+            bool hasNamespace                     = GeneratorUtility.TryGetContainingNamespace(classDeclTypeSymbol, out var containingNamespace);
+            stateSyntax.StateName                 = hasNamespace ? containingNamespace + "." + classDeclSyntax.Identifier.ToString() : classDeclSyntax.Identifier.ToString();
+            stateSyntax.StateNameWithoutNamespace = classDeclSyntax.Identifier.ToString();
 
             AddState(stateSyntax);
         }
@@ -169,10 +331,6 @@ namespace Template.Core
             baseTypeSymbol = null;
             return false;
         }
-        private bool IsDerivedFrom(INamedTypeSymbol typeSymbol, string targetType, bool includeNamespace)
-        {
-            return IsDerivedFrom(typeSymbol, targetType, includeNamespace, out var _);
-        }
 
         private string GetFullTypeName(INamedTypeSymbol typeSymbol, bool includeNamespace)
         {
@@ -197,6 +355,7 @@ namespace Template.Core
                     return fullArgumentName;
 
                 return fullArgumentName.Substring(fullArgumentName.LastIndexOf('.') + 1);
+
             }).ToArray();
         }
 
