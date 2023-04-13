@@ -16,11 +16,11 @@ namespace Template.Gameplay
 
         public SaveData GetSaveData()
         {
-            SaveData saveData = new SaveData(this);
+            SerializableObjectDataContainer dataContainer = new SerializableObjectDataContainer();
 
-            saveData.Data.AddItem(nameof(test), test);
+            dataContainer.AddItem(nameof(test), test);
 
-            return saveData;
+            return new SaveData(this, dataContainer);
         }
         public void LoadSaveData(ReadOnlyDictionary<DataKey, SerializableObjectDataContainer> data)
         {

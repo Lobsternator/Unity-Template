@@ -10,20 +10,20 @@ namespace Template.Saving.Serialization
 
         public bool AddItem(string itemName, object itemValue)
         {
-            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
-
             if (_items.ContainsKey(itemName))
                 return false;
+
+            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
 
             _items.Add(itemName, itemValue);
             return true;
         }
         public bool SetItem(string itemName, object itemValue)
         {
-            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
-
             if (!_items.ContainsKey(itemName))
                 return false;
+
+            SerializationUtility.TryConvertToKnownSerializableType(itemValue, itemValue.GetType(), out itemValue);
 
             _items[itemName] = itemValue;
             return true;
