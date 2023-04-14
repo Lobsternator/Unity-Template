@@ -72,7 +72,7 @@ namespace Template.Core
             }
             else if (hitstopInteraction == HitstopInteraction.Cancel)
             {
-                StopCoroutine(nameof(UpdateHitstop));
+                StopAllCoroutines();
                 _hitstop     = null;
                 newTimeScale = timeScale;
                 HitstopEnded?.Invoke();
@@ -124,10 +124,12 @@ namespace Template.Core
 
         public void DoHitstop(HitstopSettings hitstopSettings)
         {
+            CancelHitstop();
             DoHitstop_Internal(hitstopSettings.duration, hitstopSettings.timeScaleCurve);
         }
         public void DoHitstop(float duration, float timeScale)
         {
+            CancelHitstop();
             DoHitstop_Internal(duration, AnimationCurve.Constant(0, 1.0f, timeScale));
         }
 
