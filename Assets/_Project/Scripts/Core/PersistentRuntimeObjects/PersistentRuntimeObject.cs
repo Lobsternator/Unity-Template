@@ -31,7 +31,7 @@ namespace Template.Core
 
         protected virtual void Awake()
         {
-            PersistentData = PersistentRuntimeObjectUtility.GetPersistentData<TData>();
+            PersistentData = AssetUtility.GetSingletonAsset<TData>();
             if (!PersistentData)
             {
                 Debug.LogError($"Could not find PersistentRuntimeObjectData \'{typeof(TData).Name}\'!", this);
@@ -44,7 +44,7 @@ namespace Template.Core
         }
     }
 
-    public abstract class PersistentRuntimeSingleton<TSingleton> : Singleton<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, IPersistentRuntimeObject
+    public abstract class PersistentRuntimeSingleton<TSingleton> : SingletonBehaviour<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, IPersistentRuntimeObject
     {
         protected static void CreateObjectInstance(string objectName)
         {
@@ -69,7 +69,7 @@ namespace Template.Core
             if (IsDuplicate)
                 return;
 
-            PersistentData = PersistentRuntimeObjectUtility.GetPersistentData<TData>();
+            PersistentData = AssetUtility.GetSingletonAsset<TData>();
             if (!PersistentData)
             {
                 Debug.LogError($"Could not find PersistentRuntimeObjectData \'{typeof(TData).Name}\'!", this);

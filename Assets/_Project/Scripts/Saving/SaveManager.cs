@@ -24,7 +24,7 @@ namespace Template.Saving
 
         public static string GetSaveFileRegexPattern()
         {
-            SaveManagerData persistentData = PersistentRuntimeObjectUtility.GetPersistentData<SaveManagerData>();
+            SaveManagerData persistentData = AssetUtility.GetSingletonAsset<SaveManagerData>();
             string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
             string saveFileExt             = Path.GetExtension(persistentData.savePath);
             string period                  = "";
@@ -45,7 +45,7 @@ namespace Template.Saving
         }
         public static string GetSaveFileRegexPattern(int saveSlot)
         {
-            SaveManagerData persistentData = PersistentRuntimeObjectUtility.GetPersistentData<SaveManagerData>();
+            SaveManagerData persistentData = AssetUtility.GetSingletonAsset<SaveManagerData>();
             string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
             string saveFileExt             = Path.GetExtension(persistentData.savePath);
             string period                  = "";

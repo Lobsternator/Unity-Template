@@ -21,7 +21,9 @@ namespace Template.Scenes
 
         static ExtendedSceneManager()
         {
-            PersistentData = PersistentRuntimeObjectUtility.GetPersistentData<ExtendedSceneManagerData>();
+            PersistentData = AssetUtility.GetSingletonAsset<ExtendedSceneManagerData>();
+            if (!PersistentData)
+                Debug.LogError($"Could not find singleton asset of type \'{typeof(ExtendedSceneManagerData).Name}\'!");
 
             UnitySceneManager.sceneLoaded   -= OnSceneLoaded;
             UnitySceneManager.sceneLoaded   -= OnSceneLoaded;

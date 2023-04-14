@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Template
+namespace Template.Physics
 {
     [Serializable]
     public class WorldUpOverride

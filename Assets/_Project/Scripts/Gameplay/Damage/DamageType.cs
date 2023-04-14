@@ -8,8 +8,6 @@ namespace Template.Gameplay
         public float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser);
     }
 
-    public sealed class BuiltinDamageTypeAttribute : Attribute { }
-
     [Serializable]
     public abstract class DamageType : ScriptableObject, IDamageType
     {

@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Template.Core;
 using UnityEngine;
 
-namespace Template
+namespace Template.Core
 {
     public class AsyncOperationWrapper<TWrapper> : CustomYieldInstruction where TWrapper : CustomYieldInstruction
     {

@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using Template.Core;
-using System.Text;
 
 namespace Template.Saving
 {
-    [CreateAssetMenu(fileName = "SaveManagerData", menuName = "PersistentRuntimeObjectData/SaveManager")]
+    [CreateAssetMenu(fileName = "SaveManagerData", menuName = "Singleton/PersistentRuntimeObjectData/SaveManager")]
     public class SaveManagerData : PersistentRuntimeObjectData
     {
         public string savePath;

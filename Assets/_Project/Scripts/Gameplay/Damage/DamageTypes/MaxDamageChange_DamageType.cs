@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Template.Core;
 
 namespace Template.Gameplay
 {
-    [BuiltinDamageType]
     [CreateAssetMenu(fileName = "MaxDamageChange", menuName = "Damage/DamageTypes/Builtin/MaxDamageChange")]
-    public sealed class MaxDamageChange_DamageType : DamageType
+    public sealed class MaxDamageChange_DamageType : DamageBoundsChange_DamageType
     {
         public override float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {

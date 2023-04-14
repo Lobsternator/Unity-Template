@@ -2,7 +2,6 @@
     "name": "_Project",
     "rootNamespace": "Template",
     "references": [
-        "GUID:a834a447192ec904dac8a26a278922a9",
         "GUID:0c752da273b17c547ae705acf0f2adf2"
     ],
     "includePlatforms": [],

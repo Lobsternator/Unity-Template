@@ -49,10 +49,10 @@ namespace Template.Saving
         [MenuItem("Tools/Saving/Clear save data")]
         public static void ClearSaveData()
         {
-            SaveManagerData saveManagerData = PersistentRuntimeObjectUtility.GetPersistentData<SaveManagerData>();
+            SaveManagerData saveManagerData = AssetUtility.GetSingletonAsset<SaveManagerData>();
             if (!saveManagerData)
             {
-                Debug.LogError($"Could not find PersistentRuntimeObjectData \'{typeof(SaveManagerData).Name}\'!");
+                Debug.LogError($"Could not find singleton asset of type \'{typeof(SaveManagerData).Name}\'!");
                 return;
             }
 

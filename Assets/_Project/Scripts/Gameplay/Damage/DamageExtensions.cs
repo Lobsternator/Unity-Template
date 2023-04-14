@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Template.Gameplay;
 using UnityEngine;
 
-namespace Template
+namespace Template.Gameplay
 {
     public static class DamageExtensions
     {

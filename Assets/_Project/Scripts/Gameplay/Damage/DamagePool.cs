@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Template.Core;
 
 namespace Template.Gameplay
 {
@@ -167,7 +168,7 @@ namespace Template.Gameplay
 
             if (!Mathf.Approximately(_oldDamage, Damage))
             {
-                var eventArgs = new DamageEventArgs(_oldDamage, Damage, DamageUtility.GetBuiltinDamageType<MinDamageChange_DamageType>(), this, eventInstigator, damageCauser);
+                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<MinDamageChange_DamageType>(), this, eventInstigator, damageCauser);
                 _oldDamage    = Damage;
 
                 DamageChanged?.Invoke(eventArgs);
@@ -194,7 +195,7 @@ namespace Template.Gameplay
 
             if (!Mathf.Approximately(_oldDamage, Damage))
             {
-                var eventArgs = new DamageEventArgs(_oldDamage, Damage, DamageUtility.GetBuiltinDamageType<MaxDamageChange_DamageType>(), this, eventInstigator, damageCauser);
+                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<MaxDamageChange_DamageType>(), this, eventInstigator, damageCauser);
                 _oldDamage    = Damage;
 
                 DamageChanged?.Invoke(eventArgs);
@@ -208,9 +209,9 @@ namespace Template.Gameplay
 
         public void Validate()
         {
-            SetMinDamage(MinDamage, DamageUtility.GetBuiltinDamageType<ValidateMinDamage_MinDamageType>(), null, null);
-            SetMaxDamage(MaxDamage, DamageUtility.GetBuiltinDamageType<ValidateMaxDamage_MaxDamageType>(), null, null);
-            SetDamage(Damage, DamageUtility.GetBuiltinDamageType<ValidateDamage_DamageType>(), null, null);
+            SetMinDamage(MinDamage, AssetUtility.GetSingletonAsset<ValidateMinDamage_MinDamageType>(), null, null);
+            SetMaxDamage(MaxDamage, AssetUtility.GetSingletonAsset<ValidateMaxDamage_MaxDamageType>(), null, null);
+            SetDamage(Damage, AssetUtility.GetSingletonAsset<ValidateDamage_DamageType>(), null, null);
         }
     }
 }
