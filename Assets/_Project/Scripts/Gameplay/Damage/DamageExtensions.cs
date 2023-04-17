@@ -6,7 +6,7 @@ namespace Template.Gameplay
 {
     public static class DamageExtensions
     {
-        public static float GetDamageDifference<TDamageType>(this IDamageEventArgs<TDamageType> damageEventArgs) where TDamageType : IDamageType
+        public static float GetDamageDifference(this DamageEventArgs damageEventArgs)
         {
             return damageEventArgs.NewDamage - damageEventArgs.OldDamage;
         }

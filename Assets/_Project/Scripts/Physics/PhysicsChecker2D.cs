@@ -193,7 +193,7 @@ namespace Template.Physics
 
         private IEnumerator InitialStateCheck()
         {
-            yield return new WaitForFixedUpdate();
+            yield return CoroutineUtility.WaitForFixedFrames(1);
 
             _contactChecker.ClearDeadContacts();
             int touchingColliderCount = _contactChecker.Contacts.Count((c) => c.ContactType == ContactType.Collision);

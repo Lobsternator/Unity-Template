@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 #if UNITY_EDITOR
 using UnityEditor;
+using Unity.EditorCoroutines.Editor;
 #endif
 using UnityEngine;
 
@@ -53,7 +54,7 @@ namespace Template.Core
     }
 
 #if UNITY_EDITOR
-    public static class SingletonAssetValidator
+    public class SingletonAssetValidator : AssetPostprocessor
     {
         private static readonly Type[] _assemblyTypes = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
 
@@ -61,7 +62,7 @@ namespace Template.Core
         {
             UnityEngine.Object[] foundAssets = Resources.LoadAll("", type);
             if (foundAssets.Length == 0)
-                Debug.LogError($"Could not find a singleton asset of type \'{type.Name}\', this is not allowed!");
+                Debug.LogError($"Could not find singleton asset of type \'{type.Name}\' in resources, a singleton asset must always exist!");
 
             else if (foundAssets.Length > 1)
             {
@@ -69,12 +70,10 @@ namespace Template.Core
                 for (int i = 0; i < foundAssets.Length; i++)
                     assetsString += $"\n{AssetDatabase.GetAssetPath(foundAssets[i])}";
 
-                Debug.LogError($"Found multiple singleton assets of type \'{type.Name}\', this is not allowed!{assetsString}");
+                Debug.LogError($"Found multiple singleton assets of type \'{type.Name}\' in resources, only one singleton asset can exist at once!{assetsString}");
             }
         }
-
-        [InitializeOnLoadMethod]
-        private static void ValidateAssetCount_OnLoad()
+        private static void ValidateAllAssetCounts()
         {
             foreach (Type type in _assemblyTypes)
             {
@@ -85,6 +84,23 @@ namespace Template.Core
                 if (isAsset && hasAttribute && !isAbstract)
                     ValidateAssetCount(type);
             }
+        }
+
+        [InitializeOnLoadMethod]
+        private static void ValidateAllAssetCounts_OnLoad()
+        {
+            EditorCoroutineUtility.StartCoroutineOwnerless(ValidateAllAssetCounts_Delayed());
+        }
+
+        private static IEnumerator ValidateAllAssetCounts_Delayed()
+        {
+            yield return null;
+            ValidateAllAssetCounts();
+        }
+
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            ValidateAllAssetCounts();
         }
     }
 #endif

@@ -6,7 +6,7 @@ using Template.Core;
 namespace Template.Scenes
 {
     [SingletonAsset]
-    [CreateAssetMenu(fileName = "SceneManagerData", menuName = "Singleton/Scene/SceneManagerData")]
+    [CreateAssetMenu(fileName = "ExtendedSceneManagerData", menuName = "Singleton/Scene/ExtendedSceneManagerData")]
     public class ExtendedSceneManagerData : ScriptableObject
     {
         public string pathToSceneFolder;

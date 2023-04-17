@@ -14,13 +14,13 @@ namespace Template.Core
         public static TSingleton GetSingletonAsset<TSingleton>() where TSingleton : ScriptableObject
         {
             if (typeof(TSingleton).GetCustomAttribute(typeof(SingletonAssetAttribute), true) is null)
-                throw new System.ArgumentException($"{typeof(TSingleton).Name} does not have the ncessecary attribute: \'{nameof(SingletonAssetAttribute)}\'!");
+                throw new System.ArgumentException($"{typeof(TSingleton).Name} does not have the necessary attribute: \'{nameof(SingletonAssetAttribute)}\'!");
 
             if (_cachedSingletonAssets.TryGetValue(typeof(TSingleton), out var singletonAsset))
             {
                 if (!singletonAsset)
                 {
-                    singletonAsset = Resources.LoadAll("", typeof(TSingleton)).FirstOrDefault();
+                    singletonAsset                             = Resources.LoadAll("", typeof(TSingleton)).FirstOrDefault();
                     _cachedSingletonAssets[typeof(TSingleton)] = singletonAsset;
                 }
 
