@@ -6,7 +6,7 @@ using Template.Core;
 namespace Template.Audio
 {
     [CreateAssetMenu(fileName = "AudioManagerData", menuName = "Singleton/PersistentRuntimeObjectData/AudioManager")]
-    public class AudioManagerData : PersistentRuntimeObjectData
+    public class AudioManagerData : PersistentRuntimeObjectData<AudioManagerData>
     {
         public GameObject bankLoaderPrefab;
         public GameObject audioObjectPrefab;

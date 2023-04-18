@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 using Unity.EditorCoroutines.Editor;
@@ -10,8 +11,10 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    public interface ISingleton { }
+
     [DisallowMultipleComponent]
-    public abstract class SingletonBehaviour<TSingleton> : MonoBehaviour where TSingleton : MonoBehaviour
+    public abstract class SingletonBehaviour<TSingleton> : MonoBehaviour, ISingleton where TSingleton : MonoBehaviour, ISingleton
     {
         private static TSingleton _instance;
         public static TSingleton Instance
@@ -50,7 +53,39 @@ namespace Template.Core
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class SingletonAssetAttribute : Attribute
     {
+        private readonly bool autoCreate;
 
+        public SingletonAssetAttribute()
+        {
+            autoCreate = false;
+        }
+        public SingletonAssetAttribute(bool autoCreate)
+        {
+            this.autoCreate = autoCreate;
+        }
+
+        public bool AutoCreate => autoCreate;
+    }
+
+    [SingletonAsset]
+    public abstract class SingletonAsset<TSingleton> : ScriptableObject, ISingleton where TSingleton : ScriptableObject, ISingleton
+    {
+        private static TSingleton _instance;
+        public static TSingleton Instance
+        {
+            get
+            {
+                if (!_instance)
+                    _instance = AssetUtility.GetSingletonAsset<TSingleton>();
+
+                return _instance;
+            }
+        }
+
+        private void Awake()
+        {
+            _instance = AssetUtility.GetSingletonAsset<TSingleton>();
+        }
     }
 
 #if UNITY_EDITOR
@@ -58,11 +93,19 @@ namespace Template.Core
     {
         private static readonly Type[] _assemblyTypes = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
 
-        private static void ValidateAssetCount(Type type)
+        private static void ValidateAssetCount(Type type, SingletonAssetAttribute attribute)
         {
             UnityEngine.Object[] foundAssets = Resources.LoadAll("", type);
             if (foundAssets.Length == 0)
-                Debug.LogError($"Could not find singleton asset of type \'{type.Name}\' in resources, a singleton asset must always exist!");
+            {
+                if (attribute.AutoCreate)
+                {
+                    string assetPath = Path.Combine(PersistentPathData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
+                    AssetDatabase.CreateAsset(ScriptableObject.CreateInstance(type), assetPath);
+                }
+                else
+                    Debug.LogError($"Could not find singleton asset of type \'{type.Name}\' in resources, a singleton asset must always exist!");
+            }
 
             else if (foundAssets.Length > 1)
             {
@@ -77,12 +120,13 @@ namespace Template.Core
         {
             foreach (Type type in _assemblyTypes)
             {
+                var  attribute    = type.GetCustomAttribute<SingletonAssetAttribute>(true);
                 bool isAsset      = type.IsSubclassOf(typeof(ScriptableObject));
-                bool hasAttribute = type.GetCustomAttribute(typeof(SingletonAssetAttribute), true) is not null;
+                bool hasAttribute = attribute is not null;
                 bool isAbstract   = type.IsAbstract;
 
                 if (isAsset && hasAttribute && !isAbstract)
-                    ValidateAssetCount(type);
+                    ValidateAssetCount(type, attribute);
             }
         }
 

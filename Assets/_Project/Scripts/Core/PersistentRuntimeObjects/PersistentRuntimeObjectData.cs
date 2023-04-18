@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    [SingletonAsset]
-    public abstract class PersistentRuntimeObjectData : ScriptableObject
+    public abstract class PersistentRuntimeObjectData<TSingleton> : SingletonAsset<TSingleton> where TSingleton : SingletonAsset<TSingleton>
     {
         [field: SerializeField] public PersistentRuntimeObjectInitSettings InitSettings { get; private set; }
     }

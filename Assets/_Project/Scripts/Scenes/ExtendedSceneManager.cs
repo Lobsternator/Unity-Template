@@ -11,8 +11,6 @@ namespace Template.Scenes
 {
     public static class ExtendedSceneManager
     {
-        public static ExtendedSceneManagerData PersistentData { get; private set; }
-
         public static int sceneCount => UnitySceneManager.sceneCount;
         public static int sceneCountInBuildSettings => UnitySceneManager.sceneCountInBuildSettings;
 
@@ -21,10 +19,6 @@ namespace Template.Scenes
 
         static ExtendedSceneManager()
         {
-            PersistentData = AssetUtility.GetSingletonAsset<ExtendedSceneManagerData>();
-            if (!PersistentData)
-                Debug.LogError($"Could not find singleton asset of type \'{typeof(ExtendedSceneManagerData).Name}\'!");
-
             UnitySceneManager.sceneLoaded   -= OnSceneLoaded;
             UnitySceneManager.sceneLoaded   -= OnSceneLoaded;
             UnitySceneManager.sceneUnloaded -= OnSceneUnloaded;
@@ -36,7 +30,7 @@ namespace Template.Scenes
 
         public static string GetFullScenePath(string localScenePath)
         {
-            return Path.Combine(PersistentData.pathToSceneFolder, localScenePath + ".unity").Replace('\\', '/');
+            return Path.Combine(PersistentPathData.Instance.SceneFolderPath, localScenePath + ".unity").Replace('\\', '/');
         }
 
         public static bool IsSceneLoaded(int buildIndex)

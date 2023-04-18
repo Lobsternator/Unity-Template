@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af20fa34b5c743f4a8ada32b9aa74ad5, type: 3}
-  m_Name: ExtendedSceneManagerData
+  m_Script: {fileID: 11500000, guid: 3dd2e32ac1e5e5c489fc336649db4a07, type: 3}
+  m_Name: SaveManagerData
   m_EditorClassIdentifier: 
   <InitSettings>k__BackingField:
-    isEnabled: 1
-    isActive: 1
-    isStatic: 0
-  pathToSceneFolder: Assets/_Project/Scenes
+    <StartEnabled>k__BackingField: 1
+    <StartActive>k__BackingField: 1
+    <StartStatic>k__BackingField: 0
+  <SavePath>k__BackingField: Saves/SaveData.sav

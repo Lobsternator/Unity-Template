@@ -8,18 +8,18 @@ using Template.Core;
 namespace Template.Saving
 {
     [CreateAssetMenu(fileName = "SaveManagerData", menuName = "Singleton/PersistentRuntimeObjectData/SaveManager")]
-    public class SaveManagerData : PersistentRuntimeObjectData
+    public class SaveManagerData : PersistentRuntimeObjectData<SaveManagerData>
     {
-        public string savePath;
+        [field: SerializeField] public string SavePath { get; private set; }
 
-        public string FullSaveDirectoryPath => Path.GetDirectoryName(Path.Combine(Application.persistentDataPath, savePath));
+        public string FullSaveDirectoryPath => Path.GetDirectoryName(Path.Combine(Application.persistentDataPath, SavePath));
 
         private StringBuilder _saveFileBuilder = new StringBuilder();
 
         public string GetFullSaveFilePath(int saveSlot)
         {
-            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
-            string saveFileExt  = Path.GetExtension(savePath);
+            string saveFileName = Path.GetFileNameWithoutExtension(SavePath);
+            string saveFileExt  = Path.GetExtension(SavePath);
 
             _saveFileBuilder.Clear()
                 .Append(saveFileName)

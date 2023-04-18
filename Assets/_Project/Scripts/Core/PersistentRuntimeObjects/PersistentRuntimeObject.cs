@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Template.Core
 {
     public interface IPersistentRuntimeObject { }
-    public interface IPersistentRuntimeObject<TData> : IPersistentRuntimeObject where TData : PersistentRuntimeObjectData
+    public interface IPersistentRuntimeObject<TData> : IPersistentRuntimeObject where TData : PersistentRuntimeObjectData<TData>
     {
         public TData PersistentData { get; }
     }
@@ -25,18 +25,13 @@ namespace Template.Core
             Debug.LogWarning("Persistent Runtime Object was destroyed, this is not allowed! \nPersistent runtime objects are expected to be alive during the entire lifetime of the application!");
         }
     }
-    public abstract class PersistentRuntimeObject<TObject, TData> : PersistentRuntimeObject<TObject>, IPersistentRuntimeObject<TData> where TObject : MonoBehaviour, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData
+    public abstract class PersistentRuntimeObject<TObject, TData> : PersistentRuntimeObject<TObject>, IPersistentRuntimeObject<TData> where TObject : MonoBehaviour, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData<TData>
     {
         public TData PersistentData { get; private set; }
 
         protected virtual void Awake()
         {
             PersistentData = AssetUtility.GetSingletonAsset<TData>();
-            if (!PersistentData)
-            {
-                Debug.LogError($"Could not find PersistentRuntimeObjectData \'{typeof(TData).Name}\'!", this);
-                return;
-            }
 
             enabled = PersistentData.InitSettings.StartEnabled;
             gameObject.SetActive(PersistentData.InitSettings.StartActive);
@@ -44,7 +39,7 @@ namespace Template.Core
         }
     }
 
-    public abstract class PersistentRuntimeSingleton<TSingleton> : SingletonBehaviour<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, IPersistentRuntimeObject
+    public abstract class PersistentRuntimeSingleton<TSingleton> : SingletonBehaviour<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, ISingleton, IPersistentRuntimeObject
     {
         protected static void CreateObjectInstance(string objectName)
         {
@@ -59,7 +54,7 @@ namespace Template.Core
             Debug.LogWarning("Persistent Runtime Object was destroyed, this is not allowed! \nPersistent runtime objects are expected to be alive during the entire lifetime of the application!");
         }
     }
-    public abstract class PersistentRuntimeSingleton<TSingleton, TData> : PersistentRuntimeSingleton<TSingleton>, IPersistentRuntimeObject<TData> where TSingleton : MonoBehaviour, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData
+    public abstract class PersistentRuntimeSingleton<TSingleton, TData> : PersistentRuntimeSingleton<TSingleton>, IPersistentRuntimeObject<TData> where TSingleton : MonoBehaviour, ISingleton, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData<TData>
     {
         public TData PersistentData { get; private set; }
 
@@ -70,11 +65,6 @@ namespace Template.Core
                 return;
 
             PersistentData = AssetUtility.GetSingletonAsset<TData>();
-            if (!PersistentData)
-            {
-                Debug.LogError($"Could not find PersistentRuntimeObjectData \'{typeof(TData).Name}\'!", this);
-                return;
-            }
 
             enabled = PersistentData.InitSettings.StartEnabled;
             gameObject.SetActive(PersistentData.InitSettings.StartActive);

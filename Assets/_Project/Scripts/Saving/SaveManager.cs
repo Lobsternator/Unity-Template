@@ -24,10 +24,10 @@ namespace Template.Saving
 
         public static string GetSaveFileRegexPattern()
         {
-            SaveManagerData persistentData = AssetUtility.GetSingletonAsset<SaveManagerData>();
-            string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
-            string saveFileExt             = Path.GetExtension(persistentData.savePath);
-            string period                  = "";
+            string savePath     = SaveManagerData.Instance.SavePath;
+            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
+            string saveFileExt  = Path.GetExtension(savePath);
+            string period       = "";
 
             if (saveFileExt.StartsWith('.'))
             {
@@ -45,10 +45,10 @@ namespace Template.Saving
         }
         public static string GetSaveFileRegexPattern(int saveSlot)
         {
-            SaveManagerData persistentData = AssetUtility.GetSingletonAsset<SaveManagerData>();
-            string saveFileName            = Path.GetFileNameWithoutExtension(persistentData.savePath);
-            string saveFileExt             = Path.GetExtension(persistentData.savePath);
-            string period                  = "";
+            string savePath     = SaveManagerData.Instance.SavePath;
+            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
+            string saveFileExt  = Path.GetExtension(savePath);
+            string period       = "";
 
             if (saveFileExt.StartsWith('.'))
             {
@@ -129,12 +129,10 @@ namespace Template.Saving
             {
                 if (!finalSaveData.TryAdd(saveData.Owner.DataKey, saveData.Data))
                 {
-#if UNITY_EDITOR
                     UnityEngine.Object ownerAsObj = saveData.Owner as UnityEngine.Object;
                     string ownerName              = ownerAsObj ? ownerAsObj.name : saveData.Owner.ToString();
 
                     Debug.LogError($"Data key was not valid for object \'{ownerName}\'!", ownerAsObj);
-#endif
                 }
             }
 

@@ -49,17 +49,10 @@ namespace Template.Saving
         [MenuItem("Tools/Saving/Clear save data")]
         public static void ClearSaveData()
         {
-            SaveManagerData saveManagerData = AssetUtility.GetSingletonAsset<SaveManagerData>();
-            if (!saveManagerData)
-            {
-                Debug.LogError($"Could not find singleton asset of type \'{typeof(SaveManagerData).Name}\'!");
-                return;
-            }
-
             string pattern = SaveManager.GetSaveFileRegexPattern();
             Regex regex    = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files = Directory.GetFiles(saveManagerData.FullSaveDirectoryPath);
+            string[] files = Directory.GetFiles(SaveManagerData.Instance.FullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);

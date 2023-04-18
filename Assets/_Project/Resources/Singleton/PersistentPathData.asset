@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3dd2e32ac1e5e5c489fc336649db4a07, type: 3}
-  m_Name: SaveManagerData
+  m_Script: {fileID: 11500000, guid: 443047bd963125c40a38bdd4c80a3e22, type: 3}
+  m_Name: PersistentPathData
   m_EditorClassIdentifier: 
-  <InitSettings>k__BackingField:
-    isEnabled: 1
-    isActive: 1
-    isStatic: 0
-  savePath: Save/SaveData.sav
+  <SaveDataPath>k__BackingField: Saves/SaveData.sav
+  <ResourceFolderPath>k__BackingField: Assets/_Project/Resources
+  <SceneFolderPath>k__BackingField: Assets/_Project/Scenes
