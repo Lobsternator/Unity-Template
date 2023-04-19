@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using Unity.EditorCoroutines.Editor;
@@ -91,7 +92,8 @@ namespace Template.Core
 #if UNITY_EDITOR
     public class SingletonAssetValidator : AssetPostprocessor
     {
-        private static readonly Type[] _assemblyTypes = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
+        private static readonly Type[]   _assemblyTypes               = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
+        private static SortedSet<string> _latestAutoCreatedAssetPaths = new SortedSet<string>();
 
         private static void ValidateAssetCount(Type type, SingletonAssetAttribute attribute)
         {
@@ -100,8 +102,12 @@ namespace Template.Core
             {
                 if (attribute.AutoCreate)
                 {
-                    string assetPath = Path.Combine(PersistentPathData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
+                    string assetPath            = Path.Combine(PersistentPathData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
+                    assetPath                   = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+                    _latestAutoCreatedAssetPaths.Add(assetPath);
+
                     AssetDatabase.CreateAsset(ScriptableObject.CreateInstance(type), assetPath);
+                    Debug.LogWarning($"Automatically created missing singleton asset of type \'{type.Name}\' at {assetPath}!");
                 }
                 else
                     Debug.LogError($"Could not find singleton asset of type \'{type.Name}\' in resources, a singleton asset must always exist!");
@@ -144,7 +150,11 @@ namespace Template.Core
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            ValidateAllAssetCounts();
+            SortedSet<string> importedAssetsSet = new SortedSet<string>(importedAssets);
+            if (!importedAssetsSet.Overlaps(_latestAutoCreatedAssetPaths))
+                ValidateAllAssetCounts();
+            else
+                _latestAutoCreatedAssetPaths.ExceptWith(importedAssets);
         }
     }
 #endif
