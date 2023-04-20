@@ -29,7 +29,10 @@ namespace Template.Core
             else
             {
                 singletonAsset = Resources.LoadAll("", typeof(TSingleton)).FirstOrDefault();
-                _cachedSingletonAssets.Add(typeof(TSingleton), singletonAsset);
+                if (!_cachedSingletonAssets.TryAdd(typeof(TSingleton), singletonAsset))
+                    _cachedSingletonAssets[typeof(TSingleton)] = singletonAsset;
+
+                //_cachedSingletonAssets.Add(typeof(TSingleton), singletonAsset); // SOMEHOW CAUSES AN ERROR WHEN BUILT?????????????????????
 
                 return singletonAsset as TSingleton;
             }
