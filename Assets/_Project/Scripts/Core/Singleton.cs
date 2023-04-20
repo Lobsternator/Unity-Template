@@ -92,8 +92,8 @@ namespace Template.Core
 #if UNITY_EDITOR
     public class SingletonAssetValidator : AssetPostprocessor
     {
-        private static readonly Type[]   _assemblyTypes               = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
-        private static SortedSet<string> _latestAutoCreatedAssetPaths = new SortedSet<string>();
+        private static readonly Type[] _assemblyTypes               = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
+        private static HashSet<string> _latestAutoCreatedAssetPaths = new HashSet<string>();
 
         private static void ValidateAssetCount(Type type, SingletonAssetAttribute attribute)
         {
@@ -150,7 +150,7 @@ namespace Template.Core
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            SortedSet<string> importedAssetsSet = new SortedSet<string>(importedAssets);
+            HashSet<string> importedAssetsSet = new HashSet<string>(importedAssets);
             if (!importedAssetsSet.Overlaps(_latestAutoCreatedAssetPaths))
                 ValidateAllAssetCounts();
             else

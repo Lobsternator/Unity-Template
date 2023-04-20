@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,18 +10,25 @@ using UnityEngine;
 
 namespace Template.Physics
 {
-    public static class ExtendedPhysicsMaterialReferenceChecker
+#if UNITY_EDITOR
+    public class ExtendedPhysicsMaterialReferenceChecker : AssetPostprocessor
     {
+        private static HashSet<ExtendedPhysicsMaterial> _registeredMaterials = new HashSet<ExtendedPhysicsMaterial>();
+
+        public static void RegisterExtendedMaterial(ExtendedPhysicsMaterial physicsMaterial)
+        {
+            _registeredMaterials.Add(physicsMaterial);
+        }
+
         public static void CheckReferences(string[] searchInFolders)
         {
-#if UNITY_EDITOR
             HashSet<PhysicMaterial> basePhysicsMaterials =
-                AssetDatabase.FindAssets($"t: {typeof(ExtendedPhysicsMaterial).Name}", searchInFolders)
-                .Select((guid) => AssetDatabase.LoadAssetAtPath<ExtendedPhysicsMaterial>(AssetDatabase.GUIDToAssetPath(guid)).BaseMaterial)
+                _registeredMaterials
+                .Select((m) => m.BaseMaterial)
                 .ToHashSet();
 
             PhysicMaterial[] physicsMaterials =
-                AssetDatabase.FindAssets($"t: {typeof(PhysicMaterial).Name}", searchInFolders)
+                AssetDatabase.FindAssets($"t: {nameof(PhysicMaterial)}", searchInFolders)
                 .Select((guid) => AssetDatabase.LoadAssetAtPath<PhysicMaterial>(AssetDatabase.GUIDToAssetPath(guid)))
                 .ToArray();
 
@@ -33,18 +41,30 @@ namespace Template.Physics
                 else
                     physicsMaterial.hideFlags = HideFlags.None;
             }
-#endif
+        }
+
+        public static ExtendedPhysicsMaterial GetExtendedMaterialFromBase(PhysicMaterial physicsMaterial)
+        {
+            return _registeredMaterials.FirstOrDefault((m) => m.BaseMaterial == physicsMaterial);
+        }
+
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            if (deletedAssets.Length > 0)
+                _registeredMaterials.RemoveWhere((m) => !m);
         }
     }
+#endif
 
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
     {
 #if UNITY_EDITOR
-        [SerializeField, HideInInspector] private PhysicMaterial _lastBaseMaterial;
+        [SerializeField] private PhysicMaterial _lastBaseMaterial;
 #endif
 
-        [field: SerializeField] public PhysicMaterial BaseMaterial { get; private set; }
+        [SerializeField] private PhysicMaterial _baseMaterial;
+        public PhysicMaterial BaseMaterial => _baseMaterial;
 
         [SerializeField] private float _dynamicFriction = 0.6f;
         public float DynamicFriction
@@ -53,8 +73,8 @@ namespace Template.Physics
             set
             {
                 _dynamicFriction = Mathf.Max(value, 0.0f);
-                if (BaseMaterial)
-                    BaseMaterial.dynamicFriction = _dynamicFriction;
+                if (_baseMaterial)
+                    _baseMaterial.dynamicFriction = _dynamicFriction;
             }
         }
 
@@ -65,8 +85,8 @@ namespace Template.Physics
             set
             {
                 _staticFriction = Mathf.Max(value, 0.0f);
-                if (BaseMaterial)
-                    BaseMaterial.staticFriction = _staticFriction;
+                if (_baseMaterial)
+                    _baseMaterial.staticFriction = _staticFriction;
             }
         }
 
@@ -77,8 +97,8 @@ namespace Template.Physics
             set
             {
                 _bounciness = Mathf.Max(value, 0.0f);
-                if (BaseMaterial)
-                    BaseMaterial.bounciness = Mathf.Clamp01(value);
+                if (_baseMaterial)
+                    _baseMaterial.bounciness = Mathf.Clamp01(value);
             }
         }
 
@@ -103,8 +123,8 @@ namespace Template.Physics
             set
             {
                 _frictionCombine = value;
-                if (BaseMaterial)
-                    BaseMaterial.frictionCombine = value;
+                if (_baseMaterial)
+                    _baseMaterial.frictionCombine = value;
             }
         }
 
@@ -115,19 +135,20 @@ namespace Template.Physics
             set
             {
                 _bounceCombine = value;
-                if (BaseMaterial)
-                    BaseMaterial.bounceCombine = value;
+                if (_baseMaterial)
+                    _baseMaterial.bounceCombine = value;
             }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_lastBaseMaterial != BaseMaterial)
+            ExtendedPhysicsMaterialReferenceChecker.RegisterExtendedMaterial(this);
+
+            if (_lastBaseMaterial != _baseMaterial)
             {
                 ExtendedPhysicsMaterialReferenceChecker.CheckReferences(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
-                _lastBaseMaterial = BaseMaterial;
-                EditorUtility.SetDirty(this);
+                _lastBaseMaterial = _baseMaterial;
             }
 
             _dynamicFriction = Mathf.Max(_dynamicFriction, 0.0f);
@@ -136,14 +157,16 @@ namespace Template.Physics
             _linearDrag      = Mathf.Max(_linearDrag, 0.0f);
             _angularDrag     = Mathf.Max(_angularDrag, 0.0f);
 
-            if (BaseMaterial)
+            if (_baseMaterial)
             {
-                BaseMaterial.dynamicFriction = Mathf.Max(_dynamicFriction, 0.0f);
-                BaseMaterial.staticFriction  = Mathf.Max(_staticFriction, 0.0f);
-                BaseMaterial.bounciness      = Mathf.Clamp01(_bounciness);
-                BaseMaterial.frictionCombine = _frictionCombine;
-                BaseMaterial.bounceCombine   = _bounceCombine;
+                _baseMaterial.dynamicFriction = Mathf.Max(_dynamicFriction, 0.0f);
+                _baseMaterial.staticFriction  = Mathf.Max(_staticFriction, 0.0f);
+                _baseMaterial.bounciness      = Mathf.Clamp01(_bounciness);
+                _baseMaterial.frictionCombine = _frictionCombine;
+                _baseMaterial.bounceCombine   = _bounceCombine;
             }
+            else
+                Debug.LogWarning($"{nameof(ExtendedPhysicsMaterial)} is missing a base material!", this);
         }
 #endif
     }

@@ -83,16 +83,16 @@ MonoBehaviour:
   HasSourceProject: 0
   HasPlatforms: 1
   sourceProjectPath: 
-  sourceBankPath: Assets/_External/FMOD/Banks
+  sourceBankPath: Assets/_Project/Audio/FMOD/Banks
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 1
-  ShowBankRefreshWindow: 1
+  ShowBankRefreshWindow: 0
   AutomaticEventLoading: 1
   BankLoadType: 0
   AutomaticSampleLoading: 0
   EncryptionKey: 
-  ImportType: 0
-  TargetAssetPath: Assets/_External/FMOD/Banks
+  ImportType: 1
+  TargetAssetPath: _Project/Audio/FMOD
   TargetBankFolder: 
   EventLinkage: 0
   LoggingLevel: 2

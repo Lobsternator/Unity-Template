@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestMaterial
   m_EditorClassIdentifier: 
   _lastBaseMaterial: {fileID: 13400000, guid: 5f2f570089a8ad341ad453838ac9ada7, type: 2}
-  <BaseMaterial>k__BackingField: {fileID: 13400000, guid: 5f2f570089a8ad341ad453838ac9ada7, type: 2}
+  _baseMaterial: {fileID: 13400000, guid: 5f2f570089a8ad341ad453838ac9ada7, type: 2}
   _dynamicFriction: 0.6
   _staticFriction: 0.6
   _bounciness: 0

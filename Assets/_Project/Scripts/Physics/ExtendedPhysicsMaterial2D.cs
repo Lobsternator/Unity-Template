@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,18 +10,25 @@ using UnityEngine;
 
 namespace Template.Physics
 {
-    public static class ExtendedPhysicsMaterialReferenceChecker2D
+#if UNITY_EDITOR
+    public class ExtendedPhysicsMaterialReferenceChecker2D : AssetPostprocessor
     {
+        private static HashSet<ExtendedPhysicsMaterial2D> _registeredMaterials = new HashSet<ExtendedPhysicsMaterial2D>();
+
+        public static void RegisterExtendedMaterial(ExtendedPhysicsMaterial2D physicsMaterial)
+        {
+            _registeredMaterials.Add(physicsMaterial);
+        }
+
         public static void CheckReferences(string[] searchInFolders)
         {
-#if UNITY_EDITOR
             HashSet<PhysicsMaterial2D> basePhysicsMaterials =
-                AssetDatabase.FindAssets($"t: {typeof(ExtendedPhysicsMaterial2D).Name}", searchInFolders)
-                .Select((guid) => AssetDatabase.LoadAssetAtPath<ExtendedPhysicsMaterial2D>(AssetDatabase.GUIDToAssetPath(guid)).BaseMaterial)
+                _registeredMaterials
+                .Select((m) => m.BaseMaterial)
                 .ToHashSet();
 
             PhysicsMaterial2D[] physicsMaterials =
-                AssetDatabase.FindAssets($"t: {typeof(PhysicsMaterial2D).Name}", searchInFolders)
+                AssetDatabase.FindAssets($"t: {nameof(PhysicsMaterial2D)}", searchInFolders)
                 .Select((guid) => AssetDatabase.LoadAssetAtPath<PhysicsMaterial2D>(AssetDatabase.GUIDToAssetPath(guid)))
                 .ToArray();
 
@@ -33,18 +41,30 @@ namespace Template.Physics
                 else
                     physicsMaterial.hideFlags = HideFlags.None;
             }
-#endif
+        }
+
+        public static ExtendedPhysicsMaterial2D GetExtendedMaterialFromBase(PhysicsMaterial2D physicsMaterial)
+        {
+            return _registeredMaterials.FirstOrDefault((m) => m.BaseMaterial == physicsMaterial);
+        }
+
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            if (deletedAssets.Length > 0)
+                _registeredMaterials.RemoveWhere((m) => !m);
         }
     }
+#endif
 
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial2D", menuName = "Physics/ExtendedMaterial2D")]
     public class ExtendedPhysicsMaterial2D : ScriptableObject
     {
 #if UNITY_EDITOR
-        [SerializeField, HideInInspector] private PhysicsMaterial2D _lastBaseMaterial;
+        [SerializeField] private PhysicsMaterial2D _lastBaseMaterial;
 #endif
 
-        [field: SerializeField] public PhysicsMaterial2D BaseMaterial { get; private set; }
+        [SerializeField] private PhysicsMaterial2D _baseMaterial;
+        public PhysicsMaterial2D BaseMaterial => _baseMaterial;
 
         [SerializeField] private float _friction = 0.4f;
         public float Friction
@@ -53,8 +73,8 @@ namespace Template.Physics
             set
             {
                 _friction = Mathf.Max(value, 0.0f);
-                if (BaseMaterial)
-                    BaseMaterial.friction = _friction;
+                if (_baseMaterial)
+                    _baseMaterial.friction = _friction;
             }
         }
 
@@ -65,8 +85,8 @@ namespace Template.Physics
             set
             {
                 _bounciness = Mathf.Max(value, 0.0f);
-                if (BaseMaterial)
-                    BaseMaterial.bounciness = _bounciness;
+                if (_baseMaterial)
+                    _baseMaterial.bounciness = _bounciness;
             }
         }
 
@@ -87,11 +107,12 @@ namespace Template.Physics
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_lastBaseMaterial != BaseMaterial)
+            ExtendedPhysicsMaterialReferenceChecker2D.RegisterExtendedMaterial(this);
+
+            if (_lastBaseMaterial != _baseMaterial)
             {
                 ExtendedPhysicsMaterialReferenceChecker2D.CheckReferences(new string[] { Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)).Replace('\\', '/') });
-                _lastBaseMaterial = BaseMaterial;
-                EditorUtility.SetDirty(this);
+                _lastBaseMaterial = _baseMaterial;
             }
 
             _friction    = Mathf.Max(_friction, 0.0f);
@@ -99,11 +120,13 @@ namespace Template.Physics
             _linearDrag  = Mathf.Max(_linearDrag, 0.0f);
             _angularDrag = Mathf.Max(_angularDrag, 0.0f);
 
-            if (BaseMaterial)
+            if (_baseMaterial)
             {
-                BaseMaterial.friction   = Mathf.Max(_friction, 0.0f);
-                BaseMaterial.bounciness = Mathf.Max(_bounciness, 0.0f);
+                _baseMaterial.friction   = Mathf.Max(_friction, 0.0f);
+                _baseMaterial.bounciness = Mathf.Max(_bounciness, 0.0f);
             }
+            else
+                Debug.LogWarning($"{nameof(ExtendedPhysicsMaterial2D)} is missing a base material!", this);
         }
 #endif
     }
