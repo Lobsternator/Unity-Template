@@ -20,13 +20,5 @@ namespace Template.Scenes
     {
         public AsyncSceneOperationCollection() : base() { }
         public AsyncSceneOperationCollection(int capacity) : base(capacity) { }
-
-        public override void AddOperation(AsyncSceneOperation operation)
-        {
-            base.AddOperation(operation);
-
-            if (operation is not null)
-                operation.completed += OnAysncSceneOperationCompleted;
-        }
     }
 }

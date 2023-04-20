@@ -16,7 +16,7 @@ namespace Template.Saving
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -700)]
     public class SaveManager : PersistentRuntimeSingleton<SaveManager, SaveManagerData>
     {
-        public static CollectorEvent<SaveData> Saving = new CollectorEvent<SaveData>();
+        public static CollectorEvent<SaveData> Saving;
         public static Action<ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>> Loading;
 
         private static StringBuilder _regexPatternBuilder = new StringBuilder();
@@ -123,7 +123,9 @@ namespace Template.Saving
         public bool SaveToSlot(int saveSlot)
         {
             var finalSaveData    = new Dictionary<DataKey, SerializableObjectDataContainer>();
-            SaveData[] saveDatas = Saving.Invoke();
+            SaveData[] saveDatas = Saving?.Invoke();
+            if (saveDatas is null)
+                return false;
 
             foreach(SaveData saveData in saveDatas)
             {
@@ -217,7 +219,7 @@ namespace Template.Saving
         {
             base.OnApplicationQuit();
 
-            Saving.Clear();
+            Saving  = null;
             Loading = null;
         }
     }
