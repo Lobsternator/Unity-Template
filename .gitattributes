@@ -1,2 +1,5 @@
 # Ignore all differences in line endings
-*        -crlf
+* -crlf
+
+# Auto-detect line changes
+* text=auto
