@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
-using Unity.EditorCoroutines.Editor;
+using UnityEditor.Callbacks;
 #endif
 using UnityEngine;
 
@@ -136,15 +136,9 @@ namespace Template.Core
             }
         }
 
-        [InitializeOnLoadMethod]
-        private static void ValidateAllAssetCounts_OnLoad()
+        [DidReloadScripts]
+        private static void ValidateAllAssetCounts_OnReloadScripts()
         {
-            EditorCoroutineUtility.StartCoroutineOwnerless(ValidateAllAssetCounts_Delayed());
-        }
-
-        private static IEnumerator ValidateAllAssetCounts_Delayed()
-        {
-            yield return null;
             ValidateAllAssetCounts();
         }
 
