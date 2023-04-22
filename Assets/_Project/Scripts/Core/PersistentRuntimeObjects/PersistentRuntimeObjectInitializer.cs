@@ -60,22 +60,34 @@ namespace Template.Core
 
     public static class PersistentRuntimeObjectInitializer
     {
-        private static readonly Type[] _assemblyTypes                          = Assembly.GetAssembly(typeof(IPersistentRuntimeObject)).GetTypes();
+        private static readonly List<Type> _persistentRuntimeObjectTypes;
         private static readonly BindingFlags _createObjectInstanceBindingFlags = BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
+        static PersistentRuntimeObjectInitializer()
+        {
+            _persistentRuntimeObjectTypes = new List<Type>();
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) 
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    bool isClass      = type.IsClass;
+                    bool isAbstract   = type.IsAbstract;
+                    bool hasInterface = type.HasInterface(typeof(IPersistentRuntimeObject));
+
+                    if (isClass && !isAbstract && hasInterface)
+                        _persistentRuntimeObjectTypes.Add(type);
+                }
+            }
+        }
 
         private static Type[] GetInheritedTypes(RuntimeInitializeLoadType runtimeInitializeLoadType)
         {
-            return _assemblyTypes.Where(t =>
+            return _persistentRuntimeObjectTypes.Where(t =>
             {
                 PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
                 RuntimeInitializeLoadType loadType         = attribute is not null ? attribute.RuntimeInitializeLoadType : RuntimeInitializeLoadType.AfterSceneLoad;
 
-                bool isClass      = t.IsClass;
-                bool isAbstract   = t.IsAbstract;
-                bool hasInterface = t.GetInterfaces().Contains(typeof(IPersistentRuntimeObject));
-                bool hasLoadType  = loadType == runtimeInitializeLoadType;
-
-                return isClass && !isAbstract && hasInterface && hasLoadType;
+                return loadType == runtimeInitializeLoadType;
             }).OrderBy(t =>
             {
                 PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;

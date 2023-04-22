@@ -7,6 +7,7 @@ using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
+using Unity.EditorCoroutines.Editor;
 #endif
 using UnityEngine;
 
@@ -92,7 +93,7 @@ namespace Template.Core
 #if UNITY_EDITOR
     public class SingletonAssetValidator : AssetPostprocessor
     {
-        private static readonly Type[] _assemblyTypes               = Assembly.GetAssembly(typeof(SingletonAssetAttribute)).GetTypes();
+        private static readonly IList<Type> _scriptableObjectTypes  = TypeCache.GetTypesDerivedFrom<ScriptableObject>();
         private static HashSet<string> _latestAutoCreatedAssetPaths = new HashSet<string>();
 
         private static void ValidateAssetCount(Type type, SingletonAssetAttribute attribute)
@@ -124,7 +125,7 @@ namespace Template.Core
         }
         private static void ValidateAllAssetCounts()
         {
-            foreach (Type type in _assemblyTypes)
+            foreach (Type type in _scriptableObjectTypes)
             {
                 var  attribute    = type.GetCustomAttribute<SingletonAssetAttribute>(true);
                 bool isAsset      = type.IsSubclassOf(typeof(ScriptableObject));
@@ -136,17 +137,23 @@ namespace Template.Core
             }
         }
 
+        private static IEnumerator ValidateAllAssetCounts_AfterUpdating()
+        {
+            yield return new WaitWhile(() => EditorApplication.isUpdating);
+            ValidateAllAssetCounts();
+        }
+
         [DidReloadScripts]
         private static void ValidateAllAssetCounts_OnReloadScripts()
         {
-            ValidateAllAssetCounts();
+            EditorCoroutineUtility.StartCoroutineOwnerless(ValidateAllAssetCounts_AfterUpdating());
         }
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
             HashSet<string> importedAssetsSet = new HashSet<string>(importedAssets);
             if (!importedAssetsSet.Overlaps(_latestAutoCreatedAssetPaths))
-                ValidateAllAssetCounts();
+                EditorCoroutineUtility.StartCoroutineOwnerless(ValidateAllAssetCounts_AfterUpdating());
             else
                 _latestAutoCreatedAssetPaths.ExceptWith(importedAssets);
         }
