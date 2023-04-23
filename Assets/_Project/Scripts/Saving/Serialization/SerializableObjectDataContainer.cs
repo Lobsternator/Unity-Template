@@ -34,7 +34,7 @@ namespace Template.Saving.Serialization
             if (!_items.TryGetValue(itemName, out var itemValue))
                 return false;
 
-            SerializationUtility.TryConvertToKnownType(itemValue, itemValue.GetType(), out itemValue);
+            SerializationUtility.TryConvertToKnownUnserializableType(itemValue, itemValue.GetType(), out itemValue);
 
             itemValueRef = (T)itemValue;
             return true;

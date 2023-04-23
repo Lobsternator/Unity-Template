@@ -9,7 +9,7 @@ namespace Template.Saving.Serialization
 {
     public static class SerializationUtility
     {
-        public static ReadOnlyCollection<Type> KnownTypes { get; } = new ReadOnlyCollection<Type>(new List<Type>
+        public static ReadOnlyCollection<Type> KnownUnserializableTypes { get; } = new ReadOnlyCollection<Type>(new List<Type>
         {
             typeof(Vector2),
             typeof(Vector3),
@@ -28,28 +28,28 @@ namespace Template.Saving.Serialization
             typeof(SerializableAnimationCurve),
         });
 
-        private static readonly Dictionary<Type, Type> _knownTypeToKnownSerializableType = KnownSerializableTypes.ToDictionary((t) => KnownTypes[KnownSerializableTypes.IndexOf(t)]);
-        private static readonly Dictionary<Type, Type> _knownSerializableTypeToKnownType = KnownTypes.ToDictionary(            (t) => KnownSerializableTypes[KnownTypes.IndexOf(t)]);
+        private static readonly Dictionary<Type, Type> _knownUnserializableTypeToKnownSerializableType = KnownSerializableTypes.ToDictionary(  (t) => KnownUnserializableTypes[KnownSerializableTypes.IndexOf(t)]);
+        private static readonly Dictionary<Type, Type> _knownSerializableTypeToKnownUnserializableType = KnownUnserializableTypes.ToDictionary((t) => KnownSerializableTypes[KnownUnserializableTypes.IndexOf(t)]);
 
         public static void CompileAndCacheKnownCastDelegates()
         {
-            for (int i = 0; i < KnownTypes.Count; i++)
+            for (int i = 0; i < KnownUnserializableTypes.Count; i++)
             {
-                Type knownType             = KnownTypes[i];
-                Type knownSerializableType = KnownSerializableTypes[i];
+                Type knownUnserializableType = KnownUnserializableTypes[i];
+                Type knownSerializableType   = KnownSerializableTypes[i];
 
-                CastUtility.GetOrCompileCastDelegate(knownType, knownSerializableType);
-                CastUtility.GetOrCompileCastDelegate(knownSerializableType, knownType);
+                CastUtility.GetOrCompileCastDelegate(knownUnserializableType, knownSerializableType);
+                CastUtility.GetOrCompileCastDelegate(knownSerializableType, knownUnserializableType);
             }
         }
 
-        public static bool TryGetKnownSerializableType(Type knownType, out Type knownSerializableType)
+        public static bool TryGetKnownSerializableType(Type knownUnserializableType, out Type knownSerializableType)
         {
-            return _knownTypeToKnownSerializableType.TryGetValue(knownType, out knownSerializableType);
+            return _knownUnserializableTypeToKnownSerializableType.TryGetValue(knownUnserializableType, out knownSerializableType);
         }
-        public static bool TryGetKnownType(Type knownSerializableType, out Type knownType)
+        public static bool TryGetKnownUnserializableType(Type knownSerializableType, out Type knownUnserializableType)
         {
-            return _knownSerializableTypeToKnownType.TryGetValue(knownSerializableType, out knownType);
+            return _knownSerializableTypeToKnownUnserializableType.TryGetValue(knownSerializableType, out knownUnserializableType);
         }
 
         public static bool TryConvertToKnownSerializableType(object obj, Type currentType, out object result)
@@ -63,11 +63,11 @@ namespace Template.Saving.Serialization
 
             return true;
         }
-        public static bool TryConvertToKnownType(object obj, Type currentType, out object result)
+        public static bool TryConvertToKnownUnserializableType(object obj, Type currentType, out object result)
         {
             result = obj;
 
-            if (!TryGetKnownType(currentType, out var knownType))
+            if (!TryGetKnownUnserializableType(currentType, out var knownType))
                 return false;
 
             result = CastUtility.Cast(obj, knownType);
