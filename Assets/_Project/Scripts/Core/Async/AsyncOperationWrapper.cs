@@ -9,7 +9,7 @@ namespace Template.Core
     {
         public AsyncOperation Operation { get; }
 
-        public override bool keepWaiting => Operation is null ? false : !Operation.isDone;
+        public override bool keepWaiting => Operation == null ? false : !Operation.isDone;
 
         public event Action<TWrapper> completed;
 
@@ -17,16 +17,16 @@ namespace Template.Core
         {
             Operation = operation;
 
-            if (Operation is not null)
-                Operation.completed += OnAysncSceneOperationCompleted;
+            if (Operation != null)
+                Operation.completed += OnAysncOperationCompleted;
         }
 
-        protected virtual void OnAysncSceneOperationCompleted(AsyncOperation operation)
+        protected virtual void OnAysncOperationCompleted(AsyncOperation operation)
         {
             OnCompleted();
         }
 
-        protected void OnCompleted()
+        protected virtual void OnCompleted()
         {
             completed?.Invoke(this as TWrapper);
         }
@@ -43,17 +43,17 @@ namespace Template.Core
         {
             base.AddOperation(operation);
 
-            if (operation is not null)
-                operation.completed += OnAysncSceneOperationCompleted;
+            if (operation != null)
+                operation.completed += OnAysncOperationWrapperCompleted;
         }
 
-        protected virtual void OnAysncSceneOperationCompleted(TWrapper operation)
+        protected virtual void OnAysncOperationWrapperCompleted(TWrapper operation)
         {
             if (!keepWaiting)
                 OnCompleted();
         }
 
-        protected void OnCompleted()
+        protected virtual void OnCompleted()
         {
             completed?.Invoke(this as TCollection);
         }

@@ -96,12 +96,12 @@ namespace Template.Core
         private static readonly IList<Type> _scriptableObjectTypes  = TypeCache.GetTypesDerivedFrom<ScriptableObject>();
         private static HashSet<string> _latestAutoCreatedAssetPaths = new HashSet<string>();
 
-        private static void ValidateAssetCount(Type type, SingletonAssetAttribute attribute)
+        private static void ValidateAssetCount(Type type, bool autoCreate)
         {
             UnityEngine.Object[] foundAssets = Resources.LoadAll("", type);
             if (foundAssets.Length == 0)
             {
-                if (attribute.AutoCreate)
+                if (autoCreate)
                 {
                     string assetPath            = Path.Combine(PersistentPathData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
                     assetPath                   = AssetDatabase.GenerateUniqueAssetPath(assetPath);
@@ -133,7 +133,7 @@ namespace Template.Core
                 bool isAbstract   = type.IsAbstract;
 
                 if (isAsset && hasAttribute && !isAbstract)
-                    ValidateAssetCount(type, attribute);
+                    ValidateAssetCount(type, attribute.AutoCreate);
             }
         }
 

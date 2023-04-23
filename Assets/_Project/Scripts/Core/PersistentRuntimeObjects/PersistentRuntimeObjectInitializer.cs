@@ -72,7 +72,7 @@ namespace Template.Core
                 {
                     bool isClass      = type.IsClass;
                     bool isAbstract   = type.IsAbstract;
-                    bool hasInterface = type.HasInterface(typeof(IPersistentRuntimeObject));
+                    bool hasInterface = type.HasInterface<IPersistentRuntimeObject>();
 
                     if (isClass && !isAbstract && hasInterface)
                         _persistentRuntimeObjectTypes.Add(type);
@@ -84,13 +84,13 @@ namespace Template.Core
         {
             return _persistentRuntimeObjectTypes.Where(t =>
             {
-                PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
+                PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute<PersistentRuntimeObjectAttribute>();
                 RuntimeInitializeLoadType loadType         = attribute is not null ? attribute.RuntimeInitializeLoadType : RuntimeInitializeLoadType.AfterSceneLoad;
 
                 return loadType == runtimeInitializeLoadType;
             }).OrderBy(t =>
             {
-                PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
+                PersistentRuntimeObjectAttribute attribute = t.GetCustomAttribute<PersistentRuntimeObjectAttribute>();
                 return attribute is not null ? attribute.LoadOrder : 0;
             }).ToArray();
         }
@@ -100,7 +100,7 @@ namespace Template.Core
             Type[] inheritedTypes = GetInheritedTypes(loadType);
             foreach (Type type in inheritedTypes)
             {
-                PersistentRuntimeObjectAttribute attribute = type.GetCustomAttribute(typeof(PersistentRuntimeObjectAttribute)) as PersistentRuntimeObjectAttribute;
+                PersistentRuntimeObjectAttribute attribute = type.GetCustomAttribute<PersistentRuntimeObjectAttribute>();
                 string objectName                          = attribute?.Name is not null ? attribute.Name : type.Name;
 
                 object[] parameters = new object[] { objectName };

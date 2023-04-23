@@ -102,6 +102,10 @@ namespace Template.Core
 
             return false;
         }
+        public static bool HasInterface<TInterface>(this Type type)
+        {
+            return HasInterface(type, typeof(TInterface));
+        }
         #endregion
     }
 }

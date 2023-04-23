@@ -11,7 +11,7 @@ namespace Template.Core
         protected List<TCustomAsyncOperation> _operations;
         public ReadOnlyCollection<TCustomAsyncOperation> Operations { get; }
 
-        public override bool keepWaiting => !_operations.TrueForAll((o) => !o.keepWaiting);
+        public override bool keepWaiting => !_operations.TrueForAll((o) => o == null || !o.keepWaiting);
 
         public CustomYieldInstructionCollection()
         {

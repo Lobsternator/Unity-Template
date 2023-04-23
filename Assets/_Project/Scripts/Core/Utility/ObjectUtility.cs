@@ -11,7 +11,7 @@ namespace Template.Core
             var objects = Object.FindObjectsOfType<Object>(includeInactive);
             foreach (Object obj in objects)
             {
-                if (obj.GetType().HasInterface(typeof(T)))
+                if (obj.GetType().HasInterface<T>())
                     return obj as T;
             }
 
@@ -28,7 +28,7 @@ namespace Template.Core
             var objectsWithInterface = new List<T>();
             foreach (Object obj in objects)
             {
-                if (obj.GetType().HasInterface(typeof(T)))
+                if (obj.GetType().HasInterface<T>())
                     objectsWithInterface.Add(obj as T);
             }
 

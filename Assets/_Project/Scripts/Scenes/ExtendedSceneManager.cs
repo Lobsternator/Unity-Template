@@ -35,11 +35,11 @@ namespace Template.Scenes
 
         public static bool IsSceneLoaded(int buildIndex)
         {
-            return UnitySceneManager.GetSceneByBuildIndex(buildIndex).isLoaded;
+            return UnitySceneManager.GetSceneByBuildIndex(buildIndex).isLoaded && !IsSceneUnloading(buildIndex) && !IsSceneLoading(buildIndex);
         }
         public static bool IsSceneUnloaded(int buildIndex)
         {
-            return !UnitySceneManager.GetSceneByBuildIndex(buildIndex).isLoaded;
+            return !UnitySceneManager.GetSceneByBuildIndex(buildIndex).isLoaded && !IsSceneLoading(buildIndex) && !IsSceneUnloading(buildIndex);
         }
 
         public static bool IsSceneLoading(int buildIndex)
@@ -186,136 +186,66 @@ namespace Template.Scenes
             UnitySceneManager.MoveGameObjectToScene(go, scene);
         }
 
-        private static AsyncSceneOperation LoadSceneAsync_Single(int buildIndex, bool sceneLoaded, bool sceneLoading, bool sceneUnloaded, bool sceneUnloading)
+        private static AsyncSceneOperation LoadSceneAsync_Single(int buildIndex)
         {
             for (int i = 0; i < UnitySceneManager.sceneCount; i++)
             {
                 int otherBuildIndex = UnitySceneManager.GetSceneAt(i).buildIndex;
-                if (otherBuildIndex == buildIndex || IsSceneUnloading(otherBuildIndex))
+                if (otherBuildIndex == buildIndex)
                     continue;
 
-                if (IsSceneLoading(otherBuildIndex))
-                {
-                    AsyncSceneOperation loadOperation = GetLoadingOperation(otherBuildIndex);
-                    loadOperation.completed          += (o) =>
-                    {
-                        if (IsSceneUnloading(o.BuildIndex))
-                            return;
-
-                        AsyncSceneOperation unloadOperation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(otherBuildIndex), otherBuildIndex);
-                        _unloadingSceneOperations.Add(otherBuildIndex, unloadOperation);
-                    };
-                }
-                else
+                if (IsSceneLoaded(otherBuildIndex))
                 {
                     AsyncSceneOperation unloadOperation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(otherBuildIndex), otherBuildIndex);
                     _unloadingSceneOperations.Add(otherBuildIndex, unloadOperation);
                 }
             }
 
-            foreach (AsyncSceneOperation loadOperation in _loadingSceneOperations.Values)
+            if (IsSceneLoaded(buildIndex) || IsSceneUnloaded(buildIndex))
             {
-                loadOperation.completed += (o) =>
-                {
-                    if (IsSceneUnloading(o.BuildIndex))
-                        return;
-
-                    AsyncSceneOperation delayedOperation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(o.BuildIndex), o.BuildIndex);
-                    _unloadingSceneOperations.Add(buildIndex, delayedOperation);
-                };
-            }
-
-            AsyncSceneOperation operation = null;
-
-            if (sceneUnloading)
-            {
-                operation            = GetUnloadingOperation(buildIndex);
-                operation.completed += (o) =>
-                {
-                    if (IsSceneLoading(buildIndex))
-                        return;
-
-                    AsyncSceneOperation delayedOperation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single), buildIndex);
-                    _loadingSceneOperations.Add(buildIndex, delayedOperation);
-                };
-            }
-            else if (sceneLoaded)
-                operation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single), buildIndex);
-
-            return operation;
-        }
-        private static AsyncSceneOperation LoadSceneAsync_Additive(int buildIndex, bool sceneLoaded, bool sceneLoading, bool sceneUnloaded, bool sceneUnloading)
-        {
-            AsyncSceneOperation operation = null;
-            if (sceneLoaded || sceneLoading)
-                return operation;
-
-            if (sceneUnloading)
-            {
-                operation            = GetUnloadingOperation(buildIndex);
-                operation.completed += (o) =>
-                {
-                    if (IsSceneLoading(buildIndex))
-                        return;
-
-                    AsyncSceneOperation delayedOperation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive), buildIndex);
-                    _loadingSceneOperations.Add(buildIndex, delayedOperation);
-                };
-            }
-            else if (sceneUnloaded)
-            {
-                operation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive), buildIndex);
+                AsyncSceneOperation operation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single), buildIndex);
                 _loadingSceneOperations.Add(buildIndex, operation);
+                return operation;
             }
 
-            return operation;
+            return GetLoadingOperation(buildIndex);
+        }
+        private static AsyncSceneOperation LoadSceneAsync_Additive(int buildIndex)
+        {
+            if (!IsSceneLoaded(buildIndex))
+            {
+                AsyncSceneOperation operation = new AsyncSceneOperation(UnitySceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive), buildIndex);
+                _loadingSceneOperations.Add(buildIndex, operation);
+                return operation;
+            }
+
+            return GetLoadingOperation(buildIndex);
         }
 
         public static AsyncSceneOperation LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, LoadSceneMode.Single);
         public static AsyncSceneOperation LoadSceneAsync(int buildIndex, LoadSceneMode loadMode)
         {
-            AsyncSceneOperation operation = null;
-            bool sceneLoaded              = IsSceneLoaded(buildIndex);
-            bool sceneLoading             = IsSceneLoading(buildIndex);
-            bool sceneUnloaded            = IsSceneUnloaded(buildIndex);
-            bool sceneUnloading           = IsSceneUnloading(buildIndex);
-
             if (loadMode == LoadSceneMode.Single)
-                operation = LoadSceneAsync_Single(buildIndex, sceneLoaded, sceneLoading, sceneUnloaded, sceneUnloading);
+                return LoadSceneAsync_Single(buildIndex);
 
             else if (loadMode == LoadSceneMode.Additive)
-                operation = LoadSceneAsync_Additive(buildIndex, sceneLoaded, sceneLoading, sceneUnloaded, sceneUnloading);
+                return LoadSceneAsync_Additive(buildIndex);
 
-            return operation is null ? GetLoadingOperation(buildIndex) : operation;
+            else
+                throw new NotImplementedException();
         }
 
         public static AsyncSceneOperation UnloadSceneAsync(int buildIndex) => UnloadSceneAsync(buildIndex, UnloadSceneOptions.None);
         public static AsyncSceneOperation UnloadSceneAsync(int buildIndex, UnloadSceneOptions unloadOptions)
         {
-            AsyncSceneOperation operation = null;
-            bool sceneUnloaded            = IsSceneUnloaded(buildIndex);
-            bool sceneUnloading           = IsSceneUnloading(buildIndex);
-            bool sceneLoading             = IsSceneLoading(buildIndex);
-
-            if (sceneLoading)
+            if (IsSceneLoaded(buildIndex))
             {
-                operation            = GetLoadingOperation(buildIndex);
-                operation.completed += (o) =>
-                {
-                    if (IsSceneUnloading(buildIndex))
-                        return;
-
-                    AsyncSceneOperation delayedOperation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(buildIndex, unloadOptions), buildIndex);
-                    _loadingSceneOperations.Add(buildIndex, delayedOperation);
-                };
-            }
-            else if (!sceneUnloaded && !sceneUnloading)
-            {
-                operation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(buildIndex, unloadOptions), buildIndex);
+                AsyncSceneOperation operation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(buildIndex, unloadOptions), buildIndex);
                 _unloadingSceneOperations.Add(buildIndex, operation);
+                return operation;
             }
 
-            return operation is null ? GetUnloadingOperation(buildIndex) : operation;
+            return GetUnloadingOperation(buildIndex);
         }
 
         public static AsyncSceneOperation LoadSceneAsync(string localScenePath) => LoadSceneAsync(localScenePath, LoadSceneMode.Single);
