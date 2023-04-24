@@ -818,8 +818,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03425a4e112188847a6ae0519c37c917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <TallyCounter>k__BackingField: {fileID: 1803585297}
-  <IgnoreTriggerOverlaps>k__BackingField: 1
+  _tallyCounter: {fileID: 1803585297}
+  _ignoreTriggerOverlaps: 1
   _oldForceGroundedState: 0
   _forceGroundedState: 0
 --- !u!58 &590316335
@@ -1454,8 +1454,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6692c2fa7ca02de49a084dfdddc68fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <TallyCounter>k__BackingField: {fileID: 1278136490}
-  <IgnoreTriggerOverlaps>k__BackingField: 1
+  _tallyCounter: {fileID: 1278136490}
+  _ignoreTriggerOverlaps: 1
   _oldForceGroundedState: 0
   _forceGroundedState: 0
 --- !u!135 &1317541307

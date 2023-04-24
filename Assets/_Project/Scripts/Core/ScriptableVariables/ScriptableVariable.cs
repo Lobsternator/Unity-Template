@@ -41,8 +41,9 @@ namespace Template.Core
             set 
             { 
                 if (useConstant)
-                    constant        = value;
-                else
+                    constant = value;
+
+                else if (HasReference)
                     reference.Value = value;
             }
         }

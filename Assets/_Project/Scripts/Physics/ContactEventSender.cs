@@ -22,8 +22,7 @@ namespace Template.Physics
     public interface IContactEventReceiver
     {
         /// <summary>
-        /// Which sender are we currently receiving contact events from? Null if contact event originated from this object.
-        /// Only set this if you absolutely know what you're doing!
+        /// Which sender are we currently receiving contact events from? Null if current contact event originated from this object.
         /// </summary>
         public ContactEventSender CurrentContactEventSender { get; set; }
 

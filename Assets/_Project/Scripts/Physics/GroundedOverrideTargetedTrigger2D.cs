@@ -27,13 +27,19 @@ namespace Template.Physics
 
         public ContactEventSender2D CurrentContactEventSender { get; set; }
 
-        [field: SerializeField] public ForceGroundedStateTallyCounter2D TallyCounter { get; private set; }
-        [field: SerializeField] public bool IgnoreTriggerOverlaps { get; set; } = true;
+        [SerializeField] private ForceGroundedStateTallyCounter2D _tallyCounter;
+        public ForceGroundedStateTallyCounter2D TallyCounter => _tallyCounter;
+
+        [SerializeField] private bool _ignoreTriggerOverlaps = true;
+        public bool IgnoreTriggerOverlaps
+        {
+            get => _ignoreTriggerOverlaps;
+            set => _ignoreTriggerOverlaps = value;
+        }
 
 #if UNITY_EDITOR
-        [SerializeField, HideInInspector] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
+        [SerializeField] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
 #endif
-
         [SerializeField] private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
         public ForceGroundedStateMode ForceGroundedState
         {

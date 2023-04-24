@@ -11,7 +11,7 @@ namespace Template.Core
         protected List<AsyncOperation> _operations;
         public ReadOnlyCollection<AsyncOperation> Operations { get; }
 
-        public override bool keepWaiting => !_operations.TrueForAll((o) => o.isDone);
+        public override bool keepWaiting => !_operations.TrueForAll((o) => o == null || o.isDone);
 
         public event Action<AsyncOperationCollection> completed;
 
@@ -30,7 +30,7 @@ namespace Template.Core
         {
             _operations.Add(operation);
 
-            if (operation is not null)
+            if (operation != null)
                 operation.completed += OnAysncOperationCompleted;
         }
 

@@ -10,9 +10,7 @@ namespace Template.Core
     {
 
     }
-#endif
-
-#if !UNITY_EDITOR
+#else
     public class ReadOnlyAttribute : System.Attribute
     {
 
