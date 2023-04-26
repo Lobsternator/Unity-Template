@@ -97,6 +97,10 @@ namespace Template.Core
                 TimeUnfroze?.Invoke(newTimeScale);
             }
         }
+        public void SetTimeScale(float timeScale)
+        {
+            SetTimeScale(timeScale, HitstopInteraction.Multiply);
+        }
 
         private IEnumerator UpdateHitstop()
         {

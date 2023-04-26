@@ -12,18 +12,8 @@ namespace Template.Core
         public TValue Value
         {
             get => _value;
-
-            set
-            {
-                if (notifyChanges && !_value.Equals(value))
-                    valueChanged?.Invoke(value);
-
-                _value = value;
-            }
+            set => _value = value;
         }
-
-        [Space(7)] public bool notifyChanges;
-        [Space(2)] public UnityEvent<TValue> valueChanged;
     }
 
     [Serializable]

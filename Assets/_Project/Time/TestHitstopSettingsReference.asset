@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86512402277363a4babe8c3696038440, type: 3}
+  m_Name: TestHitstopSettingsReference
+  m_EditorClassIdentifier: 
+  _value:
+    duration: 0.75
+    timeScaleCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0.01234436
+        value: 0.114931405
+        inSlope: 0.018282512
+        outSlope: 0.018282512
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.18091194
+        value: 0.038662672
+        inSlope: 0.16109821
+        outSlope: 0.16109821
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.37283775
+      - serializedVersion: 3
+        time: 0.98750305
+        value: 0.7437515
+        inSlope: 0.28923258
+        outSlope: 0.28923258
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.41558945
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  notifyChanges: 0
+  valueChanged:
+    m_PersistentCalls:
+      m_Calls: []
