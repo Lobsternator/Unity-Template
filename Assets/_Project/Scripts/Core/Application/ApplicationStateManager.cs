@@ -13,21 +13,16 @@ namespace Template.Core
     {
         public static bool IsApplicationQuitting { get; private set; } = false;
 
-        public ApplicationStateMachine StateMachine { get; private set; }
+        public ApplicationStateMachine StateMachine { get; set; }
         public ReadOnlyDictionary<Type, ApplicationStateBase> States { get; private set; }
 
-        public void Initialize()
+        public void Initialize(ApplicationStateMachine stateManager)
         {
-            StateMachine = GetComponent<ApplicationStateMachine>();
+            StateMachine = stateManager;
             States       = PersistentData.States;
 
             foreach (var state in States.Values)
-            {
-                state.StateMachine = StateMachine;
-                StateMachine.StartCoroutine(state.Initialize());
-            }
-
-            SetState<ApplicationStateEntry>();
+                state.Initialize(stateManager);
         }
 
         public TState GetState<TState>() where TState : ApplicationStateBase
@@ -62,7 +57,8 @@ namespace Template.Core
                 return Application.isEditor;
             };
 
-            Initialize();
+            Initialize(GetComponent<ApplicationStateMachine>());
+            SetState<ApplicationStateEntry>();
         }
     }
 }

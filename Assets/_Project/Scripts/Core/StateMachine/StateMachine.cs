@@ -90,10 +90,10 @@ namespace Template.Core
     public interface IStateManager { }
     public interface IStateManager<TStateMachine, TBaseState> : IStateManager where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public TStateMachine StateMachine { get; }
+        public TStateMachine StateMachine { get; set; }
         public ReadOnlyDictionary<Type, TBaseState> States { get; }
 
-        public void Initialize();
+        public void Initialize(TStateMachine stateMachine);
 
         public TState GetState<TState>() where TState : TBaseState;
         public bool SetState<TState>() where TState : TBaseState;
@@ -102,16 +102,14 @@ namespace Template.Core
 
     public abstract class StateManager<TStateMachine, TBaseState> : MonoBehaviour, IStateManager<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public abstract TStateMachine StateMachine { get; }
+        public abstract TStateMachine StateMachine { get; set; }
         public abstract ReadOnlyDictionary<Type, TBaseState> States { get; }
 
-        public virtual void Initialize()
+        public virtual void Initialize(TStateMachine stateMachine)
         {
+            StateMachine = stateMachine;
             foreach (var state in States.Values)
-            {
-                state.StateMachine = StateMachine;
-                StateMachine.StartCoroutine(state.Initialize());
-            }
+                state.Initialize(stateMachine);
         }
 
         public virtual TState GetState<TState>() where TState : TBaseState

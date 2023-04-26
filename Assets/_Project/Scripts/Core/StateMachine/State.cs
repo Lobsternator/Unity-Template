@@ -12,15 +12,15 @@ namespace Template.Core
 
         public bool RemoveTransition(int input);
 
-        // NOTE: Has to be called manually!
-        public IEnumerator Initialize();
-
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
     }
     public interface IState<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; set; }
+
+        // NOTE: Has to be called manually!
+        public void Initialize(TStateMachine stateMachine);
 
         public bool AddTransition(int input, TBaseState output);
         public bool GetTransition(int input, out TBaseState state);
@@ -31,10 +31,15 @@ namespace Template.Core
     [Serializable]
     public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public bool Enabled => ReferenceEquals(StateMachine.GetState(), this);
+        public bool Enabled => ReferenceEquals(StateMachine?.GetState(), this);
         public TStateMachine StateMachine { get; set; }
 
         protected Dictionary<int, TBaseState> _transitions = new Dictionary<int, TBaseState>();
+
+        public virtual void Initialize(TStateMachine stateMachine)
+        {
+            StateMachine = stateMachine;
+        }
 
         public bool AddTransition(int input, TBaseState output)
         {
@@ -58,10 +63,6 @@ namespace Template.Core
             return _transitions.Remove(input);
         }
 
-        public virtual IEnumerator Initialize()
-        {
-            yield break;
-        }
         public virtual IEnumerator OnEnable()
         {
             yield break;
