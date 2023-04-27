@@ -15,68 +15,82 @@ namespace Template.Core
     [Serializable]
     public class HitstopSettings
     {
-        public float duration;
-        [Tooltip("Always goes between 0 and 1 on the time axis, and is later scaled by 'duration'.")]
+        [Min(0.0f)]
+        public float durationMultiplier;
         public AnimationCurve timeScaleCurve;
+    }
+
+    public class Hitstop
+    {
+        public Hitstop(float durationMultiplier, AnimationCurve timeScaleCurve, float originalTimeScale)
+        {
+            StartTime          = Time.unscaledTime;
+            DurationMultiplier = durationMultiplier;
+            _originalTimeScale = originalTimeScale;
+            TimeScaleCurve     = timeScaleCurve;
+        }
+
+        public float ModifiedTimeScale => EvaluateModifiedTimeScale(Mathf.Approximately(DurationMultiplier, 0.0f) ? Mathf.Infinity : (TimeScaleCurve.GetStartTime() + (Time.unscaledTime - StartTime) / DurationMultiplier));
+
+        public float Duration => TimeScaleCurve.GetDuration() * DurationMultiplier;
+        public float StartTime { get; }
+        public float EndTime => StartTime + Duration;
+
+        public float DurationMultiplier { get; }
+
+        private float _originalTimeScale;
+        public float OriginalTimeScale
+        {
+            get => _originalTimeScale;
+            set
+            {
+                _originalTimeScale = value;
+                TimeManager.SetTimeScale(ModifiedTimeScale, HitstopInteraction.Ignore);
+            }
+        }
+
+        public AnimationCurve TimeScaleCurve { get; }
+
+        public float EvaluateModifiedTimeScale(float time)
+        {
+            return _originalTimeScale * TimeScaleCurve.Evaluate(Mathf.Clamp(time, TimeScaleCurve.GetStartTime(), TimeScaleCurve.GetEndTime()));
+        }
     }
 
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -500)]
     public class TimeManager : PersistentRuntimeSingleton<TimeManager>
     {
         public static bool IsTimeFrozen { get; private set; }
-        public static bool IsDoingHitstop => _hitstop is not null;
+        public static bool IsDoingHitstop => CurrentHitstop is not null;
+        public static Hitstop CurrentHitstop { get; private set; }
 
         public static event Action<float> TimeScaleChanged;
         public static event Action TimeFroze;
         public static event Action<float> TimeUnfroze;
-        public static event Action HitstopBegan;
+        public static event Action<Hitstop> HitstopBegan;
         public static event Action HitstopEnded;
 
-        private class Hitstop
-        {
-            public Hitstop(float duration, AnimationCurve timeScaleCurve, float returnTimeScale)
-            {
-                this.startTime         = Time.unscaledTime;
-                this.duration          = duration;
-                this.originalTimeScale = returnTimeScale;
-                this.timeScaleCurve    = timeScaleCurve;
-            }
-
-            public float CurrentModifiedTimeScale => EvaluateModifiedTimeScale((Time.unscaledTime - startTime) / duration);
-
-            public float startTime;
-            public float duration;
-            public float originalTimeScale;
-            public AnimationCurve timeScaleCurve;
-
-            public float EvaluateModifiedTimeScale(float normalizedTime)
-            {
-                return originalTimeScale * timeScaleCurve.Evaluate(normalizedTime);
-            }
-        }
-
-        private static Hitstop _hitstop;
-
+        public static void SetTimeScale(float timeScale) => SetTimeScale(timeScale, HitstopInteraction.Multiply);
         public static void SetTimeScale(float timeScale, HitstopInteraction hitstopInteraction)
         {
             float oldTimeScale = Time.timeScale;
             float newTimeScale;
 
-            if (hitstopInteraction == HitstopInteraction.Ignore || _hitstop is null)
+            if (hitstopInteraction == HitstopInteraction.Ignore || CurrentHitstop is null)
                 newTimeScale = timeScale;
 
             else if (hitstopInteraction == HitstopInteraction.Multiply)
             {
-                _hitstop.originalTimeScale = timeScale;
-                newTimeScale               = _hitstop.CurrentModifiedTimeScale;
+                CurrentHitstop.OriginalTimeScale = timeScale;
+                newTimeScale                     = CurrentHitstop.ModifiedTimeScale;
             }
             else if (hitstopInteraction == HitstopInteraction.Cancel)
             {
                 if (Instance)
                     Instance.StopAllCoroutines();
 
-                _hitstop     = null;
-                newTimeScale = timeScale;
+                CurrentHitstop = null;
+                newTimeScale   = timeScale;
                 HitstopEnded?.Invoke();
             }
             else
@@ -85,7 +99,7 @@ namespace Template.Core
             if (Mathf.Approximately(oldTimeScale, newTimeScale))
                 return;
 
-            Time.timeScale = newTimeScale;
+            Time.timeScale = Mathf.Max(newTimeScale, 0.0f);
             TimeScaleChanged?.Invoke(newTimeScale);
 
             if (Mathf.Approximately(newTimeScale, 0.0f) && !Mathf.Approximately(oldTimeScale, 0.0f))
@@ -99,35 +113,25 @@ namespace Template.Core
                 TimeUnfroze?.Invoke(newTimeScale);
             }
         }
-        public static void SetTimeScale(float timeScale)
-        {
-            SetTimeScale(timeScale, HitstopInteraction.Multiply);
-        }
 
-        private static IEnumerator UpdateHitstop()
+        private static Hitstop DoHitstop_Internal(float durationMultiplier, AnimationCurve timeScaleCurve)
         {
-            while (Time.unscaledTime - _hitstop.startTime < _hitstop.duration)
+            float originalTimeScale;
+            if (CurrentHitstop is not null)
             {
-                yield return CoroutineUtility.WaitForFrames(1);
-
-                SetTimeScale(_hitstop.CurrentModifiedTimeScale, HitstopInteraction.Ignore);
+                originalTimeScale = CurrentHitstop.OriginalTimeScale;
+                CancelHitstop();
             }
+            else
+                originalTimeScale = Time.timeScale;
 
-            SetTimeScale(_hitstop.originalTimeScale, HitstopInteraction.Cancel);
-        }
+            CurrentHitstop = new Hitstop(Mathf.Max(durationMultiplier, 0.0f), timeScaleCurve, originalTimeScale);
 
-        private static void DoHitstop_Internal(float duration, AnimationCurve timeScaleCurve)
-        {
-            CancelHitstop();
-
-            float returnTimeScale = _hitstop is not null ? _hitstop.originalTimeScale : Time.timeScale;
-            _hitstop              = new Hitstop(duration, timeScaleCurve, returnTimeScale);
-
-            SetTimeScale(_hitstop.EvaluateModifiedTimeScale(0.0f), HitstopInteraction.Ignore);
-
-            HitstopBegan?.Invoke();
-
+            SetTimeScale(CurrentHitstop.ModifiedTimeScale, HitstopInteraction.Ignore);
             Instance.StartCoroutine(UpdateHitstop());
+
+            HitstopBegan?.Invoke(CurrentHitstop);
+            return CurrentHitstop;
         }
 
         private static bool CanDoHitstop()
@@ -143,27 +147,41 @@ namespace Template.Core
             return true;
         }
 
-        public static void DoHitstop(HitstopSettings hitstopSettings)
+        public static Hitstop DoHitstop(HitstopSettings hitstopSettings)
         {
             if (!CanDoHitstop())
-                return;
+                return null;
 
-            DoHitstop_Internal(hitstopSettings.duration, hitstopSettings.timeScaleCurve);
+            return DoHitstop_Internal(hitstopSettings.durationMultiplier, hitstopSettings.timeScaleCurve);
         }
-        public static void DoHitstop(float duration, float timeScale)
+        public static Hitstop DoHitstop(float duration, float timeScale)
         {
             if (!CanDoHitstop())
-                return;
+                return null;
 
-            DoHitstop_Internal(duration, AnimationCurve.Constant(0, 1.0f, timeScale));
+            return DoHitstop_Internal(duration, AnimationCurve.Constant(0, 1.0f, timeScale));
         }
 
         public static void CancelHitstop()
         {
-            if (_hitstop is null)
+            if (CurrentHitstop is null)
                 return;
 
-            SetTimeScale(_hitstop.originalTimeScale, HitstopInteraction.Cancel);
+            SetTimeScale(CurrentHitstop.OriginalTimeScale, HitstopInteraction.Cancel);
+        }
+
+        private static IEnumerator UpdateHitstop()
+        {
+            float duration = CurrentHitstop.Duration;
+
+            while (Time.unscaledTime - CurrentHitstop.StartTime < duration)
+            {
+                yield return CoroutineUtility.WaitForFrames(1);
+
+                SetTimeScale(CurrentHitstop.ModifiedTimeScale, HitstopInteraction.Ignore);
+            }
+
+            SetTimeScale(CurrentHitstop.OriginalTimeScale, HitstopInteraction.Cancel);
         }
 
         protected override void OnApplicationQuit()

@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TestHitstopSettingsReference
   m_EditorClassIdentifier: 
   _value:
-    duration: 0.75
+    durationMultiplier: 0.75
     timeScaleCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.01234436
+        time: 0
         value: 0.114931405
         inSlope: 0.018282512
         outSlope: 0.018282512
@@ -36,7 +36,7 @@ MonoBehaviour:
         inWeight: 0.33333334
         outWeight: 0.37283775
       - serializedVersion: 3
-        time: 0.98750305
+        time: 1
         value: 0.7437515
         inSlope: 0.28923258
         outSlope: 0.28923258
@@ -47,7 +47,3 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  notifyChanges: 0
-  valueChanged:
-    m_PersistentCalls:
-      m_Calls: []

@@ -7,6 +7,21 @@ namespace Template.Core
 {
     public static class Extensions
     {
+        #region AnimationCurve
+        public static float GetStartTime(this AnimationCurve animationCurve)
+        {
+            return animationCurve.keys[0].time;
+        }
+        public static float GetEndTime(this AnimationCurve animationCurve)
+        {
+            return animationCurve.keys[animationCurve.length - 1].time;
+        }
+        public static float GetDuration(this AnimationCurve animationCurve)
+        {
+            return GetEndTime(animationCurve) - GetStartTime(animationCurve);
+        }
+        #endregion
+
         #region Physics
         public static Vector3 GetAverageContactNormal(this Collision collision)
         {
