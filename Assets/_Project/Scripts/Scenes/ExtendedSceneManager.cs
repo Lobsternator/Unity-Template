@@ -186,8 +186,24 @@ namespace Template.Scenes
             UnitySceneManager.MoveGameObjectToScene(go, scene);
         }
 
+        private static bool CanLoadScene()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning($"The application needs to be running in order to load a scene!");
+                return false;
+            }
+#endif
+
+            return true;
+        }
+
         private static AsyncSceneOperation LoadSceneAsync_Single(int buildIndex)
         {
+            if (!CanLoadScene())
+                return null;
+
             for (int i = 0; i < UnitySceneManager.sceneCount; i++)
             {
                 int otherBuildIndex = UnitySceneManager.GetSceneAt(i).buildIndex;
@@ -235,9 +251,25 @@ namespace Template.Scenes
                 throw new NotImplementedException();
         }
 
+        private static bool CanUnloadScene()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning($"The application needs to be running in order to unload a scene!");
+                return false;
+            }
+#endif
+
+            return true;
+        }
+
         public static AsyncSceneOperation UnloadSceneAsync(int buildIndex) => UnloadSceneAsync(buildIndex, UnloadSceneOptions.None);
         public static AsyncSceneOperation UnloadSceneAsync(int buildIndex, UnloadSceneOptions unloadOptions)
         {
+            if (!CanUnloadScene())
+                return null;
+
             if (IsSceneLoaded(buildIndex))
             {
                 AsyncSceneOperation operation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(buildIndex, unloadOptions), buildIndex);

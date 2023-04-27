@@ -23,8 +23,8 @@ namespace Template.Core
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -500)]
     public class TimeManager : PersistentRuntimeSingleton<TimeManager>
     {
-        public bool IsTimeFrozen { get; private set; }
-        public bool IsDoingHitstop => _hitstop is not null;
+        public static bool IsTimeFrozen { get; private set; }
+        public static bool IsDoingHitstop => _hitstop is not null;
 
         public static event Action<float> TimeScaleChanged;
         public static event Action TimeFroze;
@@ -55,9 +55,9 @@ namespace Template.Core
             }
         }
 
-        private Hitstop _hitstop;
+        private static Hitstop _hitstop;
 
-        public void SetTimeScale(float timeScale, HitstopInteraction hitstopInteraction)
+        public static void SetTimeScale(float timeScale, HitstopInteraction hitstopInteraction)
         {
             float oldTimeScale = Time.timeScale;
             float newTimeScale;
@@ -72,7 +72,9 @@ namespace Template.Core
             }
             else if (hitstopInteraction == HitstopInteraction.Cancel)
             {
-                StopAllCoroutines();
+                if (Instance)
+                    Instance.StopAllCoroutines();
+
                 _hitstop     = null;
                 newTimeScale = timeScale;
                 HitstopEnded?.Invoke();
@@ -97,12 +99,12 @@ namespace Template.Core
                 TimeUnfroze?.Invoke(newTimeScale);
             }
         }
-        public void SetTimeScale(float timeScale)
+        public static void SetTimeScale(float timeScale)
         {
             SetTimeScale(timeScale, HitstopInteraction.Multiply);
         }
 
-        private IEnumerator UpdateHitstop()
+        private static IEnumerator UpdateHitstop()
         {
             while (Time.unscaledTime - _hitstop.startTime < _hitstop.duration)
             {
@@ -114,8 +116,10 @@ namespace Template.Core
             SetTimeScale(_hitstop.originalTimeScale, HitstopInteraction.Cancel);
         }
 
-        private void DoHitstop_Internal(float duration, AnimationCurve timeScaleCurve)
+        private static void DoHitstop_Internal(float duration, AnimationCurve timeScaleCurve)
         {
+            CancelHitstop();
+
             float returnTimeScale = _hitstop is not null ? _hitstop.originalTimeScale : Time.timeScale;
             _hitstop              = new Hitstop(duration, timeScaleCurve, returnTimeScale);
 
@@ -123,21 +127,38 @@ namespace Template.Core
 
             HitstopBegan?.Invoke();
 
-            StartCoroutine(UpdateHitstop());
+            Instance.StartCoroutine(UpdateHitstop());
         }
 
-        public void DoHitstop(HitstopSettings hitstopSettings)
+        private static bool CanDoHitstop()
         {
-            CancelHitstop();
+#if UNITY_EDITOR
+            if (!Instance)
+            {
+                Debug.LogWarning($"{nameof(TimeManager)} instance needs to exist in order to do a hitstop!");
+                return false;
+            }
+#endif
+
+            return true;
+        }
+
+        public static void DoHitstop(HitstopSettings hitstopSettings)
+        {
+            if (!CanDoHitstop())
+                return;
+
             DoHitstop_Internal(hitstopSettings.duration, hitstopSettings.timeScaleCurve);
         }
-        public void DoHitstop(float duration, float timeScale)
+        public static void DoHitstop(float duration, float timeScale)
         {
-            CancelHitstop();
+            if (!CanDoHitstop())
+                return;
+
             DoHitstop_Internal(duration, AnimationCurve.Constant(0, 1.0f, timeScale));
         }
 
-        public void CancelHitstop()
+        public static void CancelHitstop()
         {
             if (_hitstop is null)
                 return;

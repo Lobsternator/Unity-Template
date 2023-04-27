@@ -20,57 +20,47 @@ namespace Template.Saving
         public static Action<ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>> Loading;
 
         private static StringBuilder _regexPatternBuilder = new StringBuilder();
-        private string _fullSaveDirectoryPath;
+
+        private static string GetSaveFileRegexPattern_Internal(string saveSlotPattern)
+        {
+            string savePath     = SaveManagerData.Instance.SavePath;
+            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
+            string saveFileExt  = Path.GetExtension(savePath);
+            string period       = "";
+
+            if (saveFileExt.StartsWith('.'))
+            {
+                saveFileExt = saveFileExt.Substring(1);
+                period      = @"\.";
+            }
+
+            _regexPatternBuilder.Clear()
+                .Append(saveFileName)
+                .Append(saveSlotPattern)
+                .Append(period)
+                .Append(saveFileExt);
+
+            return _regexPatternBuilder.ToString();
+        }
 
         public static string GetSaveFileRegexPattern()
         {
-            string savePath     = SaveManagerData.Instance.SavePath;
-            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
-            string saveFileExt  = Path.GetExtension(savePath);
-            string period       = "";
-
-            if (saveFileExt.StartsWith('.'))
-            {
-                saveFileExt = saveFileExt.Substring(1);
-                period      = @"\.";
-            }
-
-            _regexPatternBuilder.Clear()
-                .Append(saveFileName)
-                .Append("[0-9]*")
-                .Append(period)
-                .Append(saveFileExt);
-
-            return _regexPatternBuilder.ToString();
+            return GetSaveFileRegexPattern_Internal("[0-9]*");
         }
         public static string GetSaveFileRegexPattern(int saveSlot)
         {
-            string savePath     = SaveManagerData.Instance.SavePath;
-            string saveFileName = Path.GetFileNameWithoutExtension(savePath);
-            string saveFileExt  = Path.GetExtension(savePath);
-            string period       = "";
-
-            if (saveFileExt.StartsWith('.'))
-            {
-                saveFileExt = saveFileExt.Substring(1);
-                period      = @"\.";
-            }
-
-            _regexPatternBuilder.Clear()
-                .Append(saveFileName)
-                .Append(saveSlot)
-                .Append(period)
-                .Append(saveFileExt);
-
-            return _regexPatternBuilder.ToString();
+            return GetSaveFileRegexPattern_Internal(saveSlot.ToString());
         }
 
-        private bool WriteSaveDataToFile(Dictionary<DataKey, SerializableObjectDataContainer> saveData, int saveSlot)
+        private static bool WriteSaveDataToFile(Dictionary<DataKey, SerializableObjectDataContainer> saveData, int saveSlot)
         {
-            if (!Directory.Exists(_fullSaveDirectoryPath))
-                Directory.CreateDirectory(_fullSaveDirectoryPath);
+            SaveManagerData data         = SaveManagerData.Instance;
+            string fullSaveDirectoryPath = data.FullSaveDirectoryPath;
 
-            string fullSaveFilePath = PersistentData.GetFullSaveFilePath(saveSlot);
+            if (!Directory.Exists(fullSaveDirectoryPath))
+                Directory.CreateDirectory(fullSaveDirectoryPath);
+
+            string fullSaveFilePath = data.GetFullSaveFilePath(saveSlot);
 
             using (FileStream fs = new FileStream(fullSaveFilePath, FileMode.OpenOrCreate))
             {
@@ -89,10 +79,9 @@ namespace Template.Saving
 
             return true;
         }
-
-        private bool ReadSaveDataFromFile(int saveSlot, out Dictionary<DataKey, SerializableObjectDataContainer> saveData)
+        private static bool ReadSaveDataFromFile(int saveSlot, out Dictionary<DataKey, SerializableObjectDataContainer> saveData)
         {
-            string fullSaveFilePath = PersistentData.GetFullSaveFilePath(saveSlot);
+            string fullSaveFilePath = SaveManagerData.Instance.GetFullSaveFilePath(saveSlot);
 
             if (!File.Exists(fullSaveFilePath))
             {
@@ -120,8 +109,16 @@ namespace Template.Saving
             return true;
         }
 
-        public bool SaveToSlot(int saveSlot)
+        public static bool SaveToSlot(int saveSlot)
         {
+#if UNITY_EDITOR
+            if (!Instance)
+            {
+                Debug.LogWarning($"{nameof(SaveManager)} instance needs to exist in order to save!");
+                return false;
+            }
+#endif
+
             var finalSaveData    = new Dictionary<DataKey, SerializableObjectDataContainer>();
             SaveData[] saveDatas = Saving?.Invoke();
             if (saveDatas is null)
@@ -140,24 +137,30 @@ namespace Template.Saving
 
             return WriteSaveDataToFile(finalSaveData, saveSlot);
         }
-        public bool LoadFromSlot(int saveSlot)
+        public static bool LoadFromSlot(int saveSlot)
         {
-            if (ReadSaveDataFromFile(saveSlot, out var finalSaveData))
+#if UNITY_EDITOR
+            if (!Instance)
             {
-                Loading?.Invoke(new ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>(finalSaveData));
-
-                return true;
+                Debug.LogWarning($"{nameof(SaveManager)} instance needs to exist in order to load!");
+                return false;
             }
+#endif
 
-            return false;
+            if (!ReadSaveDataFromFile(saveSlot, out var finalSaveData))
+                return false;
+
+            Loading?.Invoke(new ReadOnlyDictionary<DataKey, SerializableObjectDataContainer>(finalSaveData));
+
+            return true;
         }
 
-        public bool HasSaveSlot(int saveSlot)
+        public static bool HasSaveSlot(int saveSlot)
         {
-            string pattern     = GetSaveFileRegexPattern(saveSlot);
-            Regex regex        = new Regex(pattern, RegexOptions.IgnoreCase);
+            string pattern = GetSaveFileRegexPattern(saveSlot);
+            Regex regex    = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files     = Directory.GetFiles(_fullSaveDirectoryPath);
+            string[] files = Directory.GetFiles(SaveManagerData.Instance.FullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
@@ -169,12 +172,12 @@ namespace Template.Saving
             return false;
         }
 
-        public bool ClearSaveSlot(int saveSlot)
+        public static bool ClearSaveSlot(int saveSlot)
         {
-            string pattern      = GetSaveFileRegexPattern(saveSlot);
-            Regex regex         = new Regex(pattern, RegexOptions.IgnoreCase);
+            string pattern = GetSaveFileRegexPattern(saveSlot);
+            Regex regex    = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files      = Directory.GetFiles(_fullSaveDirectoryPath);
+            string[] files = Directory.GetFiles(SaveManagerData.Instance.FullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
@@ -188,13 +191,12 @@ namespace Template.Saving
 
             return false;
         }
-
-        public void ClearAllSaveSlots()
+        public static void ClearAllSaveSlots()
         {
-            string pattern      = GetSaveFileRegexPattern();
-            Regex regex         = new Regex(pattern, RegexOptions.IgnoreCase);
+            string pattern = GetSaveFileRegexPattern();
+            Regex regex    = new Regex(pattern, RegexOptions.IgnoreCase);
 
-            string[] files      = Directory.GetFiles(_fullSaveDirectoryPath);
+            string[] files = Directory.GetFiles(SaveManagerData.Instance.FullSaveDirectoryPath);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
@@ -209,8 +211,6 @@ namespace Template.Saving
             base.Awake();
             if (IsDuplicate)
                 return;
-
-            _fullSaveDirectoryPath = PersistentData.FullSaveDirectoryPath;
 
             SerializationUtility.CompileAndCacheKnownCastDelegates();
         }

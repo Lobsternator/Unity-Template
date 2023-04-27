@@ -20,8 +20,8 @@ namespace Template.Gameplay
 
         private void OnBecameGrounded()
         {
-            AudioManager.Instance.PlaySound(ImpactSound, ImpactSoundSettings);
-            TimeManager.Instance.DoHitstop(ImpactHitstopSettings);
+            AudioManager.PlaySound(ImpactSound, ImpactSoundSettings);
+            TimeManager.DoHitstop(ImpactHitstopSettings);
 
             foreach (TestObjectB2D testObjectB in FindObjectsOfType<TestObjectB2D>())
                 testObjectB.Launch(LaunchForce);

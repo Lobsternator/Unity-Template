@@ -17,17 +17,17 @@ namespace Template.UI
 
         public void SetTimeScale(float timeScale)
         {
-            TimeManager.Instance.SetTimeScale(timeScale, hitstopInteraction);
+            TimeManager.SetTimeScale(timeScale, hitstopInteraction);
         }
 
         public void DoHitstop(HitstopSettingsReference hitstopSettings)
         {
-            TimeManager.Instance.DoHitstop(hitstopSettings.Value);
+            TimeManager.DoHitstop(hitstopSettings.Value);
         }
 
         public void CancelHitstop()
         {
-            TimeManager.Instance.CancelHitstop();
+            TimeManager.CancelHitstop();
         }
 
         public void ResetHitstopInteraction()

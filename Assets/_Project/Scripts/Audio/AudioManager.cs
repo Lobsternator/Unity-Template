@@ -27,9 +27,9 @@ namespace Template.Audio
         public static event Action<AudioObject> OnAudioStartedPlaying;
         public static event Action<AudioObject> OnAudioStoppedPlaying;
 
-        private ObjectPool<AudioObject> _audioObjectPool;
+        private static ObjectPool<AudioObject> _audioObjectPool;
 
-        private AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
+        private static AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
         {
             StudioEventEmitter eventEmitter = audioObject.EventEmitter;
             eventEmitter.EventReference     = eventReference;
@@ -46,36 +46,49 @@ namespace Template.Audio
             return audioObject;
         }
 
-        public AudioObject PlaySound(EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
+        private static bool CanPlaySound()
         {
-            if (!isActiveAndEnabled)
+#if UNITY_EDITOR
+            if (!Instance)
+            {
+                Debug.LogWarning($"{nameof(AudioManager)} instance needs to exist in order to play sounds!");
+                return false;
+            }
+#endif
+
+            return Instance.isActiveAndEnabled;
+        }
+
+        public static AudioObject PlaySound(EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
                 return null;
 
             AudioObject audioObject = _audioObjectPool.Get();
 
             return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, float volume, params AudioParameter[] parameters)
+        public static AudioObject PlaySound(EventReference eventReference, float volume, params AudioParameter[] parameters)
         {
-            if (!isActiveAndEnabled)
+            if (!CanPlaySound())
                 return null;
 
             AudioObject audioObject = _audioObjectPool.Get();
 
             return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, params AudioParameter[] parameters)
+        public static AudioObject PlaySound(EventReference eventReference, params AudioParameter[] parameters)
         {
-            if (!isActiveAndEnabled)
+            if (!CanPlaySound())
                 return null;
 
             AudioObject audioObject = _audioObjectPool.Get();
 
             return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
         }
-        public AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params AudioParameter[] parameters)
+        public static AudioObject PlaySound(EventReference eventReference, AudioEventSettings settings, params AudioParameter[] parameters)
         {
-            if (!isActiveAndEnabled)
+            if (!CanPlaySound())
                 return null;
 
             AudioObject audioObject        = _audioObjectPool.Get();
@@ -87,28 +100,28 @@ namespace Template.Audio
             return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, allParameters);
         }
 
-        private AudioObject OnAudioObjectCreate()
+        private static AudioObject OnAudioObjectCreate()
         {
-            AudioObject audioObject     = Instantiate(PersistentData.audioObjectPrefab, transform).GetComponent<AudioObject>();
+            AudioObject audioObject     = Instantiate(AudioManagerData.Instance.audioObjectPrefab, Instance.transform).GetComponent<AudioObject>();
             audioObject.StoppedPlaying += OnAudioObjectStoppedPlaying;
 
             return audioObject;
         }
-        private void OnAudioObjectGet(AudioObject audioObject)
+        private static void OnAudioObjectGet(AudioObject audioObject)
         {
             audioObject.gameObject.SetActive(true);
         }
-        private void OnAudioObjectRelease(AudioObject audioObject)
+        private static void OnAudioObjectRelease(AudioObject audioObject)
         {
             audioObject.gameObject.SetActive(false);
         }
-        private void OnAudioObjectDestroy(AudioObject audioObject)
+        private static void OnAudioObjectDestroy(AudioObject audioObject)
         {
             audioObject.StoppedPlaying -= OnAudioObjectStoppedPlaying;
             Destroy(audioObject.gameObject);
         }
 
-        private void OnAudioObjectStoppedPlaying(AudioObject audioObject)
+        private static void OnAudioObjectStoppedPlaying(AudioObject audioObject)
         {
             _audioObjectPool.Release(audioObject);
             OnAudioStoppedPlaying?.Invoke(audioObject);

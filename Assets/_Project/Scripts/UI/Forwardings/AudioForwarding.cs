@@ -52,7 +52,7 @@ namespace Template.UI
 
         public void PlaySound(ScriptableEventReference eventReference)
         {
-            AudioManager.Instance.PlaySound(eventReference.Value, Volume, Pitch, parameters.Values.ToArray());
+            AudioManager.PlaySound(eventReference.Value, Volume, Pitch, parameters.Values.ToArray());
         }
     }
 }

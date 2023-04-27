@@ -7,13 +7,22 @@ namespace Template.UI
 {
     public class SaveForwarding : MonoBehaviour
     {
-        public void Save(int slot)
+        public void SaveToSlot(int slot)
         {
-            SaveManager.Instance.SaveToSlot(slot);
+            SaveManager.SaveToSlot(slot);
         }
-        public void Load(int slot)
+        public void LoadFromSlot(int slot)
         {
-            SaveManager.Instance.LoadFromSlot(slot);
+            SaveManager.LoadFromSlot(slot);
+        }
+
+        public void ClearSlot(int slot)
+        {
+            SaveManager.ClearSaveSlot(slot);
+        }
+        public void ClearAllSlots()
+        {
+            SaveManager.ClearAllSaveSlots();
         }
     }
 }
