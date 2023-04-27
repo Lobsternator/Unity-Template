@@ -5,21 +5,6 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    public enum HitstopInteraction
-    {
-        Ignore,
-        Multiply,
-        Cancel
-    }
-
-    [Serializable]
-    public class HitstopSettings
-    {
-        [Min(0.0f)]
-        public float durationMultiplier;
-        public AnimationCurve timeScaleCurve;
-    }
-
     public class Hitstop
     {
         public Hitstop(float durationMultiplier, AnimationCurve timeScaleCurve, float originalTimeScale)
@@ -57,10 +42,16 @@ namespace Template.Core
         }
     }
 
+    public enum HitstopInteraction
+    {
+        Ignore,
+        Multiply,
+        Cancel
+    }
+
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -500)]
     public class TimeManager : PersistentRuntimeSingleton<TimeManager>
     {
-        public static bool IsTimeFrozen { get; private set; }
         public static bool IsDoingHitstop => CurrentHitstop is not null;
         public static Hitstop CurrentHitstop { get; private set; }
 
@@ -103,15 +94,10 @@ namespace Template.Core
             TimeScaleChanged?.Invoke(newTimeScale);
 
             if (Mathf.Approximately(newTimeScale, 0.0f) && !Mathf.Approximately(oldTimeScale, 0.0f))
-            {
-                IsTimeFrozen = true;
                 TimeFroze?.Invoke();
-            }
+
             else if (Mathf.Approximately(oldTimeScale, 0.0f) && !Mathf.Approximately(newTimeScale, 0.0f))
-            {
-                IsTimeFrozen = false;
                 TimeUnfroze?.Invoke(newTimeScale);
-            }
         }
 
         private static Hitstop DoHitstop_Internal(float durationMultiplier, AnimationCurve timeScaleCurve)
