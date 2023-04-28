@@ -81,4 +81,10 @@ namespace Template.Core
         public ReadOnlyDictionary<Type, TBaseState> States { get; }
     }
     public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public sealed class GenerateStateContainerAttribute : Attribute
+    {
+
+    }
 }

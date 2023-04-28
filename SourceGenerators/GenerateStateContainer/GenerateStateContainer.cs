@@ -207,22 +207,6 @@ namespace GenerateStateContainer
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            StringBuilder sourceBuilder = new StringBuilder();
-            sourceBuilder.AppendLine("using System;");
-            sourceBuilder.AppendLine();
-            sourceBuilder.Append("namespace ");
-            sourceBuilder.AppendLine(GeneratorUtility.BaseNamespaceName);
-            sourceBuilder.AppendLine("{");
-            sourceBuilder.AppendLine("\t[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]");
-            sourceBuilder.Append("\tpublic class ");
-            sourceBuilder.Append(GeneratorUtility.ContainerAttributeNameWithoutNamespace);
-            sourceBuilder.AppendLine("Attribute : Attribute");
-            sourceBuilder.AppendLine("\t{");
-            sourceBuilder.AppendLine();
-            sourceBuilder.AppendLine("\t}");
-            sourceBuilder.AppendLine("}");
-
-            context.RegisterForPostInitialization(i => i.AddSource("GenerateStateContainerAttribute_g.cs", sourceBuilder.ToString()));
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
         }
 
