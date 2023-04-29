@@ -39,7 +39,7 @@ namespace Template.Gameplay
     [Serializable]
     public class DamagePool
     {
-        public MonoBehaviour Owner { get; }
+        public MonoBehaviour Owner { get; set; }
         public bool IsAtMinDamage => Mathf.Approximately(Damage, MinDamage);
         public bool IsAtMaxDamage => Mathf.Approximately(Damage, MaxDamage);
         [field: SerializeField] public bool IsDamageable { get; set; } = true;
@@ -58,6 +58,30 @@ namespace Template.Gameplay
         public event Action<DamageEventArgs> MinDamageChanged;
         public event Action<DamageEventArgs> MaxDamageChanged;
 
+        public DamagePool()
+        {
+            Owner     = null;
+            Damage    = 0.0f;
+            MinDamage = 0.0f;
+            MaxDamage = 100.0f;
+
+            _oldMinDamage = MinDamage;
+            _oldMaxDamage = MaxDamage;
+            _oldDamage    = Damage;
+        }
+        public DamagePool(float damage, float minDamage, float maxDamage)
+        {
+            Owner     = null;
+            Damage    = damage;
+            MinDamage = minDamage;
+            MaxDamage = maxDamage;
+
+            _oldMinDamage = MinDamage;
+            _oldMaxDamage = MaxDamage;
+            _oldDamage    = Damage;
+
+            Validate();
+        }
         public DamagePool(MonoBehaviour owner)
         {
             Owner     = owner;
