@@ -20,7 +20,14 @@ namespace Template.Core
         {
             return GetEndTime(animationCurve) - GetStartTime(animationCurve);
         }
-        #endregion
+        #endregion AnimationCurve
+
+        #region LayerMask
+        public static bool HasLayer(this LayerMask layerMask, int layer)
+        {
+            return layerMask == (layerMask | (1 << layer));
+        }
+        #endregion LayerMask
 
         #region Physics
         public static Vector3 GetAverageContactNormal(this Collision collision)
@@ -121,6 +128,6 @@ namespace Template.Core
         {
             return HasInterface(type, typeof(TInterface));
         }
-        #endregion
+        #endregion Type
     }
 }
