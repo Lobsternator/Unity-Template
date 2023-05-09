@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Template.UI
 {
@@ -14,6 +15,10 @@ namespace Template.UI
                 return;
 
             eventSystem.SetSelectedGameObject(obj);
+        }
+        public void SetSelectedObject(Selectable selectable)
+        {
+            selectable.Select();
         }
     }
 }
