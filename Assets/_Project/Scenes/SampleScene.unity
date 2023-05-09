@@ -1370,13 +1370,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 583820902}
-        m_TargetAssemblyTypeName: Template.UI.TimeForwarding, _Project
+        m_TargetAssemblyTypeName: Template.UI.TimeForwarding, Template
         m_MethodName: DoHitstop
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: ac9390320470e6f4fbe415b36732ff58, type: 2}
           m_ObjectArgumentAssemblyTypeName: Template.Core.HitstopSettingsReference,
-            _Project
+            Template
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1727,13 +1727,13 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 636442566}
-        m_TargetAssemblyTypeName: Template.UI.AudioForwarding, _Project
+        m_TargetAssemblyTypeName: Template.UI.AudioForwarding, Template
         m_MethodName: PlaySound
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 0a3185e7beb033445b3df7d3c9ecfc3e, type: 2}
           m_ObjectArgumentAssemblyTypeName: Template.Audio.ScriptableEventReference,
-            _Project
+            Template
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
