@@ -1,8 +1,9 @@
 {
-    "name": "_Project",
+    "name": "Template",
     "rootNamespace": "Template",
     "references": [
-        "GUID:9f00d6b745e51314b9eaf9bad6f9608c"
+        "GUID:0c752da273b17c547ae705acf0f2adf2",
+        "GUID:478a2357cc57436488a56e564b08d223"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
