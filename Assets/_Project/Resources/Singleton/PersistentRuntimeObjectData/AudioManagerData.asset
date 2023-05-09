@@ -15,7 +15,7 @@ MonoBehaviour:
   <InitSettings>k__BackingField:
     <StartEnabled>k__BackingField: 1
     <StartActive>k__BackingField: 1
-    <StartStatic>k__BackingField: 1
-  bankLoaderPrefab: {fileID: 3277560898901216324, guid: ba0708c3db76527499a10524cf1babae, type: 3}
-  audioObjectPrefab: {fileID: 2627758121981109607, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
+    <StartStatic>k__BackingField: 0
+  bankLoaderPrefab: {fileID: 1036980501221272099, guid: ba0708c3db76527499a10524cf1babae, type: 3}
+  audioObjectPrefab: {fileID: -6321987758463485832, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
   maxNumAudioObjects: 20

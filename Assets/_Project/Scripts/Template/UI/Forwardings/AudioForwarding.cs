@@ -10,6 +10,7 @@ namespace Template.UI
     {
         public float Volume { get; set; } = 1.0f;
         public float Pitch { get; set; }  = 1.0f;
+        public Transform Follow { get; set; }
         public Dictionary<string, AudioParameter> parameters = new Dictionary<string, AudioParameter>();
 
         private string _selectedParameter = string.Empty;
@@ -38,6 +39,10 @@ namespace Template.UI
         {
             Pitch = 1.0f;
         }
+        public void ClearFollow()
+        {
+            Follow = null;
+        }
         public void ClearParameters()
         {
             parameters.Clear();
@@ -47,12 +52,17 @@ namespace Template.UI
         {
             ResetVolume();
             ResetPitch();
+            ClearFollow();
             ClearParameters();
         }
 
         public void PlaySound(ScriptableEventReference eventReference)
         {
             AudioManager.PlaySound(eventReference.Value, Volume, Pitch, parameters.Values.ToArray());
+        }
+        public void PlaySoundAttached(ScriptableEventReference eventReference)
+        {
+            AudioManager.PlaySoundAttached(eventReference.Value, Volume, Pitch, Follow, parameters.Values.ToArray());
         }
     }
 }

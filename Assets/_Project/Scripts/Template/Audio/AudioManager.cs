@@ -31,6 +31,9 @@ namespace Template.Audio
 
         private static AudioObject PlaySound_Internal(AudioObject audioObject, EventReference eventReference, float volume, float pitch, params AudioParameter[] parameters)
         {
+            audioObject.Attacher!.enabled = true;
+            audioObject.Attacher!.Update();
+
             StudioEventEmitter eventEmitter = audioObject.EventEmitter;
             eventEmitter.EventReference     = eventReference;
 
@@ -44,6 +47,16 @@ namespace Template.Audio
                 audioObject.SetParameter(parameters[i]);
 
             return audioObject;
+        }
+
+        private static AudioParameter[] CombineParameters(ICollection<AudioParameter> parameterCollectionA, ICollection<AudioParameter> parameterCollectionB)
+        {
+            AudioParameter[] allParameters = new AudioParameter[parameterCollectionA.Count + parameterCollectionB.Count];
+
+            parameterCollectionA.CopyTo(allParameters, 0);
+            parameterCollectionB.CopyTo(allParameters, parameterCollectionA.Count);
+
+            return allParameters;
         }
 
         private static bool CanPlaySound()
@@ -64,7 +77,10 @@ namespace Template.Audio
             if (!CanPlaySound())
                 return null;
 
-            AudioObject audioObject = _audioObjectPool.Get();
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            Camera mainCamera                       = Camera.main;
+            audioObject.Attacher!.Follow            = mainCamera ? mainCamera.transform : null;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
 
             return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
         }
@@ -73,7 +89,10 @@ namespace Template.Audio
             if (!CanPlaySound())
                 return null;
 
-            AudioObject audioObject = _audioObjectPool.Get();
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            Camera mainCamera                       = Camera.main;
+            audioObject.Attacher!.Follow            = mainCamera ? mainCamera.transform : null;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
 
             return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
         }
@@ -82,7 +101,10 @@ namespace Template.Audio
             if (!CanPlaySound())
                 return null;
 
-            AudioObject audioObject = _audioObjectPool.Get();
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            Camera mainCamera                       = Camera.main;
+            audioObject.Attacher!.Follow            = mainCamera ? mainCamera.transform : null;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
 
             return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
         }
@@ -91,18 +113,152 @@ namespace Template.Audio
             if (!CanPlaySound())
                 return null;
 
-            AudioObject audioObject        = _audioObjectPool.Get();
-            AudioParameter[] allParameters = new AudioParameter[settings.parameters.Count + parameters.Length];
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            Camera mainCamera                       = Camera.main;
+            audioObject.Attacher!.Follow            = mainCamera ? mainCamera.transform : null;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
 
-            settings.parameters.CopyTo(allParameters);
-            parameters.CopyTo(allParameters, settings.parameters.Count);
+            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, CombineParameters(settings.parameters, parameters));
+        }
 
-            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, allParameters);
+        public static AudioObject PlaySoundAttached(EventReference eventReference, float volume, float pitch, Transform follow, Vector3 followOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = followOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, float volume, Transform follow, Vector3 followOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = followOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, Transform follow, Vector3 followOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = followOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, AudioEventSettings settings, Transform follow, Vector3 followOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = followOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, CombineParameters(settings.parameters, parameters));
+        }
+
+        public static AudioObject PlaySoundAttached(EventReference eventReference, float volume, float pitch, Transform follow, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, float volume, Transform follow, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, Transform follow, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
+
+            return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttached(EventReference eventReference, AudioEventSettings settings, Transform follow, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = Vector3.zero;
+
+            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, CombineParameters(settings.parameters, parameters));
+        }
+
+        public static AudioObject PlaySoundAttachedLocal(EventReference eventReference, float volume, float pitch, Transform follow, Vector3 localFollowOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = localFollowOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, pitch, parameters);
+        }
+        public static AudioObject PlaySoundAttachedLocal(EventReference eventReference, float volume, Transform follow, Vector3 localFollowOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = localFollowOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, volume, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttachedLocal(EventReference eventReference, Transform follow, Vector3 localFollowOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = localFollowOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, 1.0f, 1.0f, parameters);
+        }
+        public static AudioObject PlaySoundAttachedLocal(EventReference eventReference, AudioEventSettings settings, Transform follow, Vector3 localFollowOffset, params AudioParameter[] parameters)
+        {
+            if (!CanPlaySound())
+                return null;
+
+            AudioObject audioObject                 = _audioObjectPool.Get();
+            audioObject.Attacher!.Follow            = follow;
+            audioObject.Attacher!.LocalFollowOffset = localFollowOffset;
+
+            return PlaySound_Internal(audioObject, eventReference, settings.volume, settings.pitch, CombineParameters(settings.parameters, parameters));
         }
 
         private static AudioObject OnAudioObjectCreate()
         {
-            AudioObject audioObject     = Instantiate(AudioManagerData.Instance.audioObjectPrefab, Instance.transform).GetComponent<AudioObject>();
+            AudioObject audioObject     = Instantiate(AudioManagerData.Instance.audioObjectPrefab, Instance.transform).AudioObject;
             audioObject.StoppedPlaying += OnAudioObjectStoppedPlaying;
 
             return audioObject;

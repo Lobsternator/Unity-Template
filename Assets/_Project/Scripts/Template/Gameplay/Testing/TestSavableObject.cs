@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using Template.Saving;
 using Template.Saving.Serialization;
-using Template.Core;
 
 namespace Template.Gameplay
 {

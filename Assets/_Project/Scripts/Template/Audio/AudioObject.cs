@@ -25,6 +25,20 @@ namespace Template.Audio
             }
         }
 
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        private AudioObjectAttacher? _attacher;
+        public AudioObjectAttacher? Attacher
+        {
+            get
+            {
+                if (!_attacher)
+                    _attacher = GetComponent<AudioObjectAttacher>();
+
+                return _attacher;
+            }
+        }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+
         public event Action<AudioObject> StartedPlaying;
         public event Action<AudioObject> StoppedPlaying;
 
@@ -39,8 +53,7 @@ namespace Template.Audio
         }
         private IEnumerator Fadeout(float duration)
         {
-            float instanceVolume;
-            GetVolume(out instanceVolume);
+            GetVolume(out var instanceVolume);
             float instanceOriginalVolume = instanceVolume;
 
             while (!Mathf.Approximately(instanceVolume, 0.0f))
@@ -51,6 +64,7 @@ namespace Template.Audio
                 SetVolume(instanceVolume - Time.deltaTime / duration * instanceOriginalVolume);
             }
 
+            SetVolume(instanceOriginalVolume);
             enabled = false;
         }
 
@@ -68,6 +82,11 @@ namespace Template.Audio
                 _fadeoutCoroutine = StartCoroutine(Fadeout(fadeout));
         }
 
+        public float GetParameter(string name)
+        {
+            EventEmitter.EventInstance.getParameterByName(name, out var value);
+            return value;
+        }
         public RESULT GetParameter(string name, out float value)
         {
             return EventEmitter.EventInstance.getParameterByName(name, out value);
@@ -85,6 +104,11 @@ namespace Template.Audio
             return SetParameter(parameter.name, parameter.value);
         }
 
+        public float GetVolume()
+        {
+            EventEmitter.EventInstance.getVolume(out var volume);
+            return volume;
+        }
         public RESULT GetVolume(out float volume)
         {
             return EventEmitter.EventInstance.getVolume(out volume);
@@ -94,6 +118,11 @@ namespace Template.Audio
             return EventEmitter.EventInstance.setVolume(volume);
         }
 
+        public float GetPitch()
+        {
+            EventEmitter.EventInstance.getPitch(out var pitch);
+            return pitch;
+        }
         public RESULT GetPitch(out float pitch)
         {
             return EventEmitter.EventInstance.getPitch(out pitch);
@@ -103,9 +132,20 @@ namespace Template.Audio
             return EventEmitter.EventInstance.setPitch(pitch);
         }
 
+        public PLAYBACK_STATE GetPlaybackState()
+        {
+            EventEmitter.EventInstance.getPlaybackState(out var playbackState);
+            return playbackState;
+        }
         public RESULT GetPlaybackState(out PLAYBACK_STATE playbackState)
         {
             return EventEmitter.EventInstance.getPlaybackState(out playbackState);
+        }
+
+        private void Awake()
+        {
+            _eventEmitter = GetComponent<StudioEventEmitter>();
+            _attacher     = GetComponent<AudioObjectAttacher>();
         }
 
         private void OnEnable()
@@ -127,10 +167,7 @@ namespace Template.Audio
 
         private void Update()
         {
-            PLAYBACK_STATE playbackState;
-            GetPlaybackState(out playbackState);
-
-            if (playbackState == PLAYBACK_STATE.STOPPED)
+            if (GetPlaybackState() == PLAYBACK_STATE.STOPPED)
                 enabled = false;
         }
     }
