@@ -56,11 +56,11 @@ namespace Template.UI
             ClearParameters();
         }
 
-        public void PlaySound(ScriptableEventReference eventReference)
+        public void PlaySound(EventReferenceAsset eventReference)
         {
             AudioManager.PlaySound(eventReference.Value, Volume, Pitch, parameters.Values.ToArray());
         }
-        public void PlaySoundAttached(ScriptableEventReference eventReference)
+        public void PlaySoundAttached(EventReferenceAsset eventReference)
         {
             AudioManager.PlaySoundAttached(eventReference.Value, Volume, Pitch, Follow, parameters.Values.ToArray());
         }

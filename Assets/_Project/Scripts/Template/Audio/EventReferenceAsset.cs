@@ -7,7 +7,7 @@ using Template.Core;
 namespace Template.Audio
 {
     [CreateAssetMenu(fileName = "new EventReference", menuName = "Audio/EventReference")]
-    public class ScriptableEventReference : ScriptableReference<EventReference>
+    public class EventReferenceAsset : ScriptableReference<EventReference>
     {
 
     }

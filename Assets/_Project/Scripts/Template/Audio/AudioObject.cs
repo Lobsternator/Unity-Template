@@ -145,7 +145,6 @@ namespace Template.Audio
         private void Awake()
         {
             _eventEmitter = GetComponent<StudioEventEmitter>();
-            _attacher     = GetComponent<AudioObjectAttacher>();
         }
 
         private void OnEnable()
