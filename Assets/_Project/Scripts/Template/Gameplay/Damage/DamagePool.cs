@@ -29,6 +29,7 @@ namespace Template.Gameplay
 
         public float OldDamage { get; }
         public float NewDamage { get; }
+        public float DamageDifference => NewDamage - OldDamage;
         public IDamageType DamageType { get; }
 
         public DamagePool DamagePool { get; }
@@ -92,8 +93,6 @@ namespace Template.Gameplay
             _oldMinDamage = MinDamage;
             _oldMaxDamage = MaxDamage;
             _oldDamage    = Damage;
-
-            Validate();
         }
         public DamagePool(MonoBehaviour owner, float damage, float minDamage, float maxDamage)
         {
@@ -124,6 +123,10 @@ namespace Template.Gameplay
                 DamageChanged?.Invoke(eventArgs);
             }
         }
+        public void SetDamage(float damage, IDamageType damageType, MonoBehaviour eventInstigator) => SetDamage(damage, damageType, eventInstigator, null);
+        public void SetDamage(float damage, IDamageType damageType) => SetDamage(damage, damageType, null, null);
+        public void SetDamage(float damage) => SetDamage(damage, null, null, null);
+
         public void ApplyDamage(float baseDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
             if (!IsDamageable)
@@ -132,6 +135,9 @@ namespace Template.Gameplay
             float modifiedDamage = damageType is not null ? damageType.GetModifiedDamage(baseDamage, this, eventInstigator, damageCauser) : baseDamage;
             SetDamage(Damage + modifiedDamage, damageType, eventInstigator, damageCauser);
         }
+        public void ApplyDamage(float baseDamage, IDamageType damageType, MonoBehaviour eventInstigator) => ApplyDamage(baseDamage, damageType, eventInstigator, null);
+        public void ApplyDamage(float baseDamage, IDamageType damageType) => ApplyDamage(baseDamage, damageType, null, null);
+        public void ApplyDamage(float baseDamage) => ApplyDamage(baseDamage, null, null, null);
 
         public void SetMinDamage(float minDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
@@ -154,11 +160,19 @@ namespace Template.Gameplay
                 DamageChanged?.Invoke(eventArgs);
             }
         }
+        public void SetMinDamage(float minDamage, IDamageType damageType, MonoBehaviour eventInstigator) => SetMinDamage(minDamage, damageType, eventInstigator, null);
+        public void SetMinDamage(float minDamage, IDamageType damageType) => SetMinDamage(minDamage, damageType, null, null);
+        public void SetMinDamage(float minDamage) => SetMinDamage(minDamage, null, null, null);
+
+
         public void ApplyMinDamage(float baseMinDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
             float modifiedMinDamage = damageType is not null ? damageType.GetModifiedDamage(baseMinDamage, this, eventInstigator, damageCauser) : baseMinDamage;
             SetMinDamage(MinDamage + modifiedMinDamage, damageType, eventInstigator, damageCauser);
         }
+        public void ApplyMinDamage(float baseMinDamage, IDamageType damageType, MonoBehaviour eventInstigator) => ApplyMinDamage(baseMinDamage, damageType, eventInstigator, null);
+        public void ApplyMinDamage(float baseMinDamage, IDamageType damageType) => ApplyMinDamage(baseMinDamage, damageType, null, null);
+        public void ApplyMinDamage(float baseMinDamage) => ApplyMinDamage(baseMinDamage, null, null, null);
 
         public void SetMaxDamage(float maxDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
@@ -181,17 +195,24 @@ namespace Template.Gameplay
                 DamageChanged?.Invoke(eventArgs);
             }
         }
+        public void SetMaxDamage(float maxDamage, IDamageType damageType, MonoBehaviour eventInstigator) => SetMaxDamage(maxDamage, damageType, eventInstigator, null);
+        public void SetMaxDamage(float maxDamage, IDamageType damageType) => SetMaxDamage(maxDamage, damageType, null, null);
+        public void SetMaxDamage(float maxDamage) => SetMaxDamage(maxDamage, null, null, null);
+
         public void ApplyMaxDamage(float baseMaxDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
             float modifiedMaxDamage = damageType is not null ? damageType.GetModifiedDamage(baseMaxDamage, this, eventInstigator, damageCauser) : baseMaxDamage;
             SetMaxDamage(MaxDamage + modifiedMaxDamage, damageType, eventInstigator, damageCauser);
         }
+        public void ApplyMaxDamage(float baseMaxDamage, IDamageType damageType, MonoBehaviour eventInstigator) => ApplyMaxDamage(baseMaxDamage, damageType, eventInstigator, null);
+        public void ApplyMaxDamage(float baseMaxDamage, IDamageType damageType) => ApplyMaxDamage(baseMaxDamage, damageType, null, null);
+        public void ApplyMaxDamage(float baseMaxDamage) => ApplyMaxDamage(baseMaxDamage, null, null, null);
 
         public void Validate()
         {
-            SetMinDamage(MinDamage, AssetUtility.GetSingletonAsset<ValidateMinDamage_DamageType>(), null, null);
-            SetMaxDamage(MaxDamage, AssetUtility.GetSingletonAsset<ValidateMaxDamage_DamageType>(), null, null);
-            SetDamage(Damage, AssetUtility.GetSingletonAsset<ValidateDamage_DamageType>(), null, null);
+            SetMinDamage(MinDamage, AssetUtility.GetSingletonAsset<ValidateMinDamage_DamageType>());
+            SetMaxDamage(MaxDamage, AssetUtility.GetSingletonAsset<ValidateMaxDamage_DamageType>());
+            SetDamage(Damage, AssetUtility.GetSingletonAsset<ValidateDamage_DamageType>());
         }
     }
 }

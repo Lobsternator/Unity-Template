@@ -10,7 +10,7 @@ namespace Template.Gameplay
 
         private void OnDamageChanged(DamageEventArgs damageEventArgs)
         {
-            Debug.Log($"Damaged for {damageEventArgs.GetDamageDifference()}!");
+            Debug.Log($"Damaged for {damageEventArgs.DamageDifference}!");
         }
 
         private IEnumerator DamageSelf(float damage, float interval)
