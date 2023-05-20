@@ -300,6 +300,7 @@ namespace Template.Audio
             Instantiate(PersistentData.bankLoaderPrefab, transform);
         }
 
+#if UNITY_EDITOR
         protected override void OnApplicationQuit()
         {
             base.OnApplicationQuit();
@@ -307,5 +308,6 @@ namespace Template.Audio
             OnAudioStartedPlaying = null;
             OnAudioStoppedPlaying = null;
         }
+#endif
     }
 }

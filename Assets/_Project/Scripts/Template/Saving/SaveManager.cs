@@ -215,6 +215,7 @@ namespace Template.Saving
             SerializationUtility.CompileAndCacheKnownCastDelegates();
         }
 
+#if UNITY_EDITOR
         protected override void OnApplicationQuit()
         {
             base.OnApplicationQuit();
@@ -222,5 +223,6 @@ namespace Template.Saving
             Saving  = null;
             Loading = null;
         }
+#endif
     }
 }

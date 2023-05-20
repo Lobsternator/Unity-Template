@@ -170,6 +170,7 @@ namespace Template.Core
             SetTimeScale(CurrentHitstop.OriginalTimeScale, HitstopInteraction.Cancel);
         }
 
+#if UNITY_EDITOR
         protected override void OnApplicationQuit()
         {
             base.OnApplicationQuit();
@@ -180,5 +181,6 @@ namespace Template.Core
             HitstopBegan     = null;
             HitstopEnded     = null;
         }
+#endif
     }
 }

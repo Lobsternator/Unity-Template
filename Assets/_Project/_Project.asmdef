@@ -1,6 +1,6 @@
 {
     "name": "_Project",
-    "rootNamespace": "Template",
+    "rootNamespace": "ProjectName",
     "references": [
         "GUID:9f00d6b745e51314b9eaf9bad6f9608c"
     ],
