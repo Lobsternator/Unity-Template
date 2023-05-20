@@ -33,7 +33,6 @@ namespace Template.Gameplay
         public bool IsAtMaxValue => Mathf.Approximately(Value, MaxValue);
 
         private float _oldValue;
-        [field: Space(7)]
         [field: SerializeField] public float Value { get; private set; } = 0.0f;
 
         private float _oldMinValue;

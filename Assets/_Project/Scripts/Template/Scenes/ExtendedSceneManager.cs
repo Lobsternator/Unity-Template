@@ -212,8 +212,8 @@ namespace Template.Scenes
 
                 if (IsSceneLoaded(otherBuildIndex))
                 {
-                    AsyncSceneOperation unloadOperation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(otherBuildIndex), otherBuildIndex);
-                    _unloadingSceneOperations.Add(otherBuildIndex, unloadOperation);
+                    AsyncSceneOperation operation = new AsyncSceneOperation(UnitySceneManager.UnloadSceneAsync(otherBuildIndex), otherBuildIndex);
+                    _unloadingSceneOperations.Add(otherBuildIndex, operation);
                 }
             }
 
