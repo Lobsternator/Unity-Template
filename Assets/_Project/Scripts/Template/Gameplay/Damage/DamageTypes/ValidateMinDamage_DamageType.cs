@@ -6,7 +6,7 @@ using Template.Core;
 namespace Template.Gameplay
 {
     [SingletonAsset]
-    [CreateAssetMenu(fileName = "ValidateMinDamage", menuName = "Damage/DamageTypes/Builtin/ValidateMinDamage")]
+    [CreateAssetMenu(fileName = "ValidateMinDamage", menuName = "Gameplay/Damage/DamageTypes/Builtin/ValidateMinDamage")]
     public sealed class ValidateMinDamage_DamageType : DamageType
     {
         public override float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)

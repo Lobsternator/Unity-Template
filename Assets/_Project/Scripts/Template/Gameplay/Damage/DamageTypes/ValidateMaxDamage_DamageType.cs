@@ -6,7 +6,7 @@ using Template.Core;
 namespace Template.Gameplay
 {
     [SingletonAsset]
-    [CreateAssetMenu(fileName = "ValidateMaxDamage", menuName = "Damage/DamageTypes/Builtin/ValidateMaxDamage")]
+    [CreateAssetMenu(fileName = "ValidateMaxDamage", menuName = "Gameplay/Damage/DamageTypes/Builtin/ValidateMaxDamage")]
     public sealed class ValidateMaxDamage_DamageType : DamageType
     {
         public override float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
