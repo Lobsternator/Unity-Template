@@ -109,9 +109,9 @@ namespace Template.Gameplay
         public void SetValue(float value, MonoBehaviour eventInstigator) => SetValue(value, eventInstigator, null);
         public void SetValue(float value) => SetValue(value, null, null);
 
-        public void AddValue(float value, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public void AddValue(float value, MonoBehaviour eventInstigator, MonoBehaviour changeCauser)
         {
-            SetValue(Value + value, eventInstigator, damageCauser);
+            SetValue(Value + value, eventInstigator, changeCauser);
         }
         public void AddValue(float value, MonoBehaviour eventInstigator) => AddValue(value, eventInstigator, null);
         public void AddValue(float value) => AddValue(value, null, null);
@@ -171,9 +171,9 @@ namespace Template.Gameplay
         public void SetMaxValue(float maxValue, MonoBehaviour eventInstigator) => SetMaxValue(maxValue, eventInstigator, null);
         public void SetMaxValue(float maxValue) => SetMaxValue(maxValue, null, null);
 
-        public void AddMaxValue(float maxValue, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
+        public void AddMaxValue(float maxValue, MonoBehaviour eventInstigator, MonoBehaviour changeCauser)
         {
-            SetMaxValue(MaxValue + maxValue, eventInstigator, damageCauser);
+            SetMaxValue(MaxValue + maxValue, eventInstigator, changeCauser);
         }
         public void AddMaxValue(float maxValue, MonoBehaviour eventInstigator) => AddMaxValue(maxValue, eventInstigator, null);
         public void AddMaxValue(float maxValue) => AddMaxValue(maxValue, null, null);
