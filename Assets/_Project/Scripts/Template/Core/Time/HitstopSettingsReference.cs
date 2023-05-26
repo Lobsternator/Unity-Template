@@ -13,7 +13,7 @@ namespace Template.Core
         public AnimationCurve timeScaleCurve;
     }
 
-    [CreateAssetMenu(fileName = "new HitstopSettingsReference", menuName = "Time/HitstopSettings")]
+    [CreateAssetMenu(fileName = "new HitstopSettingsReference", menuName = "Gameplay/HitstopSettings")]
     public class HitstopSettingsReference : ScriptableReference<HitstopSettings>
     {
 
