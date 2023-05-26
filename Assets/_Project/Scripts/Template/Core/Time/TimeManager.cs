@@ -55,11 +55,24 @@ namespace Template.Core
         public static bool IsDoingHitstop => CurrentHitstop is not null;
         public static Hitstop CurrentHitstop { get; private set; }
 
-        public static event Action<float> TimeScaleChanged;
+        public static event Action TimeScaleChanged;
         public static event Action TimeFroze;
-        public static event Action<float> TimeUnfroze;
-        public static event Action<Hitstop> HitstopBegan;
+        public static event Action TimeUnfroze;
+        public static event Action<Hitstop> HitstopStarted;
         public static event Action HitstopEnded;
+
+        private static bool _isTimeFrozen;
+
+        private static void OnTimeFroze()
+        {
+            _isTimeFrozen = true;
+            TimeFroze?.Invoke();
+        }
+        private static void OnTimeUnfroze()
+        {
+            _isTimeFrozen = false;
+            TimeUnfroze?.Invoke();
+        }
 
         public static void SetTimeScale(float timeScale) => SetTimeScale(timeScale, HitstopInteraction.Multiply);
         public static void SetTimeScale(float timeScale, HitstopInteraction hitstopInteraction)
@@ -91,13 +104,13 @@ namespace Template.Core
                 return;
 
             Time.timeScale = Mathf.Max(newTimeScale, 0.0f);
-            TimeScaleChanged?.Invoke(newTimeScale);
+            TimeScaleChanged?.Invoke();
 
             if (Mathf.Approximately(newTimeScale, 0.0f) && !Mathf.Approximately(oldTimeScale, 0.0f))
-                TimeFroze?.Invoke();
+                OnTimeFroze();
 
             else if (Mathf.Approximately(oldTimeScale, 0.0f) && !Mathf.Approximately(newTimeScale, 0.0f))
-                TimeUnfroze?.Invoke(newTimeScale);
+                OnTimeUnfroze();
         }
 
         private static Hitstop DoHitstop_Internal(float durationMultiplier, AnimationCurve timeScaleCurve)
@@ -116,7 +129,7 @@ namespace Template.Core
             SetTimeScale(CurrentHitstop.ModifiedTimeScale, HitstopInteraction.Ignore);
             Instance.StartCoroutine(UpdateHitstop());
 
-            HitstopBegan?.Invoke(CurrentHitstop);
+            HitstopStarted?.Invoke(CurrentHitstop);
             return CurrentHitstop;
         }
 
@@ -170,6 +183,29 @@ namespace Template.Core
             SetTimeScale(CurrentHitstop.OriginalTimeScale, HitstopInteraction.Cancel);
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            if (IsDuplicate)
+                return;
+
+            _isTimeFrozen = false;
+        }
+        private void Start()
+        {
+            if (Mathf.Approximately(Time.timeScale, 0.0f))
+                OnTimeFroze();
+        }
+
+        private void LateUpdate()
+        {
+            if (Mathf.Approximately(Time.timeScale, 0.0f) && !_isTimeFrozen)
+                OnTimeFroze();
+
+            else if (!Mathf.Approximately(Time.timeScale, 0.0f) && _isTimeFrozen)
+                OnTimeUnfroze();
+        }
+
 #if UNITY_EDITOR
         protected override void OnApplicationQuit()
         {
@@ -178,7 +214,7 @@ namespace Template.Core
             TimeScaleChanged = null;
             TimeFroze        = null;
             TimeUnfroze      = null;
-            HitstopBegan     = null;
+            HitstopStarted   = null;
             HitstopEnded     = null;
         }
 #endif
