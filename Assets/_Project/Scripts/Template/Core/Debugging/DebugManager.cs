@@ -18,17 +18,13 @@ namespace Template.Core
         private static readonly string _handlesAssemblyName       = typeof(Handles).AssemblyQualifiedName;
         private static Dictionary<string, DebugRequest> _requests = new Dictionary<string, DebugRequest>();
 
-        private static string GetID(int line, string file) => $"{file}<{line}>";
-
         private static bool CanMakeRequest()
         {
-#if UNITY_EDITOR
             if (!Instance)
             {
                 Debug.LogWarning($"{nameof(DebugManager)} instance needs to exist in order to make a debug request!");
                 return false;
             }
-#endif
 
             return true;
         }
@@ -70,284 +66,452 @@ namespace Template.Core
             CreateNewRequest(id, duration, drawAssemblyName, drawMethodName, parameters);
         }
 
-        public static void DrawAAConvexPolygon(float duration, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAConvexPolygon(float duration, Vector3[] points) => DrawAAConvexPolygon(duration, points, GUID.Generate().ToString());
+        public static void DrawAAConvexPolygon(float duration, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAConvexPolygon),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAConvexPolygon),
                 points);
         }
-        public static void DrawAAPolyLine(float duration, Texture2D lineTex, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAPolyLine(float duration, Texture2D lineTex, Vector3[] points) => DrawAAPolyLine(duration, lineTex, points, GUID.Generate().ToString());
+        public static void DrawAAPolyLine(float duration, Texture2D lineTex, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
                 lineTex, points);
         }
-        public static void DrawAAPolyLine(float duration, float width, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAPolyLine(float duration, float width, Vector3[] points) => DrawAAPolyLine(duration, width, points, GUID.Generate().ToString());
+        public static void DrawAAPolyLine(float duration, float width, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
                 width, points);
         }
-        public static void DrawAAPolyLine(float duration, float width, int actualNumberOfPoints, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAPolyLine(float duration, float width, int actualNumberOfPoints, Vector3[] points) => DrawAAPolyLine(duration, width, actualNumberOfPoints, points, GUID.Generate().ToString());
+        public static void DrawAAPolyLine(float duration, float width, int actualNumberOfPoints, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
                 width, actualNumberOfPoints, points);
         }
-        public static void DrawAAPolyLine(float duration, Texture2D lineTex, float width, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAPolyLine(float duration, Texture2D lineTex, float width, Vector3[] points) => DrawAAPolyLine(duration, lineTex, width, points, GUID.Generate().ToString());
+        public static void DrawAAPolyLine(float duration, Texture2D lineTex, float width, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
                 lineTex, width, points);
         }
-        public static void DrawAAPolyLine(float duration, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawAAPolyLine(float duration, Vector3[] points) => DrawAAPolyLine(duration, points, GUID.Generate().ToString());
+        public static void DrawAAPolyLine(float duration, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawAAPolyLine),
                 points);
         }
-        public static void DrawBezier(float duration, Vector3 startPosition, Vector3 endPosition, Vector3 startTangent, Vector3 endTangent, Color color, Texture2D texture, float width, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawBezier(float duration, Vector3 startPosition, Vector3 endPosition, Vector3 startTangent, Vector3 endTangent, Color color, Texture2D texture, float width) => DrawBezier(duration, startPosition, endPosition, startTangent, endTangent, color, texture, width, GUID.Generate().ToString());
+        public static void DrawBezier(float duration, Vector3 startPosition, Vector3 endPosition, Vector3 startTangent, Vector3 endTangent, Color color, Texture2D texture, float width, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawBezier),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawBezier),
                 startPosition, endPosition, startTangent, endTangent, color, texture, width);
         }
-        public static void DrawCamera(float duration, Rect position, Camera camera, DrawCameraMode drawMode, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawCamera(float duration, Rect position, Camera camera, DrawCameraMode drawMode) => DrawCamera(duration, position, camera, drawMode, GUID.Generate().ToString());
+        public static void DrawCamera(float duration, Rect position, Camera camera, DrawCameraMode drawMode, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawCamera),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawCamera),
                 position, camera, drawMode);
         }
-        public static void DrawCamera(float duration, Rect position, Camera camera, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawCamera(float duration, Rect position, Camera camera) => DrawCamera(duration, position, camera, GUID.Generate().ToString());
+        public static void DrawCamera(float duration, Rect position, Camera camera, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawCamera),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawCamera),
                 position, camera);
         }
-        public static void DrawCube(float duration, Vector3 center, Vector3 size, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawCube(float duration, Vector3 center, Vector3 size) => DrawCube(duration, center, size, GUID.Generate().ToString());
+        public static void DrawCube(float duration, Vector3 center, Vector3 size, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawCube),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawCube),
                 center, size);
         }
-        public static void DrawDottedLine(float duration, Vector3 p1, Vector3 p2, float screenSpaceSize, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawDottedLine(float duration, Vector3 p1, Vector3 p2, float screenSpaceSize) => DrawDottedLine(duration, p1, p2, screenSpaceSize, GUID.Generate().ToString());
+        public static void DrawDottedLine(float duration, Vector3 p1, Vector3 p2, float screenSpaceSize, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawDottedLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawDottedLine),
                 p1, p2, screenSpaceSize);
         }
-        public static void DrawDottedLines(float duration, Vector3[] points, int[] segmentIndices, float screenSpaceSize, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawDottedLines(float duration, Vector3[] points, int[] segmentIndices, float screenSpaceSize) => DrawDottedLines(duration, points, segmentIndices, screenSpaceSize, GUID.Generate().ToString());
+        public static void DrawDottedLines(float duration, Vector3[] points, int[] segmentIndices, float screenSpaceSize, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawDottedLines),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawDottedLines),
                 points, segmentIndices, screenSpaceSize);
         }
-        public static void DrawDottedLines(float duration, Vector3[] lineSegments, float screenSpaceSize, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawDottedLines(float duration, Vector3[] lineSegments, float screenSpaceSize) => DrawDottedLines(duration, lineSegments, screenSpaceSize, GUID.Generate().ToString());
+        public static void DrawDottedLines(float duration, Vector3[] lineSegments, float screenSpaceSize, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawDottedLines),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawDottedLines),
                 lineSegments, screenSpaceSize);
         }
-        public static void DrawFrustum(float duration, Vector3 center, float fov, float maxRange, float minRange, float aspect, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawFrustum(float duration, Vector3 center, float fov, float maxRange, float minRange, float aspect) => DrawFrustum(duration, center, fov, maxRange, minRange, aspect, GUID.Generate().ToString());
+        public static void DrawFrustum(float duration, Vector3 center, float fov, float maxRange, float minRange, float aspect, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawFrustum),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawFrustum),
                 center, fov, maxRange, minRange, aspect);
         }
-        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder) => DrawGUITexture(duration, screenRect, texture, leftBorder, rightBorder, topBorder, bottomBorder, GUID.Generate().ToString());
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
                 screenRect, texture, leftBorder, rightBorder, topBorder, bottomBorder);
         }
-        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, Material mat, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, Material mat) => DrawGUITexture(duration, screenRect, texture, mat, GUID.Generate().ToString());
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, Material mat, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
                 screenRect, texture, mat);
         }
-        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder, Material mat, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder, Material mat) => DrawGUITexture(duration, screenRect, texture, leftBorder, rightBorder, topBorder, bottomBorder, mat, GUID.Generate().ToString());
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, int leftBorder, int rightBorder, int topBorder, int bottomBorder, Material mat, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
                 screenRect, texture, leftBorder, rightBorder, topBorder, bottomBorder, mat);
         }
-        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture) => DrawGUITexture(duration, screenRect, texture, GUID.Generate().ToString());
+        public static void DrawGUITexture(float duration, Rect screenRect, Texture texture, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawGUITexture),
                 screenRect, texture);
         }
-        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling) => DrawIcon(duration, center, name, allowScaling, GUID.Generate().ToString());
+        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
                 center, name, allowScaling);
         }
-        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling, Color tint, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling, Color tint) => DrawIcon(duration, center, name, allowScaling, tint, GUID.Generate().ToString());
+        public static void DrawIcon(float duration, Vector3 center, string name, bool allowScaling, Color tint, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
                 center, name, allowScaling, tint);
         }
-        public static void DrawIcon(float duration, Vector3 center, string name, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawIcon(float duration, Vector3 center, string name) => DrawIcon(duration, center, name, GUID.Generate().ToString());
+        public static void DrawIcon(float duration, Vector3 center, string name, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawIcon),
                 center, name);
         }
-        public static void DrawLine(float duration, Vector3 from, Vector3 to, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawLine(float duration, Vector3 from, Vector3 to) => DrawLine(duration, from, to, GUID.Generate().ToString());
+        public static void DrawLine(float duration, Vector3 from, Vector3 to, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawLine),
                 from, to);
         }
-        public static void DrawLines(float duration, Vector3[] points, int[] segmentIndices, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawLines(float duration, Vector3[] points, int[] segmentIndices) => DrawLines(duration, points, segmentIndices, GUID.Generate().ToString());
+        public static void DrawLines(float duration, Vector3[] points, int[] segmentIndices, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawLines),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawLines),
                 points, segmentIndices);
         }
-        public static void DrawLines(float duration, Vector3[] lineSegments, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawLines(float duration, Vector3[] lineSegments) => DrawLines(duration, lineSegments, GUID.Generate().ToString());
+        public static void DrawLines(float duration, Vector3[] lineSegments, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawLines),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawLines),
                 lineSegments);
         }
-        public static void DrawMesh(float duration, Mesh mesh, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh) => DrawMesh(duration, mesh, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh);
         }
-        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale) => DrawMesh(duration, mesh, submeshIndex, position, rotation, scale, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, submeshIndex, position, rotation, scale);
         }
-        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position) => DrawMesh(duration, mesh, position, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, position);
         }
-        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex) => DrawMesh(duration, mesh, submeshIndex, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, submeshIndex);
         }
-        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation) => DrawMesh(duration, mesh, submeshIndex, position, rotation, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, submeshIndex, position, rotation);
         }
-        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation) => DrawMesh(duration, mesh, position, rotation, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, position, rotation);
         }
-        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale) => DrawMesh(duration, mesh, position, rotation, scale, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, position, rotation, scale);
         }
-        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position) => DrawMesh(duration, mesh, submeshIndex, position, GUID.Generate().ToString());
+        public static void DrawMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawMesh),
                 mesh, submeshIndex, position);
         }
-        public static void DrawPolyLine(float duration, Vector3[] points, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawPolyLine(float duration, Vector3[] points) => DrawPolyLine(duration, points, GUID.Generate().ToString());
+        public static void DrawPolyLine(float duration, Vector3[] points, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawPolyLine),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawPolyLine),
                 points);
         }
-        public static void DrawRay(float duration, Vector3 from, Vector3 direction, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawRay(float duration, Vector3 from, Vector3 direction) => DrawRay(duration, from, direction, GUID.Generate().ToString());
+        public static void DrawRay(float duration, Vector3 from, Vector3 direction, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawRay),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawRay),
                 from, direction);
         }
-        public static void DrawRay(float duration, Ray ray, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawRay(float duration, Ray ray) => DrawRay(duration, ray, GUID.Generate().ToString());
+        public static void DrawRay(float duration, Ray ray, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawRay),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawRay),
                 ray);
         }
-        public static void DrawSolidArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawSolidArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius) => DrawSolidArc(duration, center, normal, from, angle, radius, GUID.Generate().ToString());
+        public static void DrawSolidArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawSolidArc),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawSolidArc),
                 center, normal, from, angle, radius);
         }
-        public static void DrawSolidDisc(float duration, Vector3 center, Vector3 normal, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawSolidDisc(float duration, Vector3 center, Vector3 normal, float radius) => DrawSolidDisc(duration, center, normal, radius, GUID.Generate().ToString());
+        public static void DrawSolidDisc(float duration, Vector3 center, Vector3 normal, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawSolidDisc),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawSolidDisc),
                 center, normal, radius);
         }
-        public static void DrawSolidRectangleWithOutline(float duration, Vector3[] verts, Color faceColor, Color outlineColor, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawSolidRectangleWithOutline(float duration, Vector3[] verts, Color faceColor, Color outlineColor) => DrawSolidRectangleWithOutline(duration, verts, faceColor, outlineColor, GUID.Generate().ToString());
+        public static void DrawSolidRectangleWithOutline(float duration, Vector3[] verts, Color faceColor, Color outlineColor, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawSolidRectangleWithOutline),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawSolidRectangleWithOutline),
                 verts, faceColor, outlineColor);
         }
-        public static void DrawSolidRectangleWithOutline(float duration, Rect rectangle, Color faceColor, Color outlineColor, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawSolidRectangleWithOutline(float duration, Rect rectangle, Color faceColor, Color outlineColor) => DrawSolidRectangleWithOutline(duration, rectangle, faceColor, outlineColor, GUID.Generate().ToString());
+        public static void DrawSolidRectangleWithOutline(float duration, Rect rectangle, Color faceColor, Color outlineColor, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawSolidRectangleWithOutline),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawSolidRectangleWithOutline),
                 rectangle, faceColor, outlineColor);
         }
-        public static void DrawSphere(float duration, Vector3 center, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawSphere(float duration, Vector3 center, float radius) => DrawSphere(duration, center, radius, GUID.Generate().ToString());
+        public static void DrawSphere(float duration, Vector3 center, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawSphere),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawSphere),
                 center, radius);
         }
-        public static void DrawTexture3DSDF(float duration, Texture texture, float stepScale = 1, float surfaceOffset = 0, Gradient customColorRamp = null, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawTexture3DSDF(float duration, Texture texture, float stepScale = 1, float surfaceOffset = 0, Gradient customColorRamp = null) => DrawTexture3DSDF(duration, texture, stepScale, surfaceOffset, customColorRamp, GUID.Generate().ToString());
+        public static void DrawTexture3DSDF(float duration, Texture texture, float stepScale = 1, float surfaceOffset = 0, Gradient customColorRamp = null, string id = null)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DSDF),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DSDF),
                 texture, stepScale, surfaceOffset, customColorRamp);
         }
-        public static void DrawTexture3DSlice(float duration, Texture texture, Vector3 slicePositions, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawTexture3DSlice(float duration, Texture texture, Vector3 slicePositions, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null) => DrawTexture3DSlice(duration, texture, slicePositions, filterMode, useColorRamp, customColorRamp, GUID.Generate().ToString());
+        public static void DrawTexture3DSlice(float duration, Texture texture, Vector3 slicePositions, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null, string id = null)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DSlice),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DSlice),
                 texture, slicePositions, filterMode, useColorRamp, customColorRamp);
         }
-        public static void DrawTexture3DVolume(float duration, Texture texture, float opacity = 1, float qualityModifier = 1, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawTexture3DVolume(float duration, Texture texture, float opacity = 1, float qualityModifier = 1, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null) => DrawTexture3DVolume(duration, texture, opacity, qualityModifier, filterMode, useColorRamp, customColorRamp, GUID.Generate().ToString());
+        public static void DrawTexture3DVolume(float duration, Texture texture, float opacity = 1, float qualityModifier = 1, FilterMode filterMode = FilterMode.Bilinear, bool useColorRamp = false, Gradient customColorRamp = null, string id = null)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DVolume),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawTexture3DVolume),
                 texture, opacity, qualityModifier, filterMode, useColorRamp, customColorRamp);
         }
-        public static void DrawWireArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius) => DrawWireArc(duration, center, normal, from, angle, radius, GUID.Generate().ToString());
+        public static void DrawWireArc(float duration, Vector3 center, Vector3 normal, Vector3 from, float angle, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawWireArc),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawWireArc),
                 center, normal, from, angle, radius);
         }
-        public static void DrawWireCube(float duration, Vector3 center, Vector3 size, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireCube(float duration, Vector3 center, Vector3 size) => DrawWireCube(duration, center, size, GUID.Generate().ToString());
+        public static void DrawWireCube(float duration, Vector3 center, Vector3 size, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireCube),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireCube),
                 center, size);
         }
-        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius) => DrawWireDisc(duration, center, normal, radius, GUID.Generate().ToString());
+        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawWireDisc),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawWireDisc),
                 center, normal, radius);
         }
-        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius, float thickness, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius, float thickness) => DrawWireDisc(duration, center, normal, radius, thickness, GUID.Generate().ToString());
+        public static void DrawWireDisc(float duration, Vector3 center, Vector3 normal, float radius, float thickness, string id)
         {
-            DebugRequest(GetID(line, file), duration, _handlesAssemblyName, nameof(Handles.DrawWireDisc),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _handlesAssemblyName, nameof(Handles.DrawWireDisc),
                 center, normal, radius, thickness);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation) => DrawWireMesh(duration, mesh, position, rotation, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, position, rotation);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position) => DrawWireMesh(duration, mesh, position, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, position);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh) => DrawWireMesh(duration, mesh, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale) => DrawWireMesh(duration, mesh, position, rotation, scale, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, position, rotation, scale);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation) => DrawWireMesh(duration, mesh, submeshIndex, position, rotation, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, submeshIndex, position, rotation);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex) => DrawWireMesh(duration, mesh, submeshIndex, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, submeshIndex);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale) => DrawWireMesh(duration, mesh, submeshIndex, position, rotation, scale, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, Quaternion rotation, Vector3 scale, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, submeshIndex, position, rotation, scale);
         }
-        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position) => DrawWireMesh(duration, mesh, submeshIndex, position, GUID.Generate().ToString());
+        public static void DrawWireMesh(float duration, Mesh mesh, int submeshIndex, Vector3 position, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireMesh),
                 mesh, submeshIndex, position);
         }
-        public static void DrawWireSphere(float duration, Vector3 center, float radius, [CallerLineNumber] int line = 0, [CallerFilePath] string file = "")
+        public static void DrawWireSphere(float duration, Vector3 center, float radius) => DrawWireSphere(duration, center, radius, GUID.Generate().ToString());
+        public static void DrawWireSphere(float duration, Vector3 center, float radius, string id)
         {
-            DebugRequest(GetID(line, file), duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireSphere),
+            if (id is null) id = GUID.Generate().ToString();
+
+            DebugRequest(id, duration, _gizmosAssemblyName, nameof(Gizmos.DrawWireSphere),
                 center, radius);
         }
 
