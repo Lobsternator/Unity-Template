@@ -9,6 +9,11 @@ namespace Template.Core
     [Serializable]
     public class ApplicationStateQuit : ApplicationStateBase
     {
+        [Tooltip("If the application stalls when shutting down, the state will check for responsiveness this many times before forcefully shutting down the application.")]
+        public int failsafeKillRetryCount    = 10;
+        [Tooltip("The state will wait this long (in milliseconds) between each check.")]
+        public int failsafeKillRetryInterval = 100;
+
         public override IEnumerator OnEnable()
         {
             yield return CoroutineUtility.WaitForFrames(1);
@@ -25,9 +30,9 @@ namespace Template.Core
             var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
             int retries        = 0;
 
-            while (retries < 10)
+            while (retries < failsafeKillRetryCount)
             {
-                await Task.Delay(100);
+                await Task.Delay(failsafeKillRetryInterval);
 
                 if (!currentProcess.Responding)
                     retries++;
