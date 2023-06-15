@@ -20,19 +20,15 @@
 ### FMOD IGNORE
 
 # Never ignore DLLs in the FMOD subfolder.
-!/[Aa]ssets/_External/FMOD/Plugins/FMOD/**/lib/*
-
-# Don't ignore images and gizmos used by FMOD in the Unity Editor.
-!/[Aa]ssets/_External/FMOD/Gizmos/FMOD/*
-!/[Aa]ssets/_External/FMOD/Editor Default Resources/FMOD/*
+!/[Aa]ssets/_External/FMOD/**/lib/*
 
 # Ignore the Cache folder since it is updated locally.
-/[Aa]ssets/_External/FMOD/Plugins/FMOD/Cache/*
-/[Aa]ssets/_External/FMOD/Plugins/FMOD/Cache.meta
+/[Aa]ssets/_External/FMOD/Cache/*
+/[Aa]ssets/_External/FMOD/Cache.meta
 
-# Ignore StreamingAssets folder.
-/[Aa]ssets/[Ss]treaming[Aa]ssets
-/[Aa]ssets/[Ss]treaming[Aa]ssets.meta
+# Ignore StreamingAssets banks.
+/[Aa]ssets/[Ss]treaming[Aa]ssets/*.bank
+/[Aa]ssets/[Ss]treaming[Aa]ssets/*.bank.meta
 
 # If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
 # Log files can be ignored.
