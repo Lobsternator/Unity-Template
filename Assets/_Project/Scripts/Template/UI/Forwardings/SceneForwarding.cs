@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow use of <see cref="SceneManager"/> functions.
+    /// </summary>
     public class SceneForwarding : MonoBehaviour
     {
         public LoadSceneMode loadSceneMode;

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// A single debug draw request made by <see cref="DebugManager"/>.
+    /// </summary>
     public class DebugRequest
     {
         public MethodInfo drawMethod;

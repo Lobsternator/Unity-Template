@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Various utilities related to casting.
+    /// </summary>
     public static class CastUtility
     {
         private static readonly Dictionary<Tuple<Type, Type>, Func<object, object>> _castCache = new Dictionary<Tuple<Type, Type>, Func<object, object>>();

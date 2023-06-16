@@ -8,6 +8,9 @@ using Template.Core;
 
 namespace Template.Audio
 {
+    /// <summary>
+    /// Struct for containing information about an FMOD parameter.
+    /// </summary>
     [Serializable]
     public struct AudioParameter
     {
@@ -21,6 +24,10 @@ namespace Template.Audio
         }
     }
 
+    /// <summary>
+    /// Singleton used for playing audio.
+    /// <b>Automatically created at the start of the program.</b>
+    /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -1000)]
     public class AudioManager : PersistentRuntimeSingleton<AudioManager, AudioManagerData>
     {

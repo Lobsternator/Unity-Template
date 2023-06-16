@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Various utilities related to coroutines.
+    /// </summary>
     public static class CoroutineUtility
     {
         private static WaitForEndOfFrame _waitForEndOfFrame   = new WaitForEndOfFrame();

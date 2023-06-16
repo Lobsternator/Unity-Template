@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Stores various persistent path data.
+    /// </summary>
     [CreateAssetMenu(fileName = "PersistentPathData", menuName = "Singleton/PersistentPathData")]
     public class PersistentPathData : SingletonAsset<PersistentPathData>
     {

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow for use of various UI utilities.
+    /// </summary>
     public class UIUtility : MonoBehaviour
     {
         public void SetSelectedObject(GameObject obj)

@@ -6,6 +6,9 @@ using UnityEditor;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="WorldUpOverride"/>.
+    /// </summary>
     [CustomPropertyDrawer(typeof(WorldUpOverride))]
     public class WorldUpOverrideEditor : PropertyDrawer
     {

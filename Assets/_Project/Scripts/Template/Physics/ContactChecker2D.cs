@@ -7,6 +7,9 @@ using Template.Core;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Collects and stores information about active contacts.
+    /// </summary>
     [DisallowMultipleComponent]
     public class ContactChecker2D : MonoBehaviour, IContactEventReceiver2D
     {

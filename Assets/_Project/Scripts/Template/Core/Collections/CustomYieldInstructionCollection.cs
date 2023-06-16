@@ -6,25 +6,29 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    public abstract class CustomYieldInstructionCollection<TCustomAsyncOperation> : CustomYieldInstruction where TCustomAsyncOperation : CustomYieldInstruction
+    /// <summary>
+    /// Serves as a yieldable collection of <see cref="CustomYieldInstruction"/>.
+    /// </summary>
+    /// <typeparam name="TCustomYieldInstruction">The specific CustomYieldInstruction the collection should hold.</typeparam>
+    public abstract class CustomYieldInstructionCollection<TCustomYieldInstruction> : CustomYieldInstruction where TCustomYieldInstruction : CustomYieldInstruction
     {
-        protected List<TCustomAsyncOperation> _operations;
-        public ReadOnlyCollection<TCustomAsyncOperation> Operations { get; }
+        protected List<TCustomYieldInstruction> _operations;
+        public ReadOnlyCollection<TCustomYieldInstruction> Operations { get; }
 
         public override bool keepWaiting => !_operations.TrueForAll((o) => o == null || !o.keepWaiting);
 
         public CustomYieldInstructionCollection()
         {
-            _operations = new List<TCustomAsyncOperation>();
-            Operations  = new ReadOnlyCollection<TCustomAsyncOperation>(_operations);
+            _operations = new List<TCustomYieldInstruction>();
+            Operations  = new ReadOnlyCollection<TCustomYieldInstruction>(_operations);
         }
         public CustomYieldInstructionCollection(int capacity)
         {
-            _operations = new List<TCustomAsyncOperation>(capacity);
-            Operations  = new ReadOnlyCollection<TCustomAsyncOperation>(_operations);
+            _operations = new List<TCustomYieldInstruction>(capacity);
+            Operations  = new ReadOnlyCollection<TCustomYieldInstruction>(_operations);
         }
 
-        public virtual void AddOperation(TCustomAsyncOperation operation)
+        public virtual void AddOperation(TCustomYieldInstruction operation)
         {
             _operations.Add(operation);
         }

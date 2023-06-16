@@ -6,6 +6,9 @@ using Template.Core;
 
 namespace Template.Audio
 {
+    /// <summary>
+    /// Stores FMOD event settings.
+    /// </summary>
     [Serializable]
     public class AudioEventSettings
     {
@@ -15,6 +18,9 @@ namespace Template.Audio
         public List<AudioParameter> parameters;
     }
 
+    /// <summary>
+    /// <see cref="ScriptableReference{TValue}"/> wrapper around <see cref="AudioEventSettings"/>.
+    /// </summary>
     [CreateAssetMenu(fileName = "new AudioEventSettingsReference", menuName = "Audio/EventSettings")]
     public class AudioEventSettingsReference : ScriptableReference<AudioEventSettings> { }
 }

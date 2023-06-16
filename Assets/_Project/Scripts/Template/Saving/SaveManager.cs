@@ -13,6 +13,10 @@ using Template.Saving.Serialization;
 
 namespace Template.Saving
 {
+    /// <summary>
+    /// Singleton that manages saving/loading game state to/from disk.
+    /// <b>Automatically created at the start of the program.</b>
+    /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -700)]
     public class SaveManager : PersistentRuntimeSingleton<SaveManager, SaveManagerData>
     {

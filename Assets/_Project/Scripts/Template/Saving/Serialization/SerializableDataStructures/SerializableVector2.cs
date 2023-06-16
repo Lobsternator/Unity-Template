@@ -3,6 +3,9 @@ using Serializable = System.SerializableAttribute;
 
 namespace Template.Saving.Serialization
 {
+    /// <summary>
+    /// Serializable version of <see cref="Vector2"/>.
+    /// </summary>
     [Serializable]
     public struct SerializableVector2
     {

@@ -15,6 +15,9 @@ namespace Template.Gameplay
         public abstract float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser);
     }
 
+    /// <summary>
+    /// Event arguments for when a <see cref="Gameplay.DamagePool"/>'s damage changes in some way.
+    /// </summary>
     public class DamageEventArgs : EventArgs
     {
         public DamageEventArgs(float oldDamage, float newDamage, IDamageType damageType, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
@@ -37,6 +40,9 @@ namespace Template.Gameplay
         public MonoBehaviour DamageCauser { get; }
     }
 
+    /// <summary>
+    /// Object for managing a pool of arbitrary "damage".
+    /// </summary>
     [Serializable]
     public class DamagePool
     {

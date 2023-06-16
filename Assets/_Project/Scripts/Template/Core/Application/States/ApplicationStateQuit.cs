@@ -6,6 +6,10 @@ using Serializable = System.SerializableAttribute;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// State belonging to <see cref="ApplicationStateMachine"/>.
+    /// Is entered when the application is quitting.
+    /// </summary>
     [Serializable]
     public class ApplicationStateQuit : ApplicationStateBase
     {

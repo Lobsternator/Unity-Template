@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow use of <see cref="SaveManager"/> functions.
+    /// </summary>
     public class SaveForwarding : MonoBehaviour
     {
         public void SaveToSlot(int slot)

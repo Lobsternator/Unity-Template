@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// ScriptableObject storing a single value.
+    /// </summary>
     [Serializable]
     public class ScriptableReference<TValue> : ScriptableObject
     {
@@ -16,6 +19,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Wrapper around <see cref="ScriptableReference{TValue}"/> that also allows for use of a constant value.
+    /// </summary>
     [Serializable]
     public class ScriptableVariable<TValue>
     {

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Covering type for <see cref="State{TStateMachine, TBaseState}"/>.
+    /// </summary>
     public interface IState
     {
         public bool Enabled { get; }
@@ -15,6 +18,11 @@ namespace Template.Core
         public IEnumerator OnEnable();
         public IEnumerator OnDisable();
     }
+    /// <summary>
+    /// Covering type for <see cref="State{TStateMachine, TBaseState}"/>.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The state machine this state belongs to.</typeparam>
+    /// <typeparam name="TBaseState">Should be the inheriting class.</typeparam>
     public interface IState<TStateMachine, TBaseState> : IState where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; set; }
@@ -26,8 +34,17 @@ namespace Template.Core
         public bool GetTransition(int input, out TBaseState state);
         public bool SetTransition(int input, TBaseState output);
     }
+    /// <summary>
+    /// Covering type for <see cref="State{TStateMachine, TBaseState}"/>.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The state machine this state belongs to.</typeparam>
     public interface IState<TStateMachine> : IState<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
+    /// <summary>
+    /// Base state for any state belonging to a <see cref="StateMachine{TStateMachine, TBaseState}"/>.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The state machine this state belongs to.</typeparam>
+    /// <typeparam name="TBaseState">Should be the inheriting class.</typeparam>
     [Serializable]
     public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
@@ -72,16 +89,34 @@ namespace Template.Core
             yield break;
         }
     }
+    /// <summary>
+    /// Base state for any state belonging to a <see cref="StateMachine{TStateMachine, TBaseState}"/>.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The state machine this state belongs to.</typeparam>
     [Serializable]
     public abstract class State<TStateMachine> : State<TStateMachine, State<TStateMachine>>, IState<TStateMachine> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
+    /// <summary>
+    /// Covering type for <see cref="IState{TStateMachine, TBaseState}"/>.
+    /// </summary>
     public interface IStateContainer { }
+    /// <summary>
+    /// If a class inherits from this interface and the inheriting class has the <see cref="GenerateStateContainerAttribute"/>, the class will be populated with serialized fields for all states belonging to TStateMachine.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The target state machine to generate the fields for.</typeparam>
     public interface IStateContainer<TStateMachine, TBaseState> : IStateContainer where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public ReadOnlyDictionary<Type, TBaseState> States { get; }
     }
+    /// <summary>
+    /// If a class inherits from this interface and the inheriting class has the <see cref="GenerateStateContainerAttribute"/>, the class will be populated with serialized fields for all states belonging to TStateMachine.
+    /// </summary>
+    /// <typeparam name="TStateMachine">The target state machine to generate the fields for.</typeparam>
     public interface IStateContainer<TStateMachine> : IStateContainer<TStateMachine, State<TStateMachine>> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, State<TStateMachine>> { }
 
+    /// <summary>
+    /// If a class inherits from <see cref="IStateContainer{TStateMachine, TBaseState}"/> and the inheriting class has this attribute, the class will be populated with serialized fields for all states belonging to the state machine defined by the state container interface.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class GenerateStateContainerAttribute : Attribute
     {

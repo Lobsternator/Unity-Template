@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// For providing additional information about <see cref="IPersistentRuntimeObject"/>s.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public class PersistentRuntimeObjectAttribute : Attribute
     {
@@ -58,6 +61,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Static class responsible for creating any <see cref="IPersistentRuntimeObject"/>s in the project domain.
+    /// </summary>
     public static class PersistentRuntimeObjectInitializer
     {
         private static readonly List<Type> _persistentRuntimeObjectTypes;

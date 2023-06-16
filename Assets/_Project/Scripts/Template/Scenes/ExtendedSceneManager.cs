@@ -9,6 +9,9 @@ using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Template.Scenes
 {
+    /// <summary>
+    /// Wrapper around <see cref="SceneManager"/>. Disallows multiple loaded instances of the same scene at once.
+    /// </summary>
     public static class ExtendedSceneManager
     {
         public static int sceneCount => UnitySceneManager.sceneCount;

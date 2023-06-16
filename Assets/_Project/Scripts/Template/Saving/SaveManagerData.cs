@@ -7,6 +7,9 @@ using Template.Core;
 
 namespace Template.Saving
 {
+    /// <summary>
+    /// <see cref="PersistentRuntimeObjectData{TSingleton}"/> for <see cref="SaveManager"/>.
+    /// </summary>
     [CreateAssetMenu(fileName = "SaveManagerData", menuName = "Singleton/PersistentRuntimeObjectData/SaveManager")]
     public class SaveManagerData : PersistentRuntimeObjectData<SaveManagerData>
     {

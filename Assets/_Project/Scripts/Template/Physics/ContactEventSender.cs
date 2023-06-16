@@ -19,6 +19,9 @@ namespace Template.Physics
         OnParticleTrigger   = 0b10000000
     }
 
+    /// <summary>
+    /// Makes an object able to receive contact events from external sources.
+    /// </summary>
     public interface IContactEventReceiver
     {
         /// <summary>
@@ -60,34 +63,34 @@ namespace Template.Physics
         }
     }
 
+    /// <summary>
+    /// Sends contact events to any <see cref="IContactEventReceiver"/>s on specified GameObjects.
+    /// </summary>
     public class ContactEventSender : MonoBehaviour, IContactEventReceiver
     {
         public ContactEventSender CurrentContactEventSender { get; set; }
 
         public ContactEventFlags enabledContactEvents;
-        public List<SerializableInterface<IContactEventReceiver>> receivers;
+        public HashSet<GameObject> receivers;
 
-        public void AddReceiversFromGameObject(GameObject gameObject)
+        private List<IContactEventReceiver> _cachedReceivers;
+
+        private void Awake()
         {
-            IContactEventReceiver[] receiversToAdd = gameObject.GetComponents<IContactEventReceiver>();
-            foreach (IContactEventReceiver receiver in receiversToAdd)
-            {
-                if (receivers.Find((r) => r.Equals(receiver)) is not null)
-                    continue;
-
-                receivers.Add(new SerializableInterface<IContactEventReceiver>(receiver));
-            }
+            StartCoroutine(ClearDeadReceivers_UpdateRoutine());
         }
-        public void RemoveReceiversFromGameObject(GameObject gameObject)
-        {
-            receivers.RemoveAll((r) =>
-            {
-                Component component = r.Value as Component;
-                if (!component)
-                    return false;
 
-                return component.gameObject == gameObject;
-            });
+        public void ClearDeadReceivers()
+        {
+            receivers.RemoveWhere((r) => !r);
+        }
+        private IEnumerator ClearDeadReceivers_UpdateRoutine()
+        {
+            while (true)
+            {
+                yield return CoroutineUtility.WaitForFrames(1);
+                ClearDeadReceivers();
+            }
         }
 
         public void OnCollisionEnter(Collision collision)
@@ -95,15 +98,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnCollisionEnter) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionEnter(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionEnter(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnCollisionStay(Collision collision)
@@ -111,15 +122,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnCollisionStay) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionStay(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionStay(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnCollisionExit(Collision collision)
@@ -127,15 +146,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnCollisionExit) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionExit(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionExit(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnParticleCollision(GameObject other)
@@ -143,15 +170,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnParticleCollision) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnParticleCollision(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnParticleCollision(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerEnter(Collider other)
@@ -159,15 +194,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnTriggerEnter) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerEnter(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerEnter(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerStay(Collider other)
@@ -175,15 +218,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnTriggerStay) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerStay(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerStay(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerExit(Collider other)
@@ -191,15 +242,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnTriggerExit) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerExit(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerExit(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnParticleTrigger()
@@ -207,15 +266,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags.OnParticleTrigger) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnParticleTrigger();
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnParticleTrigger();
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
     }

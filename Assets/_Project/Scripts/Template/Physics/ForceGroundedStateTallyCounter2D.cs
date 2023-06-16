@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Tallies up how many <see cref="ForceGroundedStateMode"/>s have accumulated, and determines what the final ForceGroundedStateMode should be.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PhysicsChecker2D))]
     public class ForceGroundedStateTallyCounter2D : MonoBehaviour

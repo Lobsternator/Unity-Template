@@ -7,6 +7,9 @@ using UnityEditor;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// <see cref="PropertyDrawer"/> for <see cref="ScriptableVariable{TValue}"/>.
+    /// </summary>
     [CustomPropertyDrawer(typeof(ScriptableVariable<>), true)]
     public class ScriptableVariableDrawer : PropertyDrawer
     {

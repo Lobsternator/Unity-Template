@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="PhysicMaterial"/>.
+    /// </summary>
     [CustomEditor(typeof(PhysicMaterial))]
     public class PhysicsMaterialEditor : Editor
     {
@@ -24,7 +27,9 @@ namespace Template.Physics
                 EditorGUILayout.HelpBox($"Is being used as a base material by {AssetDatabase.GetAssetPath(_extendedPhysicsMaterial)}.", MessageType.Info);
         }
     }
-
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="PhysicsMaterial2D"/>.
+    /// </summary>
     [CustomEditor(typeof(PhysicsMaterial2D))]
     public class PhysicsMaterial2DEditor : Editor
     {

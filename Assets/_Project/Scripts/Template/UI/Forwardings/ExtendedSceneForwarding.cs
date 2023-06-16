@@ -6,6 +6,9 @@ using Template.Scenes;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow use of <see cref="ExtendedSceneManager"/> functions.
+    /// </summary>
     public class ExtendedSceneForwarding : MonoBehaviour
     {
         public LoadSceneMode loadSceneMode;

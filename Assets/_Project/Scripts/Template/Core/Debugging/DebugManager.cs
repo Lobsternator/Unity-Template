@@ -9,6 +9,10 @@ using Type = System.Type;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Singleton wrapper class around <see cref="Handles"/>, and <see cref="Gizmos"/> which allows for many of their draw functions to be called from anywhere (instead of being limited to OnDrawGizmos).
+    /// <b>Automatically created at the start of the program.</b>
+    /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -1500)]
     public class DebugManager : PersistentRuntimeSingleton<DebugManager>
     {

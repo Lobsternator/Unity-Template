@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="ExtendedPhysicsMaterial"/>.
+    /// </summary>
     [CustomEditor(typeof(ExtendedPhysicsMaterial))]
     public class ExtendedPhysicsMaterialEditor : Editor
     {
@@ -44,7 +47,9 @@ namespace Template.Physics
             serializedObject.ApplyModifiedProperties();
         }
     }
-
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="ExtendedPhysicsMaterial2D"/>.
+    /// </summary>
     [CustomEditor(typeof(ExtendedPhysicsMaterial2D))]
     public class ExtendedPhysicsMaterial2DEditor : Editor
     {

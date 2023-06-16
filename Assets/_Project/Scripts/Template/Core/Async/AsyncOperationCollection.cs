@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Serves as a yieldable collection of <see cref="AsyncOperation"/>.
+    /// </summary>
     public class AsyncOperationCollection : CustomYieldInstruction
     {
         protected List<AsyncOperation> _operations;

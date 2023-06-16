@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Wrapper around <see cref="AsyncOperation"/>.
+    /// </summary>
+    /// <typeparam name="TWrapper">Should be the inheriting class.</typeparam>
     public class AsyncOperationWrapper<TWrapper> : CustomYieldInstruction where TWrapper : CustomYieldInstruction
     {
         public AsyncOperation Operation { get; }
@@ -32,6 +36,11 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Serves as a yieldable collection of <see cref="AsyncOperationWrapper{TWrapper}"/>.
+    /// </summary>
+    /// <typeparam name="TWrapper">The specific wrapper the collection should hold.</typeparam>
+    /// <typeparam name="TCollection">Should be the inheriting class.</typeparam>
     public class AsyncOperationWrapperCollection<TWrapper, TCollection> : CustomYieldInstructionCollection<TWrapper> where TWrapper : AsyncOperationWrapper<TWrapper> where TCollection : CustomYieldInstructionCollection<TWrapper>
     {
         public event Action<TCollection> completed;
@@ -58,6 +67,11 @@ namespace Template.Core
             completed?.Invoke(this as TCollection);
         }
     }
+
+    /// <summary>
+    /// Serves as a yieldable collection of <see cref="AsyncOperationWrapper{TWrapper}"/>.
+    /// </summary>
+    /// <typeparam name="TWrapper">The specific wrapper the collection should hold.</typeparam>
     public class AsyncOperationWrapperCollection<TWrapper> : AsyncOperationWrapperCollection<TWrapper, AsyncOperationWrapperCollection<TWrapper>> where TWrapper : AsyncOperationWrapper<TWrapper>
     {
         public AsyncOperationWrapperCollection() : base() { }

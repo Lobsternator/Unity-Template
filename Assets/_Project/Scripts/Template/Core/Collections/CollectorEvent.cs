@@ -2,6 +2,9 @@ using System;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Functions as a normal C# event, but collects the return values of its subscribers.
+    /// </summary>
     public class CollectorEvent<TResult>
     {
         private event Func<TResult> _internalEvent;
@@ -44,6 +47,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Functions as a normal C# event, but collects the return values of its subscribers.
+    /// </summary>
     public class CollectorEvent<T, TResult>
     {
         private event Func<T, TResult> _internalEvent;
@@ -86,6 +92,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Functions as a normal C# event, but collects the return values of its subscribers.
+    /// </summary>
     public class CollectorEvent<T1, T2, TResult>
     {
         private event Func<T1, T2, TResult> _internalEvent;
@@ -128,6 +137,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Functions as a normal C# event, but collects the return values of its subscribers.
+    /// </summary>
     public class CollectorEvent<T1, T2, T3, TResult>
     {
         private event Func<T1, T2, T3, TResult> _internalEvent;
@@ -170,6 +182,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Functions as a normal C# event, but collects the return values of its subscribers.
+    /// </summary>
     public class CollectorEvent<T1, T2, T3, T4, TResult>
     {
         private event Func<T1, T2, T3, T4, TResult> _internalEvent;
