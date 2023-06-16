@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// State machine for handling application-wide state control.
+    /// </summary>
     [DisallowMultipleComponent]
     public class ApplicationStateMachine : StateMachine<ApplicationStateMachine, ApplicationStateBase>, IManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationStateBase>
     {

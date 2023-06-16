@@ -6,6 +6,9 @@ using Type = System.Type;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Manages and holds states belonging to <see cref="ApplicationStateMachine"/>.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ApplicationStateMachine))]
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -100)]

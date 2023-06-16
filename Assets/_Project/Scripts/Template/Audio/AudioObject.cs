@@ -9,6 +9,9 @@ using Template.Core;
 
 namespace Template.Audio
 {
+    /// <summary>
+    /// Wrapper around <see cref="StudioEventEmitter"/>; represents one audio channel.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(StudioEventEmitter))]
     public class AudioObject : MonoBehaviour

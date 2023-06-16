@@ -7,6 +7,9 @@ using Type = System.Type;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Various utilities related to assets.
+    /// </summary>
     public static class AssetUtility
     {
         private static Dictionary<Type, Object> _cachedSingletonAssets = new Dictionary<Type, Object>();

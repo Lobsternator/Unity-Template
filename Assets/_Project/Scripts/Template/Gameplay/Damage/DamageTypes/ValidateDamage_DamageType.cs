@@ -5,6 +5,9 @@ using Template.Core;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Builtin damage type for when the damage changes due to it being validated.
+    /// </summary>
     [SingletonAsset]
     [CreateAssetMenu(fileName = "ValidateDamage", menuName = "Gameplay/Damage/DamageTypes/Builtin/ValidateDamage")]
     public sealed class ValidateDamage_DamageType : DamageType

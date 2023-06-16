@@ -5,6 +5,9 @@ using UnityEditor;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="GroundedOverrideProximityTrigger"/>.
+    /// </summary>
     [CustomEditor(typeof(GroundedOverrideProximityTrigger))]
     public class GroundedOverrideTriggerEditor : Editor
     {
@@ -25,6 +28,9 @@ namespace Template.Physics
             serializedObject.ApplyModifiedProperties();
         }
     }
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="GroundedOverrideProximityTrigger2D"/>.
+    /// </summary>
     [CustomEditor(typeof(GroundedOverrideProximityTrigger2D))]
     public class GroundedOverrideTrigger2DEditor : Editor
     {
@@ -46,6 +52,9 @@ namespace Template.Physics
         }
     }
 
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="GroundedOverrideTargetedTrigger"/>.
+    /// </summary>
     [CustomEditor(typeof(GroundedOverrideTargetedTrigger))]
     public class GroundedOverrideTargetedTriggerEditor : Editor
     {
@@ -69,6 +78,9 @@ namespace Template.Physics
             serializedObject.ApplyModifiedProperties();
         }
     }
+    /// <summary>
+    /// <see cref="Editor"/> for <see cref="GroundedOverrideTargetedTrigger2D"/>.
+    /// </summary>
     [CustomEditor(typeof(GroundedOverrideTargetedTrigger2D))]
     public class GroundedOverrideTargetedTrigger2DEditor : Editor
     {

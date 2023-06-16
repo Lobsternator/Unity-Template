@@ -6,11 +6,17 @@ using UnityEngine;
 namespace Template.Core
 {
 #if UNITY_EDITOR
+    /// <summary>
+    /// Makes a serialized field ReadOnly in the inspector.
+    /// </summary>
     public class ReadOnlyAttribute : PropertyAttribute
     {
 
     }
 #else
+    /// <summary>
+    /// Makes a serialized field ReadOnly in the inspector.
+    /// </summary>
     public class ReadOnlyAttribute : System.Attribute
     {
 
@@ -18,6 +24,9 @@ namespace Template.Core
 #endif
 
 #if UNITY_EDITOR
+    /// <summary>
+    /// PropertyDrawer for <see cref="ReadOnlyAttribute"/>.
+    /// </summary>
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {

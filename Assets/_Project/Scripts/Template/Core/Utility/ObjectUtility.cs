@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Various utilities related finding objects.
+    /// </summary>
     public static class ObjectUtility
     {
         public static T FindObjectWithInterface<T>(bool includeInactive) where T : class

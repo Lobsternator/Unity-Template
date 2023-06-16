@@ -10,13 +10,16 @@ using UnityEngine;
 
 namespace Template.Core
 {
-    public struct SerializedPropertyPathInfo
+    /// <summary>
+    /// Stores property info
+    /// </summary>
+    public struct PropertyPathInfo
     {
         public object Object { get; }
         public Type Type { get; }
         public FieldInfo FieldInfo { get; }
 
-        public SerializedPropertyPathInfo(object obj, Type type, FieldInfo fieldInfo)
+        public PropertyPathInfo(object obj, Type type, FieldInfo fieldInfo)
         {
             Object    = obj;
             Type      = type;
@@ -24,6 +27,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Various utilities related to editors.
+    /// </summary>
     public static class ExtendedEditorUtility
     {
         private static BindingFlags _fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -43,7 +49,7 @@ namespace Template.Core
             return cleanedPath;
         }
 
-        public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(object obj, string propertyPath)
+        public static PropertyPathInfo GetPropertyPathInfo(object obj, string propertyPath)
         {
             Type type                = obj.GetType();
             FieldInfo fieldInfo      = null;
@@ -75,16 +81,16 @@ namespace Template.Core
                     obj  = fieldInfo.GetValue(obj);
                 }
                 else
-                    return new SerializedPropertyPathInfo(obj, type, fieldInfo);
+                    return new PropertyPathInfo(obj, type, fieldInfo);
             }
 
-            return new SerializedPropertyPathInfo(obj, type, fieldInfo);
+            return new PropertyPathInfo(obj, type, fieldInfo);
         }
-        public static SerializedPropertyPathInfo GetSerializedPropertyPathInfo(SerializedProperty property) => GetSerializedPropertyPathInfo(property.serializedObject.targetObject, property.propertyPath);
+        public static PropertyPathInfo GetPropertyPathInfo(SerializedProperty property) => GetPropertyPathInfo(property.serializedObject.targetObject, property.propertyPath);
 
-        public static Type GetSerializedPropertyType(SerializedProperty property)
+        public static Type GetPropertyType(SerializedProperty property)
         {
-            return GetSerializedPropertyPathInfo(property).Type;
+            return GetPropertyPathInfo(property).Type;
         }
     }
 }

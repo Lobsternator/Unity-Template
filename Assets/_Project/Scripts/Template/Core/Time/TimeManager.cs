@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Stores information about an ongoing hitstop.
+    /// </summary>
     public class Hitstop
     {
         public Hitstop(float durationMultiplier, AnimationCurve timeScaleCurve, float originalTimeScale)
@@ -49,6 +52,10 @@ namespace Template.Core
         Cancel
     }
 
+    /// <summary>
+    /// Singleton that manages time in various ways.
+    /// <b>Automatically created at the start of the program.</b>
+    /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -500)]
     public class TimeManager : PersistentRuntimeSingleton<TimeManager>
     {

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Event arguments for when a <see cref="Gameplay.ValuePool"/>'s value changes in some way.
+    /// </summary>
     public class ValueEventArgs : EventArgs
     {
         public ValueEventArgs(float oldValue, float newValue, ValuePool valuePool, MonoBehaviour eventInstigator, MonoBehaviour changeCauser)
@@ -25,6 +28,9 @@ namespace Template.Gameplay
         public MonoBehaviour ChangeCauser { get; }
     }
 
+    /// <summary>
+    /// Object for managing a pool of arbitrary "value".
+    /// </summary>
     [Serializable]
     public class ValuePool
     {

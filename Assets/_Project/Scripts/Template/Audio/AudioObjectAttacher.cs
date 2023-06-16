@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Template.Audio
 {
+    /// <summary>
+    /// Used to attach an <see cref="Audio.AudioObject"/> to a Transform without parenting.
+    /// Use this if you want the AudioObject to survive if the parent is destroyed.
+    /// </summary>
     [RequireComponent(typeof(AudioObject))]
     public class AudioObjectAttacher : MonoBehaviour
     {

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Various extensions for basic types.
+    /// </summary>
     public static class Extensions
     {
         #region AnimationCurve

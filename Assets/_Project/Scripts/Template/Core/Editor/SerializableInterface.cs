@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Base class for <see cref="SerializableInterface{TInterface, TCovering}"/>.
+    /// </summary>
     [Serializable]
     public abstract class SerializableInterface : IEquatable<SerializableInterface>
     {
@@ -17,6 +20,12 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Exposes an interface in the inspector.
+    /// Value must have TCovering as a base class.
+    /// </summary>
+    /// <typeparam name="TInterface">The interface type.</typeparam>
+    /// <typeparam name="TCovering">The type to use to serialize the value in the backend.</typeparam>
     [Serializable]
     public class SerializableInterface<TInterface, TCovering> : SerializableInterface, IEquatable<TInterface> where TInterface : class where TCovering : UnityEngine.Object
     {
@@ -41,6 +50,11 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Exposes an interface in the inspector.
+    /// Value must have <see cref="UnityEngine.Object"/> as a base class.
+    /// </summary>
+    /// <typeparam name="TInterface">The interface type.</typeparam>
     [Serializable]
     public class SerializableInterface<TInterface> : SerializableInterface<TInterface, UnityEngine.Object> where TInterface : class
     {
@@ -49,6 +63,9 @@ namespace Template.Core
     }
 
 #if UNITY_EDITOR
+    /// <summary>
+    /// PropertyDrawer for <see cref="SerializableInterface{TInterface, TCovering}"/>.
+    /// </summary>
     [CustomPropertyDrawer(typeof(SerializableInterface<,>), true)]
     public class SerializableInterfaceDrawer : PropertyDrawer
     {
@@ -84,7 +101,7 @@ namespace Template.Core
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             SerializedProperty valueProperty = property.FindPropertyRelative("_value");
-            Type valueType                   = ExtendedEditorUtility.GetSerializedPropertyType(property);
+            Type valueType                   = ExtendedEditorUtility.GetPropertyType(property);
             Type interfaceType               = valueType.GenericTypeArguments[0];
             Type coveringType                = valueType.GenericTypeArguments.Length > 1 ? valueType.GenericTypeArguments[1] : typeof(UnityEngine.Object);
 

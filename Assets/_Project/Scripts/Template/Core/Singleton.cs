@@ -13,8 +13,15 @@ using UnityEngine;
 
 namespace Template.Core
 {
+    /// <summary>
+    /// Covering type for <see cref="SingletonBehaviour{TSingleton}"/> and <see cref="SingletonAsset{TSingleton}"/>.
+    /// </summary>
     public interface ISingleton { }
 
+    /// <summary>
+    /// Exposes a public <see cref="Instance"/> property for getting the first avaiable instance of this singleton. Prevents multiple singletons from existing at once.
+    /// </summary>
+    /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
     [DisallowMultipleComponent]
     public abstract class SingletonBehaviour<TSingleton> : MonoBehaviour, ISingleton where TSingleton : MonoBehaviour, ISingleton
     {
@@ -52,6 +59,9 @@ namespace Template.Core
         }
     }
 
+    /// <summary>
+    /// Any <see cref="ScriptableObject"/> which has this attribute will be added to a list of asset types which should have their asset counts validated while in the editor. A warning will be raised when no, or multiple assets of the class type exist. There is optional functionality to automatically create the asset if it doesn't exist.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class SingletonAssetAttribute : Attribute
     {
@@ -69,6 +79,11 @@ namespace Template.Core
         public bool AutoCreate => autoCreate;
     }
 
+    /// <summary>
+    /// Any class which inherits this will be added to a list of asset types which should have their asset counts validated while in the editor. A warning will be raised when no, or multiple assets of type TSingleton exist.
+    /// Exposes a <see cref="Instance"/> property to get the first available asset of this singleton.
+    /// </summary>
+    /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
     [SingletonAsset]
     public abstract class SingletonAsset<TSingleton> : ScriptableObject, ISingleton where TSingleton : ScriptableObject, ISingleton
     {
@@ -91,6 +106,9 @@ namespace Template.Core
     }
 
 #if UNITY_EDITOR
+    /// <summary>
+    /// Static class for validating asset counts for scriptable objects that have the <see cref="SingletonAssetAttribute"/>.
+    /// </summary>
     public class SingletonAssetValidator : AssetPostprocessor
     {
         private static readonly IList<Type> _scriptableObjectTypes  = TypeCache.GetTypesDerivedFrom<ScriptableObject>();
