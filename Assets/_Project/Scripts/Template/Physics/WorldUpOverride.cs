@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Wrapper around <see cref="Transform"/>. Used for shifting reference frames.
+    /// </summary>
     [Serializable]
     public class WorldUpOverride
     {

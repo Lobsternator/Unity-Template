@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Updates <see cref="PhysicsChecker.ForceGroundedState"/> using a <see cref="ForceGroundedStateTallyCounter"/> for any PhysicsCheckers within any triggers on the object.
+    /// </summary>
     [DisallowMultipleComponent]
     public class GroundedOverrideProximityTrigger : MonoBehaviour, IContactEventReceiver
     {

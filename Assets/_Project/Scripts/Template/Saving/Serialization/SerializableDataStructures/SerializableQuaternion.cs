@@ -3,6 +3,9 @@ using Serializable = System.SerializableAttribute;
 
 namespace Template.Saving.Serialization
 {
+    /// <summary>
+    /// Serializable version of <see cref="Quaternion"/>.
+    /// </summary>
     [Serializable]
     public struct SerializableQuaternion
     {

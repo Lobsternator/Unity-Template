@@ -4,6 +4,9 @@ using Template.Saving.Serialization;
 
 namespace Template.Saving
 {
+    /// <summary>
+    /// Save data container belonging to a specific object.
+    /// </summary>
     public class SaveData
     {
         public ISavableObject Owner { get; }
@@ -26,6 +29,9 @@ namespace Template.Saving
         }
     }
 
+    /// <summary>
+    /// Describes an object that can be saved/loaded from disk.
+    /// </summary>
     public interface ISavableObject
     {
         public DataKey DataKey { get; set; }

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Template.Core
 {
     /// <summary>
-    /// PersistentRuntimeObjectData for <see cref="ApplicationStateMachine"/>.
+    /// <see cref="PersistentRuntimeObjectData{TSingleton}"/> for <see cref="ApplicationStateMachine"/>.
     /// </summary>
     [GenerateStateContainer]
     [CreateAssetMenu(fileName = "ApplicationStateManagerData", menuName = "Singleton/PersistentRuntimeObjectData/ApplicationStateManager")]

@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Template.Saving
 {
+    /// <summary>
+    /// Unique handle for identifying specific save data.
+    /// </summary>
     [Serializable]
     public class DataKey : IEquatable<DataKey>
     {

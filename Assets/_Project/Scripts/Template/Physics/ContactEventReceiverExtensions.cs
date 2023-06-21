@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Extension class for <see cref="IContactEventReceiver"/>.
+    /// </summary>
     public static class ContactEventReceiverExtensions
     {
         public static ContactEventSender GetCurrentContactEventInstigator(this IContactEventReceiver contactEventReceiver)

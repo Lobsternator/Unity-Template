@@ -6,6 +6,9 @@ using Template.Core;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Provides physics information about the object, such as if it is moving or not, if it is grounded, and information about the ground it is on.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody), typeof(ContactChecker))]
     public class PhysicsChecker : MonoBehaviour, IContactEventReceiver

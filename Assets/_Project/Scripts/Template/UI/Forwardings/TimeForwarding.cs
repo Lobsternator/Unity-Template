@@ -6,6 +6,9 @@ using Template.Core;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow use of <see cref="TimeManager"/> functions.
+    /// </summary>
     public class TimeForwarding : MonoBehaviour
     {
         public HitstopInteraction hitstopInteraction = HitstopInteraction.Multiply;

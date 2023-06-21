@@ -17,6 +17,9 @@ namespace Template.Physics
         OnTriggerExit       = 0b100000,
     }
 
+    /// <summary>
+    /// Makes an object able to receive contact events from external sources.
+    /// </summary>
     public interface IContactEventReceiver2D
     {
         /// <summary>
@@ -50,34 +53,34 @@ namespace Template.Physics
         }
     }
 
+    /// <summary>
+    /// Sends contact events to any <see cref="IContactEventReceiver2D"/>s on specified GameObjects.
+    /// </summary>
     public class ContactEventSender2D : MonoBehaviour, IContactEventReceiver2D
     {
         public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         public ContactEventFlags2D enabledContactEvents;
-        public List<SerializableInterface<IContactEventReceiver2D>> receivers;
+        public HashSet<GameObject> receivers;
 
-        public void AddReceiversFromGameObject(GameObject gameObject)
+        private List<IContactEventReceiver2D> _cachedReceivers;
+
+        private void Awake()
         {
-            IContactEventReceiver2D[] receiversToAdd = gameObject.GetComponents<IContactEventReceiver2D>();
-            foreach (IContactEventReceiver2D receiver in receiversToAdd)
-            {
-                if (receivers.Find((r) => r.Equals(receiver)) is not null)
-                    continue;
-
-                receivers.Add(new SerializableInterface<IContactEventReceiver2D>(receiver));
-            }
+            StartCoroutine(ClearDeadReceivers_UpdateRoutine());
         }
-        public void RemoveReceiversFromGameObject(GameObject gameObject)
-        {
-            receivers.RemoveAll((r) =>
-            {
-                Component component = r.Value as Component;
-                if (!component)
-                    return false;
 
-                return component.gameObject == gameObject;
-            });
+        public void ClearDeadReceivers()
+        {
+            receivers.RemoveWhere((r) => !r);
+        }
+        private IEnumerator ClearDeadReceivers_UpdateRoutine()
+        {
+            while (true)
+            {
+                yield return CoroutineUtility.WaitForFrames(1);
+                ClearDeadReceivers();
+            }
         }
 
         public void OnCollisionEnter2D(Collision2D collision)
@@ -85,15 +88,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnCollisionEnter) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionEnter2D(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionEnter2D(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnCollisionStay2D(Collision2D collision)
@@ -101,15 +112,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnCollisionStay) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionStay2D(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionStay2D(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnCollisionExit2D(Collision2D collision)
@@ -117,15 +136,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnCollisionExit) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnCollisionExit2D(collision);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnCollisionExit2D(collision);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerEnter2D(Collider2D other)
@@ -133,15 +160,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnTriggerEnter) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerEnter2D(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerEnter2D(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerStay2D(Collider2D other)
@@ -149,15 +184,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnTriggerStay) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerStay2D(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerStay2D(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
         public void OnTriggerExit2D(Collider2D other)
@@ -165,15 +208,23 @@ namespace Template.Physics
             if ((enabledContactEvents & ContactEventFlags2D.OnTriggerExit) == 0)
                 return;
 
-            for (int i = 0; i < receivers.Count; i++)
+            foreach (GameObject obj in receivers)
             {
-                IContactEventReceiver2D recipient = receivers[i].Value;
-                if (recipient == null)
+                if (obj == null)
                     continue;
 
-                recipient.CurrentContactEventSender = this;
-                recipient.OnTriggerExit2D(other);
-                recipient.CurrentContactEventSender = null;
+                _cachedReceivers.Clear();
+                obj.GetComponents(_cachedReceivers);
+
+                foreach (IContactEventReceiver2D recipient in _cachedReceivers)
+                {
+                    if (recipient == null)
+                        continue;
+
+                    recipient.CurrentContactEventSender = this;
+                    recipient.OnTriggerExit2D(other);
+                    recipient.CurrentContactEventSender = null;
+                }
             }
         }
     }

@@ -8,7 +8,10 @@ using Template.Core;
 
 namespace Template.Saving
 {
-    public class SavingTools : MonoBehaviour
+    /// <summary>
+    /// Various editor tools relating to the save system.
+    /// </summary>
+    public static class SavingTools
     {
         [MenuItem("Tools/Saving/Regenerate data keys")]
         public static void RegenerateDataKeys()

@@ -3,6 +3,9 @@ using Serializable = System.SerializableAttribute;
 
 namespace Template.Saving.Serialization
 {
+    /// <summary>
+    /// Serializable version of <see cref="Keyframe"/>.
+    /// </summary>
     [Serializable]
     public struct SerializableKeyframe
     {

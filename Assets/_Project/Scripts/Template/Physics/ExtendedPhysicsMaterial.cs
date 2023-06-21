@@ -11,6 +11,9 @@ using UnityEngine;
 namespace Template.Physics
 {
 #if UNITY_EDITOR
+    /// <summary>
+    /// Checks what <see cref="PhysicMaterial"/>s are being used by <see cref="ExtendedPhysicsMaterial"/>s as a base material and sets them to ReadOnly.
+    /// </summary>
     public class ExtendedPhysicsMaterialReferenceChecker : AssetPostprocessor
     {
         private static HashSet<ExtendedPhysicsMaterial> _registeredMaterials = new HashSet<ExtendedPhysicsMaterial>();
@@ -56,6 +59,9 @@ namespace Template.Physics
     }
 #endif
 
+    /// <summary>
+    /// Wrapper around <see cref="PhysicMaterial"/> which stores additional data.
+    /// </summary>
     [CreateAssetMenu(fileName = "new ExtendedPhysicMaterial", menuName = "Physics/ExtendedMaterial")]
     public class ExtendedPhysicsMaterial : ScriptableObject
     {

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Provides a variety of additional physics capabilities. Allows use of an <see cref="ExtendedPhysicsMaterial"/>.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ContactChecker))]
     public class ExtendedPhysics : MonoBehaviour, IContactEventReceiver
@@ -21,8 +24,6 @@ namespace Template.Physics
             }
         }
 
-        public bool ignoreTriggerOverlaps = true;
-        
         private ContactChecker _contactChecker;
 
         public void UpdateColliderMaterials()
@@ -118,7 +119,7 @@ namespace Template.Physics
                 Rigidbody rigidbody     = _contactChecker.Contacts[i].Collider.attachedRigidbody;
                 ContactType contactType = _contactChecker.Contacts[i].ContactType;
 
-                if (rigidbody == null || (contactType == ContactType.Trigger && ignoreTriggerOverlaps) || affectedBodies.Contains(rigidbody))
+                if (rigidbody == null || contactType == ContactType.Trigger || affectedBodies.Contains(rigidbody))
                     continue;
 
                 rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);

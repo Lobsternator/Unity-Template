@@ -64,7 +64,7 @@ namespace Template.Core
 
 #if UNITY_EDITOR
     /// <summary>
-    /// PropertyDrawer for <see cref="SerializableInterface{TInterface, TCovering}"/>.
+    /// <see cref="PropertyDrawer"/> for <see cref="SerializableInterface{TInterface, TCovering}"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(SerializableInterface<,>), true)]
     public class SerializableInterfaceDrawer : PropertyDrawer

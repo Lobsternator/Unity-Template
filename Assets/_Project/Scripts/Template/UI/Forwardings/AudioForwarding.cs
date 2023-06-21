@@ -6,6 +6,9 @@ using Template.Audio;
 
 namespace Template.UI
 {
+    /// <summary>
+    /// Attach to UI elements to allow use of <see cref="AudioManager"/> functions.
+    /// </summary>
     public class AudioForwarding : MonoBehaviour
     {
         public float Volume { get; set; } = 1.0f;

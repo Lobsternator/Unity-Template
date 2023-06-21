@@ -25,7 +25,7 @@ namespace Template.Core
 
 #if UNITY_EDITOR
     /// <summary>
-    /// PropertyDrawer for <see cref="ReadOnlyAttribute"/>.
+    /// <see cref="PropertyDrawer"/> for <see cref="ReadOnlyAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer

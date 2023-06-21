@@ -5,6 +5,9 @@ using Guid = System.Guid;
 
 namespace Template.Saving
 {
+    /// <summary>
+    /// <see cref="PropertyDrawer"/> for <see cref="DataKey"/>.
+    /// </summary>
     [CustomPropertyDrawer(typeof(DataKey))]
     public class DataKeyDrawer : PropertyDrawer
     {

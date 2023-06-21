@@ -7,6 +7,9 @@ using Template.Core;
 
 namespace Template.Saving.Serialization
 {
+    /// <summary>
+    /// Various utilities related to serialization.
+    /// </summary>
     public static class SerializationUtility
     {
         public static ReadOnlyCollection<Type> KnownUnserializableTypes { get; } = new ReadOnlyCollection<Type>(new List<Type>
