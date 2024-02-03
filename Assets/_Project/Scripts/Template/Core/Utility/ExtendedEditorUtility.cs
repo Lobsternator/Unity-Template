@@ -6,12 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityEngine;
 
 namespace Template.Core
 {
     /// <summary>
-    /// Stores property info
+    /// Stores property info.
     /// </summary>
     public struct PropertyPathInfo
     {
@@ -35,29 +34,29 @@ namespace Template.Core
         private static BindingFlags _fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private static Regex _arrayDataRegex           = new Regex(@"data\[(\d*)\]");
 
-        private static List<string> GetCleanedSerializedPropertyPath(string path)
+        private static List<string> GetProperPath(string propertyPath)
         {
-            List<string> cleanedPath = path.Split('.').ToList();
+            List<string> properPath = propertyPath.Split('.').ToList();
 
-            for (int i = 0; i < cleanedPath.Count; i++)
+            for (int i = 0; i < properPath.Count; i++)
             {
-                string pathSegment = cleanedPath[i];
+                string pathSegment = properPath[i];
                 if (pathSegment.EndsWith(']'))
-                    cleanedPath.RemoveAt(--i);
+                    properPath.RemoveAt(--i);
             }
 
-            return cleanedPath;
+            return properPath;
         }
 
         public static PropertyPathInfo GetPropertyPathInfo(object obj, string propertyPath)
         {
-            Type type                = obj.GetType();
-            FieldInfo fieldInfo      = null;
-            List<string> cleanedPath = GetCleanedSerializedPropertyPath(propertyPath);
+            Type type               = obj.GetType();
+            FieldInfo fieldInfo     = null;
+            List<string> properPath = GetProperPath(propertyPath);
 
-            for (int i = 0; i < cleanedPath.Count; i++)
+            for (int i = 0; i < properPath.Count; i++)
             {
-                string pathSegment = cleanedPath[i];
+                string pathSegment = properPath[i];
                 Match match        = _arrayDataRegex.Match(pathSegment);
 
                 if (match.Success)

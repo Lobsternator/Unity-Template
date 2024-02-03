@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using Template.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Template.Scenes;
 
 namespace Template.UI
 {

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using Type = System.Type;
@@ -7,7 +5,8 @@ using Type = System.Type;
 namespace Template.Core
 {
     /// <summary>
-    /// Manages and holds states belonging to <see cref="ApplicationStateMachine"/>.
+    /// <see cref="PersistentRuntimeSingleton{TSingleton, TData}"/> that manages and holds states belonging to <see cref="ApplicationStateMachine"/>.
+    /// <b>Automatically created at the start of the program.</b>
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ApplicationStateMachine))]

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,14 +6,14 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using Template.Core;
 using Template.Saving.Serialization;
+using UnityEngine;
 
 namespace Template.Saving
 {
     /// <summary>
-    /// Singleton that manages saving/loading game state to/from disk.
+    /// <see cref="PersistentRuntimeSingleton{TSingleton, TData}"/> that manages saving/loading game state to/from disk.
     /// <b>Automatically created at the start of the program.</b>
     /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -700)]

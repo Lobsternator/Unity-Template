@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Template.Audio;
 using Template.Core;
+using UnityEngine;
 
 namespace Template.UI
 {

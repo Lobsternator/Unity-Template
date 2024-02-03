@@ -1,10 +1,8 @@
 #if UNITY_EDITOR
-using System.IO;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Template.Core;
 using UnityEditor;
 using UnityEngine;
-using Template.Core;
 
 namespace Template.Saving
 {

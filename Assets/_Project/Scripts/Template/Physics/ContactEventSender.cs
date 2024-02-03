@@ -64,7 +64,7 @@ namespace Template.Physics
     }
 
     /// <summary>
-    /// Sends contact events to any <see cref="IContactEventReceiver"/>s on specified GameObjects.
+    /// Sends contact events to any <see cref="IContactEventReceiver"/>s on specified <see cref="GameObject"/>s.
     /// </summary>
     public class ContactEventSender : MonoBehaviour, IContactEventReceiver
     {

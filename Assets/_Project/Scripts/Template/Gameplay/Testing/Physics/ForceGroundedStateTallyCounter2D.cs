@@ -1,24 +1,23 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Physics
 {
     /// <summary>
-    /// Tallies up how many <see cref="ForceGroundedStateMode"/>s have accumulated, and determines what the final ForceGroundedStateMode should be.
+    /// Tallies up how many <see cref="ForceGroundedStateMode"/>s have accumulated, and determines what the final <see cref="ForceGroundedStateMode"/> should be.
     /// </summary>
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(PhysicsChecker))]
-    public class ForceGroundedStateTallyCounter : MonoBehaviour
+    [RequireComponent(typeof(PhysicsChecker2D))]
+    public class ForceGroundedStateTallyCounter2D : MonoBehaviour
     {
         public delegate ForceGroundedStateMode ForceGroundedStateModeFromTallyDelegate(int groundedTally, int airbornTally, int eitherTally);
         public ForceGroundedStateModeFromTallyDelegate ForceGroundedStateModeFromTallyCallback { get; set; }
 
-        private PhysicsChecker _physicsChecker;
+        private PhysicsChecker2D _physicsChecker;
         private Dictionary<ForceGroundedStateMode, int> _forceGroundedStateTallyCount = new Dictionary<ForceGroundedStateMode, int>();
 
-        public ForceGroundedStateTallyCounter()
+        public ForceGroundedStateTallyCounter2D()
         {
             ForceGroundedStateModeFromTallyCallback = DefaultForceGroundedStateFromTallyCallback;
 
@@ -83,7 +82,7 @@ namespace Template.Physics
 
         private void Awake()
         {
-            _physicsChecker = GetComponent<PhysicsChecker>();
+            _physicsChecker = GetComponent<PhysicsChecker2D>();
         }
     }
 }

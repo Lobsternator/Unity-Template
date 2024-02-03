@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 443047bd963125c40a38bdd4c80a3e22, type: 3}
-  m_Name: PersistentPathData
+  m_Name: PersistentApplicationData
   m_EditorClassIdentifier: 
   <SaveDataPath>k__BackingField: Saves/SaveData.sav
   <ResourceFolderPath>k__BackingField: Assets/_Project/Resources

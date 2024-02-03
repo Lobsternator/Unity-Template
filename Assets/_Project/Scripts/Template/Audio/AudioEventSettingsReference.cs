@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Template.Core;
+using UnityEngine;
 
 namespace Template.Audio
 {

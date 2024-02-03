@@ -1,22 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Physics
 {
     /// <summary>
-    /// Updates <see cref="PhysicsChecker.ForceGroundedState"/> using a <see cref="ForceGroundedStateTallyCounter"/> for a particular PhysicsChecker2D within any triggers on the object.
+    /// Updates <see cref="PhysicsChecker2D.ForceGroundedState"/> using a <see cref="ForceGroundedStateTallyCounter2D"/> for a particular <see cref="PhysicsChecker2D"/> within any triggers on the object.
     /// </summary>
     [DisallowMultipleComponent]
-    public class GroundedOverrideTargetedTrigger : MonoBehaviour, IContactEventReceiver
+    public class GroundedOverrideTargetedTrigger2D : MonoBehaviour, IContactEventReceiver2D
     {
         private struct OverrideContact : IEquatable<OverrideContact>
         {
-            public Collider Collider { get; }
+            public Collider2D Collider { get; }
             public ForceGroundedStateMode ForceGroundedState { get; set; }
 
-            public OverrideContact(Collider collider, ForceGroundedStateMode forceGroundedState)
+            public OverrideContact(Collider2D collider, ForceGroundedStateMode forceGroundedState)
             {
                 Collider           = collider;
                 ForceGroundedState = forceGroundedState;
@@ -28,10 +27,10 @@ namespace Template.Physics
             }
         }
 
-        public ContactEventSender CurrentContactEventSender { get; set; }
+        public ContactEventSender2D CurrentContactEventSender { get; set; }
 
-        [SerializeField] private ForceGroundedStateTallyCounter _tallyCounter;
-        public ForceGroundedStateTallyCounter TallyCounter => _tallyCounter;
+        [SerializeField] private ForceGroundedStateTallyCounter2D _tallyCounter;
+        public ForceGroundedStateTallyCounter2D TallyCounter => _tallyCounter;
 
         [SerializeField] private bool _ignoreTriggerOverlaps = true;
         public bool IgnoreTriggerOverlaps
@@ -77,7 +76,7 @@ namespace Template.Physics
             }
         }
 
-        public void OnTriggerEnter(Collider other)
+        public void OnTriggerEnter2D(Collider2D other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
@@ -85,7 +84,7 @@ namespace Template.Physics
             _overrideContacts.Add(new OverrideContact(other, ForceGroundedState));
             TallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
-        public void OnTriggerExit(Collider other)
+        public void OnTriggerExit2D(Collider2D other)
         {
             if (!TallyCounter || (other.isTrigger && IgnoreTriggerOverlaps))
                 return;
@@ -122,7 +121,7 @@ namespace Template.Physics
 
             for (int i = 0; i < _overrideContacts.Count; i++)
             {
-                Collider collider = _overrideContacts[i].Collider;
+                Collider2D collider = _overrideContacts[i].Collider;
 
                 if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy)
                 {

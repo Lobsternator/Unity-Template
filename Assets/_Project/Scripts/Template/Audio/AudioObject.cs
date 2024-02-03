@@ -1,16 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
+using System;
+using System.Collections;
 using Template.Core;
+using UnityEngine;
 
 namespace Template.Audio
 {
     /// <summary>
-    /// Wrapper around <see cref="StudioEventEmitter"/>; represents one audio channel.
+    /// Wrapper around <see cref="StudioEventEmitter"/>; represents audio for one unique audio channel.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(StudioEventEmitter))]

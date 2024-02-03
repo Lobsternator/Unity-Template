@@ -1,13 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Template.Core;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Template.Scenes
 {
     /// <summary>
-    /// Wrapper around <see cref="AsyncOperation"/>, describes an asynchronous action applied to a scene.
+    /// Wrapper around <see cref="AsyncOperation"/>, describes an asynchronous action applied to a <see cref="Scene"/>.
     /// </summary>
     public class AsyncSceneOperation : AsyncOperationWrapper<AsyncSceneOperation>
     {

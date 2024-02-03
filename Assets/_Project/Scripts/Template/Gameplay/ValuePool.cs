@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Gameplay
@@ -29,7 +27,7 @@ namespace Template.Gameplay
     }
 
     /// <summary>
-    /// Object for managing a pool of arbitrary "value".
+    /// Object for managing a pool of arbitrary "value," within a restricted range.
     /// </summary>
     [Serializable]
     public class ValuePool

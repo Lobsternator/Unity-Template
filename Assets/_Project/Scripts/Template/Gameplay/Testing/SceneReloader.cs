@@ -1,11 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
+using Template.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Template.Scenes;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Test script that simply reloads the scene according to <see cref="reloadInterval"/>.
+    /// </summary>
     public class SceneReloader : MonoBehaviour
     {
         [SerializeField] private float reloadInterval = 1.0f;

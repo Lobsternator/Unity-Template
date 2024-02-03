@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using UnityEngine;
 using Template.Core;
+using UnityEngine;
 
 namespace Template.Saving.Serialization
 {

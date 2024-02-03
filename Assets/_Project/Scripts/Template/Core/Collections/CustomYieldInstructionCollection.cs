@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -9,7 +7,7 @@ namespace Template.Core
     /// <summary>
     /// Serves as a yieldable collection of <see cref="CustomYieldInstruction"/>.
     /// </summary>
-    /// <typeparam name="TCustomYieldInstruction">The specific CustomYieldInstruction the collection should hold.</typeparam>
+    /// <typeparam name="TCustomYieldInstruction">The specific <see cref="CustomYieldInstruction"/> the collection should hold.</typeparam>
     public abstract class CustomYieldInstructionCollection<TCustomYieldInstruction> : CustomYieldInstruction where TCustomYieldInstruction : CustomYieldInstruction
     {
         protected List<TCustomYieldInstruction> _operations;

@@ -41,7 +41,7 @@ namespace Template.Gameplay
     }
 
     /// <summary>
-    /// Object for managing a pool of arbitrary "damage".
+    /// Object for managing a pool of arbitrary "damage," within a restricted range.
     /// </summary>
     [Serializable]
     public class DamagePool

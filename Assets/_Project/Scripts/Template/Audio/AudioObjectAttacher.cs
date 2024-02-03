@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Audio
 {
     /// <summary>
     /// Used to attach an <see cref="Audio.AudioObject"/> to a Transform without parenting.
-    /// Use this if you want the AudioObject to survive if the parent is destroyed.
+    /// Use this if you want the <see cref="Audio.AudioObject"/> to survive if the attached object is destroyed.
     /// </summary>
     [RequireComponent(typeof(AudioObject))]
     public class AudioObjectAttacher : MonoBehaviour

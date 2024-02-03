@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using FMODUnity;
 using Template.Core;
+using UnityEngine;
 
 namespace Template.Audio
 {

@@ -1,10 +1,9 @@
+using FMODUnity;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Template.Core;
 using UnityEngine;
 using UnityEngine.Pool;
-using FMODUnity;
-using Template.Core;
 
 namespace Template.Audio
 {
@@ -25,7 +24,7 @@ namespace Template.Audio
     }
 
     /// <summary>
-    /// Singleton used for playing audio.
+    /// <see cref="PersistentRuntimeSingleton{TSingleton, TData}"/> used for playing audio.
     /// <b>Automatically created at the start of the program.</b>
     /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -1000)]

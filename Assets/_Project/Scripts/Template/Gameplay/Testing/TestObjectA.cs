@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using FMODUnity;
 using Template.Audio;
 using Template.Core;
 using Template.Physics;
+using UnityEngine;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Test script for showcasing the <see cref="PhysicsChecker"/>, <see cref="AudioManager"/>, and <see cref="TimeManager"/>.
+    /// </summary>
     [RequireComponent(typeof(PhysicsChecker), typeof(Collider))]
     public class TestObjectA : MonoBehaviour
     {

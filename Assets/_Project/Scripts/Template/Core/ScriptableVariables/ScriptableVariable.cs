@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Template.Core
 {
     /// <summary>
-    /// ScriptableObject storing a single value.
+    /// <see cref="ScriptableObject"/> storing a single value.
     /// </summary>
     [Serializable]
     public class ScriptableReference<TValue> : ScriptableObject
@@ -20,7 +19,7 @@ namespace Template.Core
     }
 
     /// <summary>
-    /// Wrapper around <see cref="ScriptableReference{TValue}"/> that also allows for use of a constant value.
+    /// Wrapper around <see cref="ScriptableReference{TValue}"/>. Also allows for use of a constant value.
     /// </summary>
     [Serializable]
     public class ScriptableVariable<TValue>

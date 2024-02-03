@@ -1,10 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Physics
 {
+    /// <summary>
+    /// Glossary information for <see cref="ContactInfo"/>.
+    /// </summary>
     public enum ContactType
     {
         /// <summary>
@@ -17,6 +18,9 @@ namespace Template.Physics
         Trigger
     }
 
+    /// <summary>
+    /// Stores glossary information about a <see cref="ContactPoint"/> event.
+    /// </summary>
     public struct ContactInfo : IEquatable<ContactInfo>
     {
         public Collider Collider { get; }
@@ -54,6 +58,9 @@ namespace Template.Physics
         }
     }
 
+    /// <summary>
+    /// Stores glossary information about a <see cref="ContactPoint2D"/> event.
+    /// </summary>
     public struct ContactInfo2D : IEquatable<ContactInfo2D>
     {
         public Collider2D Collider { get; }

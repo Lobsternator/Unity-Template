@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Template.Saving.Serialization;
 
@@ -30,7 +29,7 @@ namespace Template.Saving
     }
 
     /// <summary>
-    /// Describes an object that can be saved/loaded from disk.
+    /// Describes an object that can be saved/loaded to/from disk.
     /// </summary>
     public interface ISavableObject
     {

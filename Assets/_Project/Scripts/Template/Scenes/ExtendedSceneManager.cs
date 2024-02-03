@@ -1,16 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Template.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Template.Core;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Template.Scenes
 {
     /// <summary>
-    /// Wrapper around <see cref="SceneManager"/>. Disallows multiple loaded instances of the same scene at once.
+    /// Wrapper around <see cref="SceneManager"/>. Disallows multiple loaded instances of the same <see cref="Scene"/> at once.
     /// </summary>
     public static class ExtendedSceneManager
     {
@@ -33,7 +32,7 @@ namespace Template.Scenes
 
         public static string GetFullScenePath(string localScenePath)
         {
-            return Path.Combine(PersistentPathData.Instance.SceneFolderPath, localScenePath + ".unity").Replace('\\', '/');
+            return Path.Combine(PersistentApplicationData.Instance.SceneFolderPath, localScenePath + ".unity").Replace('\\', '/');
         }
 
         public static bool IsSceneLoaded(int buildIndex)

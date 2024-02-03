@@ -1,23 +1,22 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Physics
 {
     /// <summary>
-    /// Updates <see cref="PhysicsChecker2D.ForceGroundedState"/> using a <see cref="ForceGroundedStateTallyCounter2D"/> for any PhysicsChecker2Ds within any triggers on the object.
+    /// Updates <see cref="PhysicsChecker.ForceGroundedState"/> using a <see cref="ForceGroundedStateTallyCounter"/> for any <see cref="PhysicsChecker"/>s within any triggers on the object.
     /// </summary>
     [DisallowMultipleComponent]
-    public class GroundedOverrideProximityTrigger2D : MonoBehaviour, IContactEventReceiver2D
+    public class GroundedOverrideProximityTrigger : MonoBehaviour, IContactEventReceiver
     {
         private struct OverrideContact : IEquatable<OverrideContact>
         {
-            public Collider2D Collider { get; }
-            public ForceGroundedStateTallyCounter2D ForceGroundedStateTallyCounter { get; }
+            public Collider Collider { get; }
+            public ForceGroundedStateTallyCounter ForceGroundedStateTallyCounter { get; }
             public ForceGroundedStateMode ForceGroundedState { get; set; }
 
-            public OverrideContact(Collider2D collider, ForceGroundedStateTallyCounter2D forceGroundedStateTallyCounter, ForceGroundedStateMode forceGroundedState)
+            public OverrideContact(Collider collider, ForceGroundedStateTallyCounter forceGroundedStateTallyCounter, ForceGroundedStateMode forceGroundedState)
             {
                 Collider                       = collider;
                 ForceGroundedStateTallyCounter = forceGroundedStateTallyCounter;
@@ -30,7 +29,7 @@ namespace Template.Physics
             }
         }
 
-        public ContactEventSender2D CurrentContactEventSender { get; set; }
+        public ContactEventSender CurrentContactEventSender { get; set; }
 
         [SerializeField] private bool _ignoreTriggerOverlaps = true;
         public bool IgnoreTriggerOverlaps
@@ -62,9 +61,9 @@ namespace Template.Physics
         {
             for (int i = 0; i < _overrideContacts.Count; i++)
             {
-                OverrideContact overrideContact               = _overrideContacts[i];
-                ForceGroundedStateTallyCounter2D tallyCounter = overrideContact.ForceGroundedStateTallyCounter;
-                ForceGroundedStateMode oldForceGroundedState  = overrideContact.ForceGroundedState;
+                OverrideContact overrideContact              = _overrideContacts[i];
+                ForceGroundedStateTallyCounter tallyCounter  = overrideContact.ForceGroundedStateTallyCounter;
+                ForceGroundedStateMode oldForceGroundedState = overrideContact.ForceGroundedState;
 
                 if (tallyCounter && oldForceGroundedState != _forceGroundedState)
                 {
@@ -77,24 +76,24 @@ namespace Template.Physics
             }
         }
 
-        public void OnTriggerEnter2D(Collider2D other)
+        public void OnTriggerEnter(Collider other)
         {
             if ((other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
                 return;
 
-            ForceGroundedStateTallyCounter2D tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter2D>();
+            ForceGroundedStateTallyCounter tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter>();
             if (!tallyCounter)
                 return;
 
             _overrideContacts.Add(new OverrideContact(other, tallyCounter, ForceGroundedState));
             tallyCounter.AddForceGroundedStateTally(ForceGroundedState, 1);
         }
-        public void OnTriggerExit2D(Collider2D other)
+        public void OnTriggerExit(Collider other)
         {
             if ((other.isTrigger && IgnoreTriggerOverlaps) || !enabled)
                 return;
 
-            ForceGroundedStateTallyCounter2D tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter2D>();
+            ForceGroundedStateTallyCounter tallyCounter = other.GetComponent<ForceGroundedStateTallyCounter>();
             if (!tallyCounter)
                 return;
 
@@ -110,7 +109,7 @@ namespace Template.Physics
         {
             for (int i = 0; i < _overrideContacts.Count; i++)
             {
-                ForceGroundedStateTallyCounter2D tallyCounter = _overrideContacts[i].ForceGroundedStateTallyCounter;
+                ForceGroundedStateTallyCounter tallyCounter = _overrideContacts[i].ForceGroundedStateTallyCounter;
                 if (tallyCounter)
                     tallyCounter.AddForceGroundedStateTally(ForceGroundedState, -1);
             }
@@ -125,8 +124,8 @@ namespace Template.Physics
 
             for (int i = 0; i < _overrideContacts.Count; i++)
             {
-                Collider2D collider                           = _overrideContacts[i].Collider;
-                ForceGroundedStateTallyCounter2D tallyCounter = _overrideContacts[i].ForceGroundedStateTallyCounter;
+                Collider collider                           = _overrideContacts[i].Collider;
+                ForceGroundedStateTallyCounter tallyCounter = _overrideContacts[i].ForceGroundedStateTallyCounter;
 
                 if (!collider || !collider.enabled || !collider.gameObject.activeInHierarchy || !tallyCounter)
                 {

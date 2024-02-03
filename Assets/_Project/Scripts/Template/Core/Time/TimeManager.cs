@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Core
@@ -53,7 +52,7 @@ namespace Template.Core
     }
 
     /// <summary>
-    /// Singleton that manages time in various ways.
+    /// <see cref="PersistentRuntimeSingleton{TSingleton}"/> that manages time in various ways.
     /// <b>Automatically created at the start of the program.</b>
     /// </summary>
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -500)]

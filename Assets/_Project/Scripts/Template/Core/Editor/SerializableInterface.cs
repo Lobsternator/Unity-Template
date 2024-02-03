@@ -22,9 +22,9 @@ namespace Template.Core
 
     /// <summary>
     /// Exposes an interface in the inspector.
-    /// Value must have TCovering as a base class.
+    /// Value must have <typeparamref name="TCovering"/> as a base class.
     /// </summary>
-    /// <typeparam name="TInterface">The interface type.</typeparam>
+    /// <typeparam name="TInterface"></typeparam>
     /// <typeparam name="TCovering">The type to use to serialize the value in the backend.</typeparam>
     [Serializable]
     public class SerializableInterface<TInterface, TCovering> : SerializableInterface, IEquatable<TInterface> where TInterface : class where TCovering : UnityEngine.Object
@@ -54,7 +54,7 @@ namespace Template.Core
     /// Exposes an interface in the inspector.
     /// Value must have <see cref="UnityEngine.Object"/> as a base class.
     /// </summary>
-    /// <typeparam name="TInterface">The interface type.</typeparam>
+    /// <typeparam name="TInterface"></typeparam>
     [Serializable]
     public class SerializableInterface<TInterface> : SerializableInterface<TInterface, UnityEngine.Object> where TInterface : class
     {

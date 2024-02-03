@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UnityEngine;
 using Template.Saving;
 using Template.Saving.Serialization;
+using UnityEngine;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Test script for showcasing the saving system.
+    /// </summary>
     public class TestSavableObject : MonoBehaviour, ISavableObject
     {
         [field: SerializeField] public DataKey DataKey { get; set; } = new DataKey();

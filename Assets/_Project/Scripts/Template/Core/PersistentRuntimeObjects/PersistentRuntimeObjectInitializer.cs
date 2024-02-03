@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -62,7 +61,7 @@ namespace Template.Core
     }
 
     /// <summary>
-    /// Static class responsible for creating any <see cref="IPersistentRuntimeObject"/>s in the project domain.
+    /// Static class responsible for creating any <see cref="IPersistentRuntimeObject"/>s in the application domain.
     /// </summary>
     public static class PersistentRuntimeObjectInitializer
     {

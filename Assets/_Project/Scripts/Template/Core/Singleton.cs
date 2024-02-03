@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.IO;
-using System.Linq;
+using System.Reflection;
 #if UNITY_EDITOR
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using Unity.EditorCoroutines.Editor;
 #endif
 using UnityEngine;
 
@@ -80,7 +79,7 @@ namespace Template.Core
     }
 
     /// <summary>
-    /// Any class which inherits this will be added to a list of asset types which should have their asset counts validated while in the editor. A warning will be raised when no, or multiple assets of type TSingleton exist.
+    /// Any class which inherits this will be added to a list of asset types which should have their asset counts validated while in the editor. A warning will be raised when no, or multiple assets of type <typeparamref name="TSingleton"/> exist.
     /// Exposes a <see cref="Instance"/> property to get the first available asset of this singleton.
     /// </summary>
     /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
@@ -107,7 +106,7 @@ namespace Template.Core
 
 #if UNITY_EDITOR
     /// <summary>
-    /// Static class for validating asset counts for scriptable objects that have the <see cref="SingletonAssetAttribute"/>.
+    /// Static class for validating asset counts for <see cref="ScriptableObject"/>s that have the <see cref="SingletonAssetAttribute"/>.
     /// </summary>
     public class SingletonAssetValidator : AssetPostprocessor
     {
@@ -121,7 +120,7 @@ namespace Template.Core
             {
                 if (autoCreate)
                 {
-                    string assetPath            = Path.Combine(PersistentPathData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
+                    string assetPath            = Path.Combine(PersistentApplicationData.Instance.ResourceFolderPath, type.Name).Replace('\\', '/') + ".asset";
                     assetPath                   = AssetDatabase.GenerateUniqueAssetPath(assetPath);
                     _latestAutoCreatedAssetPaths.Add(assetPath);
 

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Template.Core;
 
 namespace Template.Gameplay
 {

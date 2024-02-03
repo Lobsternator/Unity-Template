@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Complimentary test script for <see cref="TestObjectA2D"/>.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class TestObjectB2D : MonoBehaviour
     {

@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Serializable = System.SerializableAttribute;
 
 namespace Template.Core
 {
     /// <summary>
-    /// Stores various settings related to hitstops.
+    /// Stores various settings related to <see cref="Hitstop"/>s.
     /// </summary>
     [Serializable]
     public class HitstopSettings

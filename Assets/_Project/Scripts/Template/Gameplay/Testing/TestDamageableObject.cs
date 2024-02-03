@@ -1,9 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Gameplay
 {
+    /// <summary>
+    /// Test script for showcasing the damage system.
+    /// </summary>
     public class TestDamageableObject : MonoBehaviour
     {
         [field: SerializeField] public DamagePool Damage { get; private set; }

@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Template.Core
 {
     /// <summary>
-    /// Various utilities related finding objects.
+    /// Various utilities related to finding objects.
     /// </summary>
     public static class ObjectUtility
     {
