@@ -56,7 +56,7 @@ namespace Template.Core
     /// When inheriting this; ensures that the object is automatically created and added to the DontDestroyOnLoad scene at the start of the program.
     /// </summary>
     /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
-    public abstract class PersistentRuntimeSingleton<TSingleton> : SingletonBehaviour<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, ISingleton, IPersistentRuntimeObject
+    public abstract class PersistentRuntimeSingleton<TSingleton> : SingletonBehaviour<TSingleton>, IPersistentRuntimeObject where TSingleton : MonoBehaviour, ISingleton<TSingleton>, IPersistentRuntimeObject
     {
         protected static void CreateObjectInstance(string objectName)
         {
@@ -76,7 +76,7 @@ namespace Template.Core
     /// </summary>
     /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
     /// <typeparam name="TData">Data to be used during runtime.</typeparam>
-    public abstract class PersistentRuntimeSingleton<TSingleton, TData> : PersistentRuntimeSingleton<TSingleton>, IPersistentRuntimeObject<TData> where TSingleton : MonoBehaviour, ISingleton, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData<TData>
+    public abstract class PersistentRuntimeSingleton<TSingleton, TData> : PersistentRuntimeSingleton<TSingleton>, IPersistentRuntimeObject<TData> where TSingleton : MonoBehaviour, ISingleton<TSingleton>, IPersistentRuntimeObject<TData> where TData : PersistentRuntimeObjectData<TData>
     {
         public TData PersistentData { get; private set; }
 

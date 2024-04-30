@@ -15,14 +15,17 @@ namespace Template.Core
     /// <summary>
     /// Covering type for <see cref="SingletonBehaviour{TSingleton}"/> and <see cref="SingletonAsset{TSingleton}"/>.
     /// </summary>
-    public interface ISingleton { }
+    public interface ISingleton<TSingleton>
+    {
+        public static TSingleton Instance { get; }
+    }
 
     /// <summary>
     /// Exposes a public <see cref="Instance"/> property for getting the first avaiable instance of this singleton. Prevents multiple singletons from existing at once.
     /// </summary>
     /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
     [DisallowMultipleComponent]
-    public abstract class SingletonBehaviour<TSingleton> : MonoBehaviour, ISingleton where TSingleton : MonoBehaviour, ISingleton
+    public abstract class SingletonBehaviour<TSingleton> : MonoBehaviour, ISingleton<TSingleton> where TSingleton : MonoBehaviour, ISingleton<TSingleton>
     {
         private static TSingleton _instance;
         public static TSingleton Instance
@@ -84,7 +87,7 @@ namespace Template.Core
     /// </summary>
     /// <typeparam name="TSingleton">Should be the inheriting class.</typeparam>
     [SingletonAsset]
-    public abstract class SingletonAsset<TSingleton> : ScriptableObject, ISingleton where TSingleton : ScriptableObject, ISingleton
+    public abstract class SingletonAsset<TSingleton> : ScriptableObject, ISingleton<TSingleton> where TSingleton : ScriptableObject, ISingleton<TSingleton>
     {
         private static TSingleton _instance;
         public static TSingleton Instance
