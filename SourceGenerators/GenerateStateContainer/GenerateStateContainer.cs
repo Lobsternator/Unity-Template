@@ -242,14 +242,15 @@ namespace GenerateStateContainer
             if (!(context.Node is ClassDeclarationSyntax))
                 return;
 
-            ClassDeclarationSyntax classDeclSyntax = (ClassDeclarationSyntax)context.Node;
-            if (context.SemanticModel.GetDeclaredSymbol(classDeclSyntax).IsAbstract)
+            ClassDeclarationSyntax classDeclSyntax     = (ClassDeclarationSyntax)context.Node;
+            INamedTypeSymbol       classDeclTypeSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclSyntax);
+            if (classDeclTypeSymbol is null || classDeclTypeSymbol.IsAbstract)
                 return;
 
             if (!HasAttribute(classDeclSyntax, GeneratorUtility.ContainerAttributeNameWithoutNamespace))
                 return;
 
-            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, $"{GeneratorUtility.BaseContainerNameWithoutNamespace}<", true, out var baseTypeSymbol))
+            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, classDeclTypeSymbol, $"{GeneratorUtility.BaseContainerNameWithoutNamespace}<", true, out var baseTypeSymbol))
                 return;
 
             string[]             typeArgumentNames      = GetTypeArgumentNames(baseTypeSymbol, true);
@@ -270,10 +271,10 @@ namespace GenerateStateContainer
 
             ClassDeclarationSyntax classDeclSyntax     = (ClassDeclarationSyntax)context.Node;
             INamedTypeSymbol       classDeclTypeSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclSyntax);
-            if (classDeclTypeSymbol.IsAbstract)
+            if (classDeclTypeSymbol is null || classDeclTypeSymbol.IsAbstract)
                 return;
 
-            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, $"{GeneratorUtility.BaseStateNameWithoutNamespace}<", true, out var baseTypeSymbol))
+            if (!TryGetBaseType(context.SemanticModel, classDeclSyntax, classDeclTypeSymbol, $"{GeneratorUtility.BaseStateNameWithoutNamespace}<", true, out var baseTypeSymbol))
                 return;
 
             string[]    typeArgumentNames = GetTypeArgumentNames(baseTypeSymbol, true);
@@ -293,9 +294,12 @@ namespace GenerateStateContainer
             return classDeclSyntax.AttributeLists.Any((a) => a.Attributes.Any((n) => n.ToString().StartsWith(attribute)));
         }
 
-        private bool TryGetBaseType(SemanticModel semanticModel, BaseTypeDeclarationSyntax typeDeclSyntax, string baseType, bool includeNamespace, out INamedTypeSymbol baseTypeSymbol)
+        private bool TryGetBaseType(SemanticModel semanticModel, BaseTypeDeclarationSyntax typeDeclSyntax, INamedTypeSymbol typeDeclTypeSymbol, string baseType, bool includeNamespace, out INamedTypeSymbol baseTypeSymbol)
         {
             baseTypeSymbol = null;
+            foreach (INamedTypeSymbol typeSymbol in typeDeclTypeSymbol.AllInterfaces)
+                if (IsDerivedFrom(typeSymbol, baseType, includeNamespace, out baseTypeSymbol))
+                    return true;
 
             if (typeDeclSyntax.BaseList is null)
                 return false;
