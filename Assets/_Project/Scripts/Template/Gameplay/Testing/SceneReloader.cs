@@ -10,7 +10,8 @@ namespace Template.Gameplay
     /// </summary>
     public class SceneReloader : MonoBehaviour
     {
-        [SerializeField] private float reloadInterval = 1.0f;
+        [SerializeField]
+        private float reloadInterval = 1.0f;
 
         private IEnumerator ReloadScene()
         {

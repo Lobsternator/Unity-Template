@@ -20,6 +20,15 @@ namespace Template.Gameplay
     /// </summary>
     public class DamageEventArgs : EventArgs
     {
+        public float OldDamage { get; }
+        public float NewDamage { get; }
+        public float DamageDifference => NewDamage - OldDamage;
+        public IDamageType DamageType { get; }
+
+        public DamagePool DamagePool { get; }
+        public MonoBehaviour EventInstigator { get; }
+        public MonoBehaviour DamageCauser { get; }
+
         public DamageEventArgs(float oldDamage, float newDamage, IDamageType damageType, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
             OldDamage       = oldDamage;
@@ -29,15 +38,6 @@ namespace Template.Gameplay
             EventInstigator = eventInstigator;
             DamageCauser    = damageCauser;
         }
-
-        public float OldDamage { get; }
-        public float NewDamage { get; }
-        public float DamageDifference => NewDamage - OldDamage;
-        public IDamageType DamageType { get; }
-
-        public DamagePool DamagePool { get; }
-        public MonoBehaviour EventInstigator { get; }
-        public MonoBehaviour DamageCauser { get; }
     }
 
     /// <summary>
@@ -49,17 +49,22 @@ namespace Template.Gameplay
         public MonoBehaviour Owner { get; set; }
         public bool IsAtMinDamage => Mathf.Approximately(Damage, MinDamage);
         public bool IsAtMaxDamage => Mathf.Approximately(Damage, MaxDamage);
-        [field: SerializeField] public bool IsDamageable { get; set; } = true;
 
-        private float _oldDamage;
+        [field: SerializeField]
+        public bool CanReceiveDamage { get; set; } = true;
+
         [field: Space(7)]
-        [field: SerializeField] public float Damage { get; private set; } = 0.0f;
+        [field: SerializeField]
+        public float Damage { get; private set; } = 0.0f;
+        private float _oldDamage;
 
+        [field: SerializeField]
+        public float MinDamage { get; private set; } = 0.0f;
         private float _oldMinDamage;
-        [field: SerializeField] public float MinDamage { get; private set; } = 0.0f;
 
+        [field: SerializeField]
+        public float MaxDamage { get; private set; } = 100.0f;
         private float _oldMaxDamage;
-        [field: SerializeField] public float MaxDamage { get; private set; } = 100.0f;
 
         public event Action<DamageEventArgs> DamageChanged;
         public event Action<DamageEventArgs> MinDamageChanged;
@@ -116,7 +121,7 @@ namespace Template.Gameplay
 
         public void SetDamage(float damage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            if (!IsDamageable)
+            if (!CanReceiveDamage)
                 return;
 
             Damage = Mathf.Clamp(damage, MinDamage, MaxDamage);
@@ -135,7 +140,7 @@ namespace Template.Gameplay
 
         public void ApplyDamage(float baseDamage, IDamageType damageType, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {
-            if (!IsDamageable)
+            if (!CanReceiveDamage)
                 return;
 
             float modifiedDamage = damageType is not null ? damageType.GetModifiedDamage(baseDamage, this, eventInstigator, damageCauser) : baseDamage;
@@ -160,7 +165,7 @@ namespace Template.Gameplay
 
             if (!Mathf.Approximately(_oldDamage, Damage))
             {
-                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<MinDamageChange_DamageType>(), this, eventInstigator, damageCauser);
+                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<DamageType_MinDamageChange>(), this, eventInstigator, damageCauser);
                 _oldDamage    = Damage;
 
                 DamageChanged?.Invoke(eventArgs);
@@ -195,7 +200,7 @@ namespace Template.Gameplay
 
             if (!Mathf.Approximately(_oldDamage, Damage))
             {
-                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<MaxDamageChange_DamageType>(), this, eventInstigator, damageCauser);
+                var eventArgs = new DamageEventArgs(_oldDamage, Damage, AssetUtility.GetSingletonAsset<DamageType_MaxDamageChange>(), this, eventInstigator, damageCauser);
                 _oldDamage    = Damage;
 
                 DamageChanged?.Invoke(eventArgs);
@@ -216,9 +221,9 @@ namespace Template.Gameplay
 
         public void Validate()
         {
-            SetMinDamage(MinDamage, AssetUtility.GetSingletonAsset<ValidateMinDamage_DamageType>());
-            SetMaxDamage(MaxDamage, AssetUtility.GetSingletonAsset<ValidateMaxDamage_DamageType>());
-            SetDamage(Damage, AssetUtility.GetSingletonAsset<ValidateDamage_DamageType>());
+            SetMinDamage(MinDamage, AssetUtility.GetSingletonAsset<DamageType_ValidateMinDamage>());
+            SetMaxDamage(MaxDamage, AssetUtility.GetSingletonAsset<DamageType_ValidateMaxDamage>());
+            SetDamage(Damage, AssetUtility.GetSingletonAsset<DamageType_ValidateDamage>());
         }
     }
 }

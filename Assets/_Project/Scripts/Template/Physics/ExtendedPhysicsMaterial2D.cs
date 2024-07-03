@@ -64,13 +64,16 @@ namespace Template.Physics
     public class ExtendedPhysicsMaterial2D : ScriptableObject
     {
 #if UNITY_EDITOR
-        [SerializeField] private PhysicsMaterial2D _lastBaseMaterial;
+        [SerializeField]
+        private PhysicsMaterial2D _lastBaseMaterial;
 #endif
 
-        [SerializeField] private PhysicsMaterial2D _baseMaterial;
+        [SerializeField]
+        private PhysicsMaterial2D _baseMaterial;
         public PhysicsMaterial2D BaseMaterial => _baseMaterial;
 
-        [SerializeField] private float _friction = 0.4f;
+        [SerializeField]
+        private float _friction = 0.4f;
         public float Friction
         {
             get => _friction;
@@ -82,7 +85,8 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private float _bounciness;
+        [SerializeField]
+        private float _bounciness;
         public float Bounciness
         {
             get => _bounciness;
@@ -94,14 +98,16 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private float _linearDrag;
+        [SerializeField]
+        private float _linearDrag;
         public float LinearDrag
         {
             get => _linearDrag;
             set => _linearDrag = Mathf.Max(value, 0.0f);
         }
 
-        [SerializeField] private float _angularDrag;
+        [SerializeField]
+        private float _angularDrag;
         public float AngularDrag
         {
             get => _angularDrag;

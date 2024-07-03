@@ -7,8 +7,8 @@ namespace Template.Gameplay
     /// Builtin damage type for when the max damage changes due to it being validated.
     /// </summary>
     [SingletonAsset]
-    [CreateAssetMenu(fileName = "ValidateMaxDamage", menuName = "Gameplay/Damage/DamageTypes/Builtin/ValidateMaxDamage")]
-    public sealed class ValidateMaxDamage_DamageType : DamageType
+    [CreateAssetMenu(fileName = "DamageType_ValidateMaxDamage", menuName = "Gameplay/Damage/DamageTypes/Builtin/ValidateMaxDamage")]
+    public sealed class DamageType_ValidateMaxDamage : DamageType
     {
         public override float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {

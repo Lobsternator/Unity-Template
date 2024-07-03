@@ -11,12 +11,12 @@ namespace Template.Core
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ApplicationStateMachine))]
     [PersistentRuntimeObject(RuntimeInitializeLoadType.BeforeSceneLoad, -100)]
-    public class ApplicationStateManager : PersistentRuntimeSingleton<ApplicationStateManager, ApplicationStateManagerData>, IStateManager<ApplicationStateMachine, ApplicationStateBase>
+    public class ApplicationStateManager : PersistentRuntimeSingleton<ApplicationStateManager, ApplicationStateManagerData>, IStateManager<ApplicationStateMachine, ApplicationState_Base>
     {
         public static bool IsApplicationQuitting { get; private set; } = false;
 
         public ApplicationStateMachine StateMachine { get; set; }
-        public ReadOnlyDictionary<Type, ApplicationStateBase> States { get; private set; }
+        public ReadOnlyDictionary<Type, ApplicationState_Base> States { get; private set; }
 
         public void Initialize(ApplicationStateMachine stateManager)
         {
@@ -27,14 +27,14 @@ namespace Template.Core
                 state.Initialize(stateManager);
         }
 
-        public TState GetState<TState>() where TState : ApplicationStateBase
+        public TState GetState<TState>() where TState : ApplicationState_Base
         {
             if (States.TryGetValue(typeof(TState), out var state))
                 return (TState)state;
 
             return null;
         }
-        public bool SetState<TState>() where TState : ApplicationStateBase
+        public bool SetState<TState>() where TState : ApplicationState_Base
         {
             if (States.TryGetValue(typeof(TState), out var state))
                 return StateMachine.SetState(state);
@@ -52,15 +52,15 @@ namespace Template.Core
             Application.wantsToQuit  += () =>
             {
                 IsApplicationQuitting = true;
-                if (StateMachine.HasState<ApplicationStateQuit>())
+                if (StateMachine.HasState<ApplicationState_Quit>())
                     return true;
 
-                SetState<ApplicationStateQuit>();
+                SetState<ApplicationState_Quit>();
                 return Application.isEditor;
             };
 
             Initialize(GetComponent<ApplicationStateMachine>());
-            SetState<ApplicationStateEntry>();
+            SetState<ApplicationState_Entry>();
         }
     }
 }

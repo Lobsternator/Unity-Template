@@ -11,7 +11,8 @@ namespace Template.Saving
     [CreateAssetMenu(fileName = "SaveManagerData", menuName = "Singleton/PersistentRuntimeObjectData/SaveManager")]
     public class SaveManagerData : PersistentRuntimeObjectData<SaveManagerData>
     {
-        [field: SerializeField] public string SavePath { get; private set; }
+        [field: SerializeField]
+        public string SavePath { get; private set; }
 
         public string FullSaveDirectoryPath => Path.GetDirectoryName(Path.Combine(Application.persistentDataPath, SavePath));
 

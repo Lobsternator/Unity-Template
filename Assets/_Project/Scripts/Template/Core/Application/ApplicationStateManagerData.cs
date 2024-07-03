@@ -7,7 +7,7 @@ namespace Template.Core
     /// </summary>
     [GenerateStateContainer]
     [CreateAssetMenu(fileName = "ApplicationStateManagerData", menuName = "Singleton/PersistentRuntimeObjectData/ApplicationStateManager")]
-    public partial class ApplicationStateManagerData : PersistentRuntimeObjectData<ApplicationStateManagerData>, IStateContainer<ApplicationStateMachine, ApplicationStateBase>
+    public partial class ApplicationStateManagerData : PersistentRuntimeObjectData<ApplicationStateManagerData>, IStateContainer<ApplicationStateMachine, ApplicationState_Base>
     {
 
     }

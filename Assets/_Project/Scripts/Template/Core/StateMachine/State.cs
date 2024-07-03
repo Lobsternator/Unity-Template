@@ -48,7 +48,7 @@ namespace Template.Core
     [Serializable]
     public abstract class State<TStateMachine, TBaseState> : IState<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
-        public bool Enabled => ReferenceEquals(StateMachine?.GetState(), this);
+        public bool Enabled { get; set; }
         public TStateMachine StateMachine { get; set; }
 
         protected Dictionary<int, TBaseState> _transitions = new Dictionary<int, TBaseState>();

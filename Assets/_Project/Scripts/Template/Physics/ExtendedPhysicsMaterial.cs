@@ -64,13 +64,16 @@ namespace Template.Physics
     public class ExtendedPhysicsMaterial : ScriptableObject
     {
 #if UNITY_EDITOR
-        [SerializeField] private PhysicMaterial _lastBaseMaterial;
+        [SerializeField]
+        private PhysicMaterial _lastBaseMaterial;
 #endif
 
-        [SerializeField] private PhysicMaterial _baseMaterial;
+        [SerializeField]
+        private PhysicMaterial _baseMaterial;
         public PhysicMaterial BaseMaterial => _baseMaterial;
 
-        [SerializeField] private float _dynamicFriction = 0.6f;
+        [SerializeField]
+        private float _dynamicFriction = 0.6f;
         public float DynamicFriction
         {
             get => _dynamicFriction;
@@ -82,7 +85,8 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private float _staticFriction = 0.6f;
+        [SerializeField]
+        private float _staticFriction = 0.6f;
         public float StaticFriction
         {
             get => _staticFriction;
@@ -94,7 +98,8 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private float _bounciness;
+        [SerializeField]
+        private float _bounciness;
         public float Bounciness
         {
             get => _bounciness;
@@ -106,21 +111,24 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private float _linearDrag;
+        [SerializeField]
+        private float _linearDrag;
         public float LinearDrag
         {
             get => _linearDrag;
             set => _linearDrag = Mathf.Max(value, 0.0f);
         }
 
-        [SerializeField] private float _angularDrag;
+        [SerializeField]
+        private float _angularDrag;
         public float AngularDrag
         {
             get => _angularDrag;
             set => _angularDrag = Mathf.Max(value, 0.0f);
         }
 
-        [SerializeField] private PhysicMaterialCombine _frictionCombine;
+        [SerializeField]
+        private PhysicMaterialCombine _frictionCombine;
         public PhysicMaterialCombine FrictionCombine
         {
             get => _frictionCombine;
@@ -132,7 +140,8 @@ namespace Template.Physics
             }
         }
 
-        [SerializeField] private PhysicMaterialCombine _bounceCombine;
+        [SerializeField]
+        private PhysicMaterialCombine _bounceCombine;
         public PhysicMaterialCombine BounceCombine
         {
             get => _bounceCombine;

@@ -36,14 +36,19 @@ namespace Template.Core
     /// <typeparam name="TStateMachine">Should be the inheriting class.</typeparam>
     public abstract class StateMachine<TStateMachine, TBaseState> : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
+        public event Action<TBaseState> StateChanged;
+
         protected TBaseState _state;
+        protected Coroutine _setStateRoutine;
 
         protected virtual IEnumerator EnableState(TBaseState state)
         {
             yield return state.OnEnable();
+            state.Enabled = true;
         }
         protected virtual IEnumerator DisableState(TBaseState state)
         {
+            state.Enabled = false;
             yield return state.OnDisable();
         }
 
@@ -56,19 +61,31 @@ namespace Template.Core
             return _state as TState;
         }
 
-        public virtual bool SetState<TState>(TState state) where TState : TBaseState
+        public bool CanChangeToState<TState>(TState state) where TState : TBaseState
         {
-            if (_state == state)
-                return false;
+            return _setStateRoutine is null && _state != state;
+        }
 
+        protected virtual IEnumerator SetState_Routine<TState>(TState state) where TState : TBaseState
+        {
             if (_state is not null)
-                StartCoroutine(DisableState(_state));
+                yield return DisableState(_state);
 
             _state = state;
 
             if (_state is not null)
-                StartCoroutine(EnableState(_state));
+                yield return EnableState(_state);
 
+            _setStateRoutine = null;
+            StateChanged?.Invoke(_state);
+        }
+
+        public virtual bool SetState<TState>(TState state) where TState : TBaseState
+        {
+            if (!CanChangeToState(state))
+                return false;
+
+            _setStateRoutine = StartCoroutine(SetState_Routine(state));
             return true;
         }
 
@@ -81,15 +98,27 @@ namespace Template.Core
             return _state is TState;
         }
 
+        protected bool CanPerformTransition(int input, out TBaseState state)
+        {
+            if (_state is not null && _state.GetTransition(input, out state) && CanChangeToState(state))
+                return true;
+
+            state = null;
+            return false;
+        }
+
+        public bool CanPerformTransition(int input)
+        {
+            return CanPerformTransition(input, out _);
+        }
+
         public virtual bool StateTransition(int input)
         {
-            if (_state is null)
+            if (!CanPerformTransition(input, out var newState))
                 return false;
 
-            if (!_state.GetTransition(input, out var newState))
-                return false;
-
-            return SetState(newState);
+            SetState(newState);
+            return true;
         }
     }
     /// <summary>
@@ -124,10 +153,9 @@ namespace Template.Core
     /// For objects that manage and hold states related to a particular <see cref="StateMachine{TStateMachine, TBaseState}"/>.
     /// </summary>
     /// <typeparam name="TStateMachine">The state machine which is being managed.</typeparam>
-    public interface IStateManager<TStateMachine, TBaseState> : IStateManager where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
+    public interface IStateManager<TStateMachine, TBaseState> : IStateManager, IStateContainer<TStateMachine, TBaseState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TBaseState> where TBaseState : State<TStateMachine, TBaseState>
     {
         public TStateMachine StateMachine { get; set; }
-        public ReadOnlyDictionary<Type, TBaseState> States { get; }
 
         public void Initialize(TStateMachine stateMachine);
 

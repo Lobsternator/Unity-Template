@@ -10,7 +10,8 @@ namespace Template.Physics
     [RequireComponent(typeof(ContactChecker2D))]
     public class ExtendedPhysics2D : MonoBehaviour
     {
-        [SerializeField] private ExtendedPhysicsMaterial2D _physicsMaterial;
+        [SerializeField]
+        private ExtendedPhysicsMaterial2D _physicsMaterial;
         public ExtendedPhysicsMaterial2D PhysicsMaterial
         {
             get => _physicsMaterial;

@@ -9,8 +9,12 @@ namespace Template.Audio
     [RequireComponent(typeof(AudioObject))]
     public class AudioObjectAttacher : MonoBehaviour
     {
-        [field: SerializeField] public Transform Follow { get; set; }
-        [field: SerializeField] public Vector3 LocalFollowOffset { get; set; }
+        [field: SerializeField]
+        public Transform Follow { get; set; }
+
+        [field: SerializeField]
+        public Vector3 LocalFollowOffset { get; set; }
+
         public Vector3 FollowOffset
         {
             get => Follow ? Follow.TransformVector(LocalFollowOffset) : LocalFollowOffset;

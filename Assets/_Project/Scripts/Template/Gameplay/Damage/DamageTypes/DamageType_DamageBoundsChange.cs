@@ -1,12 +1,13 @@
+using Template.Core;
 using UnityEngine;
 
 namespace Template.Gameplay
 {
     /// <summary>
-    /// Builtin damage type for when the damage changes due to the max damage changing.
+    /// Builtin damage type for when the damage changes due to the bounds changing.
     /// </summary>
-    [CreateAssetMenu(fileName = "MaxDamageChange", menuName = "Gameplay/Damage/DamageTypes/Builtin/MaxDamageChange")]
-    public sealed class MaxDamageChange_DamageType : DamageBoundsChange_DamageType
+    [SingletonAsset]
+    public abstract class DamageType_DamageBoundsChange : DamageType
     {
         public override float GetModifiedDamage(float baseDamage, DamagePool damagePool, MonoBehaviour eventInstigator, MonoBehaviour damageCauser)
         {

@@ -8,7 +8,8 @@ namespace Template.Gameplay
     /// </summary>
     public class TestDamageableObject : MonoBehaviour
     {
-        [field: SerializeField] public DamagePool Damage { get; private set; }
+        [field: SerializeField]
+        public DamagePool Damage { get; private set; }
 
         private void OnDamageChanged(DamageEventArgs damageEventArgs)
         {

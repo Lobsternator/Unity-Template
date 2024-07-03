@@ -6,7 +6,7 @@ namespace Template.Core
     /// State machine for handling application-wide state control.
     /// </summary>
     [DisallowMultipleComponent]
-    public class ApplicationStateMachine : StateMachine<ApplicationStateMachine, ApplicationStateBase>, IManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationStateBase>
+    public class ApplicationStateMachine : StateMachine<ApplicationStateMachine, ApplicationState_Base>, IManagedStateMachine<ApplicationStateManager, ApplicationStateMachine, ApplicationState_Base>
     {
         private ApplicationStateManager _stateManager;
         public ApplicationStateManager StateManager

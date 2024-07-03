@@ -12,10 +12,17 @@ namespace Template.Gameplay
     [RequireComponent(typeof(PhysicsChecker2D), typeof(Collider2D))]
     public class TestObjectA2D : MonoBehaviour
     {
-        [field: SerializeField] public float LaunchForce { get; private set; }
-        [field: SerializeField] public EventReference ImpactSound { get; private set; }
-        [field: SerializeField] public AudioEventSettings ImpactSoundSettings { get; private set; }
-        [field: SerializeField] public HitstopSettings ImpactHitstopSettings { get; private set; }
+        [field: SerializeField]
+        public float LaunchForce { get; private set; }
+
+        [field: SerializeField]
+        public EventReference ImpactSound { get; private set; }
+
+        [field: SerializeField]
+        public AudioEventSettings ImpactSoundSettings { get; private set; }
+
+        [field: SerializeField]
+        public HitstopSettings ImpactHitstopSettings { get; private set; }
 
         private PhysicsChecker2D _physicsChecker;
 

@@ -8,6 +8,14 @@ namespace Template.Gameplay
     /// </summary>
     public class ValueEventArgs : EventArgs
     {
+        public float OldValue { get; }
+        public float NewValue { get; }
+        public float ValueDifference => NewValue - OldValue;
+
+        public ValuePool ValuePool { get; }
+        public MonoBehaviour EventInstigator { get; }
+        public MonoBehaviour ChangeCauser { get; }
+
         public ValueEventArgs(float oldValue, float newValue, ValuePool valuePool, MonoBehaviour eventInstigator, MonoBehaviour changeCauser)
         {
             OldValue        = oldValue;
@@ -16,14 +24,6 @@ namespace Template.Gameplay
             EventInstigator = eventInstigator;
             ChangeCauser    = changeCauser;
         }
-
-        public float OldValue { get; }
-        public float NewValue { get; }
-        public float ValueDifference => NewValue - OldValue;
-
-        public ValuePool ValuePool { get; }
-        public MonoBehaviour EventInstigator { get; }
-        public MonoBehaviour ChangeCauser { get; }
     }
 
     /// <summary>
@@ -36,14 +36,17 @@ namespace Template.Gameplay
         public bool IsAtMinValue => Mathf.Approximately(Value, MinValue);
         public bool IsAtMaxValue => Mathf.Approximately(Value, MaxValue);
 
+        [field: SerializeField]
+        public float Value { get; private set; } = 0.0f;
         private float _oldValue;
-        [field: SerializeField] public float Value { get; private set; } = 0.0f;
 
+        [field: SerializeField]
+        public float MinValue { get; private set; } = 0.0f;
         private float _oldMinValue;
-        [field: SerializeField] public float MinValue { get; private set; } = 0.0f;
 
+        [field: SerializeField]
+        public float MaxValue { get; private set; } = 100.0f;
         private float _oldMaxValue;
-        [field: SerializeField] public float MaxValue { get; private set; } = 100.0f;
 
         public event Action<ValueEventArgs> ValueChanged;
         public event Action<ValueEventArgs> MinValueChanged;

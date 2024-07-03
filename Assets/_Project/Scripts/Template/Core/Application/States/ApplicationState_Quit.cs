@@ -10,12 +10,14 @@ namespace Template.Core
     /// Is entered when the application is quitting.
     /// </summary>
     [Serializable]
-    public class ApplicationStateQuit : ApplicationStateBase
+    public class ApplicationState_Quit : ApplicationState_Base
     {
         [Tooltip("If the application stalls when shutting down, and remains unresponsive, the state will forcefully kill it.")]
         public bool failsafeKill = false;
+
         [Tooltip("The state will check for responsiveness this many times before forcefully shutting down the application.")]
-        public int failsafeKillRetryCount    = 10;
+        public int failsafeKillRetryCount = 10;
+
         [Tooltip("The state will wait this long (in milliseconds) between each check.")]
         public int failsafeKillRetryInterval = 100;
 

@@ -9,9 +9,14 @@ namespace Template.Core
     [Serializable]
     public class PersistentRuntimeObjectInitSettings
     {
-        [field: SerializeField] public bool StartEnabled { get; private set; } = true;
-        [field: SerializeField] public bool StartActive { get; private set; } = true;
-        [field: SerializeField] public bool StartStatic { get; private set; } = false;
+        [field: SerializeField]
+        public bool StartEnabled { get; private set; } = true;
+
+        [field: SerializeField]
+        public bool StartActive { get; private set; } = true;
+
+        [field: SerializeField]
+        public bool StartStatic { get; private set; } = false;
     }
 
     /// <summary>
@@ -20,6 +25,7 @@ namespace Template.Core
     /// <typeparam name="TSingleton"></typeparam>
     public abstract class PersistentRuntimeObjectData<TSingleton> : SingletonAsset<TSingleton> where TSingleton : PersistentRuntimeObjectData<TSingleton>
     {
-        [field: SerializeField] public PersistentRuntimeObjectInitSettings InitSettings { get; private set; }
+        [field: SerializeField]
+        public PersistentRuntimeObjectInitSettings InitSettings { get; private set; }
     }
 }

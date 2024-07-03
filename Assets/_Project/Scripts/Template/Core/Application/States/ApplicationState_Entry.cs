@@ -7,7 +7,7 @@ namespace Template.Core
     /// Is entered at the start of the application.
     /// </summary>
     [Serializable]
-    public class ApplicationStateEntry : ApplicationStateBase
+    public class ApplicationState_Entry : ApplicationState_Base
     {
 
     }

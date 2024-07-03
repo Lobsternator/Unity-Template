@@ -12,7 +12,8 @@ namespace Template.Core
     [Serializable]
     public abstract class SerializableInterface : IEquatable<SerializableInterface>
     {
-        [SerializeField] protected UnityEngine.Object _value;
+        [SerializeField]
+        protected UnityEngine.Object _value;
 
         public bool Equals(SerializableInterface other)
         {

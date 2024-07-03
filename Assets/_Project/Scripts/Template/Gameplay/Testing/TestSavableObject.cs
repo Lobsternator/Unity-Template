@@ -10,7 +10,8 @@ namespace Template.Gameplay
     /// </summary>
     public class TestSavableObject : MonoBehaviour, ISavableObject
     {
-        [field: SerializeField] public DataKey DataKey { get; set; } = new DataKey();
+        [field: SerializeField]
+        public DataKey DataKey { get; set; } = new DataKey();
 
         public Vector3 test;
 

@@ -31,7 +31,8 @@ namespace Template.Physics
 
         public ContactEventSender2D CurrentContactEventSender { get; set; }
 
-        [SerializeField] private bool _ignoreTriggerOverlaps = true;
+        [SerializeField]
+        private bool _ignoreTriggerOverlaps = true;
         public bool IgnoreTriggerOverlaps
         {
             get => _ignoreTriggerOverlaps;
@@ -39,9 +40,11 @@ namespace Template.Physics
         }
 
 #if UNITY_EDITOR
-        [SerializeField] private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
+        [SerializeField]
+        private ForceGroundedStateMode _oldForceGroundedState = ForceGroundedStateMode.Either;
 #endif
-        [SerializeField] private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
+        [SerializeField]
+        private ForceGroundedStateMode _forceGroundedState = ForceGroundedStateMode.Either;
         public ForceGroundedStateMode ForceGroundedState
         {
             get => _forceGroundedState;

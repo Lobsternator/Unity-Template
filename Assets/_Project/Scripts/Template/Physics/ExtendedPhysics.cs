@@ -12,7 +12,8 @@ namespace Template.Physics
     {
         public ContactEventSender CurrentContactEventSender { get; set; }
 
-        [SerializeField] private ExtendedPhysicsMaterial _physicsMaterial;
+        [SerializeField]
+        private ExtendedPhysicsMaterial _physicsMaterial;
         public ExtendedPhysicsMaterial PhysicsMaterial
         {
             get => _physicsMaterial;
