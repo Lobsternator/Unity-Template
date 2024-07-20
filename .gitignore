@@ -1,9 +1,6 @@
 # Ignore everything in root folder
 /*
 
-# Ignore Settings folder
-[Aa]ssets/_[Pp]roject/[Ss]ettings
-
 # But not these
 !.gitignore
 !.gitattributes
@@ -18,18 +15,21 @@
 
 ![Ss]ource[Gg]enerators/
 
+# Ignore Settings folder
+[Aa]ssets/_[Pp]roject/[Ss]ettings
+
 ### FMOD IGNORE
 
 # Never ignore DLLs in the FMOD subfolder.
-!/[Aa]ssets/_External/FMOD/**/lib/*
+!/[Aa]ssets/_[Ee]xternal/FMOD/**/lib/*
 
 # Ignore the Cache folder since it is updated locally.
-/[Aa]ssets/_External/FMOD/Cache/*
-/[Aa]ssets/_External/FMOD/Cache.meta
+/[Aa]ssets/_[Ee]xternal/FMOD/[Cc]ache/*
+/[Aa]ssets/_[Ee]xternal/FMOD/[Cc]ache.meta
 
 # Ignore StreamingAssets banks.
-/[Aa]ssets/[Ss]treaming[Aa]ssets/*.bank
-/[Aa]ssets/[Ss]treaming[Aa]ssets/*.bank.meta
+/[Aa]ssets/[Ss]treaming[Aa]ssets/FMOD/*
+/[Aa]ssets/[Ss]treaming[Aa]ssets/FMOD.meta
 
 # If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
 # Log files can be ignored.

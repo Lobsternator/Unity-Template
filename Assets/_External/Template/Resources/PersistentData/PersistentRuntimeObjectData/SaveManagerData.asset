@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd2e32ac1e5e5c489fc336649db4a07, type: 3}
+  m_Name: SaveManagerData
+  m_EditorClassIdentifier: 
+  <Settings>k__BackingField:
+    _toggleDropdown: 0
+    _enabled: 1
+    _active: 1
+    _static: 1
+    _shouldOverrideDefaultName: 0
+    _nameOverride: 
+  <SavePath>k__BackingField: Saves/SaveData.sav

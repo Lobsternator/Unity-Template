@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f51595b73a1d254aa20ba24c25226a2, type: 3}
+  m_Name: AudioManagerData
+  m_EditorClassIdentifier: 
+  <Settings>k__BackingField:
+    _enabled: 1
+    _active: 1
+    _static: 0
+    _shouldOverrideDefaultName: 0
+    _nameOverride: 
+  banksToLoad:
+  - Master
+  audioObjectPrefab: {fileID: -6321987758463485832, guid: b72eff7b1e865524c8818b732fe90c09, type: 3}
+  maxNumAudioObjects: 32
