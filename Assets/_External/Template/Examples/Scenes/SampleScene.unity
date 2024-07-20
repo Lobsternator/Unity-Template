@@ -201,6 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82de371e1713ca14ba2c5631723620cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DataKey>k__BackingField:
+    _value: 56417f0b-b0de-4fe2-a8ff-e8e2745791f9
 --- !u!50 &50912564
 Rigidbody2D:
   serializedVersion: 4
@@ -4106,6 +4108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563f7f19325bb3c43878ec786c1dcd67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DataKey>k__BackingField:
+    _value: a6be5686-2057-47cc-afcc-02acafcd1131
   <LaunchForce>k__BackingField: 10
   <ImpactSound>k__BackingField:
     Guid:
@@ -4488,6 +4492,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82de371e1713ca14ba2c5631723620cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DataKey>k__BackingField:
+    _value: 807fb1a6-3a1d-4268-92c8-49cc0e46b137
 --- !u!1 &2105664294
 GameObject:
   m_ObjectHideFlags: 0

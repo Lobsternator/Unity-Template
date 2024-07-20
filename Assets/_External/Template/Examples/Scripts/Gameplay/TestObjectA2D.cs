@@ -83,10 +83,6 @@ namespace Template.Gameplay
             Vector2 velocity = Vector2.zero;
             if (dataContainer.GetItem(nameof(_rigidbody.velocity), ref velocity))
                 _rigidbody.velocity = velocity;
-
-            var interpolation        = _rigidbody.interpolation;
-            _rigidbody.interpolation = RigidbodyInterpolation2D.None;
-            _rigidbody.interpolation = interpolation;
         }
     }
 }
