@@ -1,1 +1,1 @@
-copy %1 ..\..\Assets\_Project\Scripts\Template\Libraries\%~n1%~x1
+copy %1 ..\..\Assets\_External\Template\Libraries\%~n1%~x1
