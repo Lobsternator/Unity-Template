@@ -61,12 +61,18 @@ namespace Template.Physics
         public ContactEventSender2D CurrentContactEventSender { get; set; }
 
         public ContactEventFlags2D enabledContactEvents;
-        public HashSet<GameObject> receivers;
+        public HashSet<GameObject> receivers = new HashSet<GameObject>();
 
-        private List<IContactEventReceiver2D> _cachedReceivers;
+        [SerializeField]
+        private List<GameObject> receiversToAddOnAwake = new List<GameObject>();
+
+        private List<IContactEventReceiver2D> _cachedReceivers = new List<IContactEventReceiver2D>();
 
         private void Awake()
         {
+            foreach (var receiver in receiversToAddOnAwake)
+                receivers.Add(receiver);
+
             StartCoroutine(ClearDeadReceivers_UpdateRoutine());
         }
 
@@ -78,8 +84,8 @@ namespace Template.Physics
         {
             while (true)
             {
-                yield return CoroutineUtility.WaitForFrames(1);
                 ClearDeadReceivers();
+                yield return CoroutineUtility.WaitForFrames(1);
             }
         }
 
