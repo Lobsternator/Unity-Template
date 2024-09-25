@@ -37,9 +37,9 @@ namespace Template.Core
     public abstract class StateMachine<TStateMachine, TState> : MonoBehaviour, IStateMachine<TStateMachine, TState> where TStateMachine : MonoBehaviour, IStateMachine<TStateMachine, TState> where TState : State<TStateMachine, TState>
     {
         public event Action<TState> StateChanged;
+        public Coroutine SetStateRoutine { get; protected set; }
 
         protected TState _state;
-        protected Coroutine _setStateRoutine;
 
         protected virtual IEnumerator EnableState(TState state)
         {
@@ -63,7 +63,7 @@ namespace Template.Core
 
         public bool CanChangeToState<TStateChange>(TStateChange state) where TStateChange : TState
         {
-            return _setStateRoutine is null && _state != state;
+            return SetStateRoutine is null && _state != state;
         }
 
         protected virtual IEnumerator SetState_Routine<TStateSet>(TStateSet state) where TStateSet : TState
@@ -76,7 +76,7 @@ namespace Template.Core
             if (_state is not null)
                 yield return EnableState(_state);
 
-            _setStateRoutine = null;
+            SetStateRoutine = null;
             StateChanged?.Invoke(_state);
         }
 
@@ -85,7 +85,7 @@ namespace Template.Core
             if (!CanChangeToState(state))
                 return false;
 
-            _setStateRoutine = StartCoroutine(SetState_Routine(state));
+            SetStateRoutine = StartCoroutine(SetState_Routine(state));
             return true;
         }
 
