@@ -11,7 +11,8 @@ namespace Template.Core
         {
             EditorGUI.indentLevel--;
             {
-                property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "Settings", true);
+                position.x         -= 2.5f * EditorGUIUtility.pixelsPerPoint;
+                property.isExpanded = EditorGUI.PropertyField(position, property, label, false);
                 if (property.isExpanded)
                 {
                     EditorGUI.indentLevel++;
