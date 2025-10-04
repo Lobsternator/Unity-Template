@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 3d7174d67920f804cb39307d1ccc50f7
+guid: aab0baabbe56cb347a312ada7287352f
 PluginImporter:
   externalObjects: {}
-  serializedVersion: 2
+  serializedVersion: 3
   iconMap: {}
   executionOrder: {}
   defineConstraints: []
@@ -11,21 +11,16 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-  - first:
-      Any: 
-    second:
+    Any:
       enabled: 0
       settings: {}
-  - first:
-      Editor: Editor
-    second:
+    Editor:
       enabled: 1
       settings:
         CPU: x86_64
+        DefaultValueInitialized: true
         OS: Windows
-  - first:
-      Standalone: Win64
-    second:
+    Win64:
       enabled: 1
       settings: {}
   userData: 

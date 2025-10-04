@@ -8,9 +8,9 @@ namespace Template.Core
     /// </summary>
     public static class ObjectUtility
     {
-        public static T FindObjectWithInterface<T>(bool includeInactive) where T : class
+        public static T FindFirstObjectWithInterface<T>(FindObjectsInactive findObjectsInactive) where T : class
         {
-            var objects = Object.FindObjectsOfType<Object>(includeInactive);
+            var objects = Object.FindObjectsByType<Object>(findObjectsInactive, FindObjectsSortMode.InstanceID);
             foreach (Object obj in objects)
             {
                 if (obj.GetType().HasInterface<T>())
@@ -19,14 +19,30 @@ namespace Template.Core
 
             return null;
         }
-        public static T FindObjectWithInterface<T>() where T : class
+        public static T FindFirstObjectWithInterface<T>() where T : class
         {
-            return FindObjectWithInterface<T>(false);
+            return FindFirstObjectWithInterface<T>(FindObjectsInactive.Exclude);
         }
 
-        public static List<T> FindObjectsWithInterface<T>(bool includeInactive) where T : class
+        public static T FindAnyObjectWithInterface<T>(FindObjectsInactive findObjectsInactive) where T : class
         {
-            var objects              = Object.FindObjectsOfType<Object>(includeInactive);
+            var objects = Object.FindObjectsByType<Object>(findObjectsInactive, FindObjectsSortMode.None);
+            foreach (Object obj in objects)
+            {
+                if (obj.GetType().HasInterface<T>())
+                    return obj as T;
+            }
+
+            return null;
+        }
+        public static T FindAnyObjectWithInterface<T>() where T : class
+        {
+            return FindFirstObjectWithInterface<T>(FindObjectsInactive.Exclude);
+        }
+
+        public static List<T> FindObjectsWithInterface<T>(FindObjectsInactive findObjectsInactive, FindObjectsSortMode findObjectsSortMode) where T : class
+        {
+            var objects              = Object.FindObjectsByType<Object>(findObjectsInactive, findObjectsSortMode);
             var objectsWithInterface = new List<T>();
             foreach (Object obj in objects)
             {
@@ -36,9 +52,9 @@ namespace Template.Core
 
             return objectsWithInterface;
         }
-        public static List<T> FindObjectsWithInterface<T>() where T : class
+        public static List<T> FindObjectsWithInterface<T>(FindObjectsSortMode findObjectsSortMode) where T : class
         {
-            return FindObjectsWithInterface<T>(false);
+            return FindObjectsWithInterface<T>(FindObjectsInactive.Exclude, findObjectsSortMode);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Template.Saving
         [MenuItem("Tools/Saving/Regenerate data keys")]
         public static void RegenerateDataKeys()
         {
-            List<ISavableObject> savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(true);
+            List<ISavableObject> savableObjects = ObjectUtility.FindObjectsWithInterface<ISavableObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             foreach (ISavableObject savableObject in savableObjects)
             {

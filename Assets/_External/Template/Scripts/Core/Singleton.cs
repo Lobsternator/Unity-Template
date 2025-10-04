@@ -33,7 +33,7 @@ namespace Template.Core
             get
             {
                 if (!_instance)
-                    _instance = FindObjectOfType<TSingleton>(true);
+                    _instance = FindFirstObjectByType<TSingleton>(FindObjectsInactive.Include);
 
                 return _instance;
             }

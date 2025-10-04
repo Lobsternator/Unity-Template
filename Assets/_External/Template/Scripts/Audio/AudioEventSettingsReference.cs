@@ -14,7 +14,7 @@ namespace Template.Audio
         public float volume;
         public float pitch;
 
-        public List<AudioParameter> parameters;
+        public List<AudioParameter> parameters = new List<AudioParameter>();
     }
 
     /// <summary>

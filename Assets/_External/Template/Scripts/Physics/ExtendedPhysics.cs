@@ -32,7 +32,7 @@ namespace Template.Physics
             for (int i = 0; i < colliders.Length; i++)
             {
                 Collider collider              = colliders[i];
-                PhysicMaterial physicsMaterial = _physicsMaterial ? _physicsMaterial.BaseMaterial : null;
+                PhysicsMaterial physicsMaterial = _physicsMaterial ? _physicsMaterial.BaseMaterial : null;
 
                 if (collider.sharedMaterial != physicsMaterial)
                     collider.sharedMaterial = physicsMaterial;
@@ -67,7 +67,7 @@ namespace Template.Physics
                 Collider ourCollider     = contact.thisCollider;
                 Collider otherCollider   = contact.otherCollider;
 
-                PhysicMaterialCombine bounceCombine = otherCollider.sharedMaterial ? otherCollider.sharedMaterial.bounceCombine : PhysicMaterialCombine.Average;
+                PhysicsMaterialCombine bounceCombine = otherCollider.sharedMaterial ? otherCollider.sharedMaterial.bounceCombine : PhysicsMaterialCombine.Average;
                 float ourBaseBounciness             = ourCollider.sharedMaterial ? ourCollider.sharedMaterial.bounciness : 0.0f;
                 float ourExtendedBounciness         = PhysicsMaterial ? PhysicsMaterial.Bounciness : ourBaseBounciness;
                 float otherBaseBounciness           = otherCollider.sharedMaterial ? otherCollider.sharedMaterial.bounciness : 0.0f;
@@ -76,22 +76,22 @@ namespace Template.Physics
                 float baseFinalBounciness;
                 float extendedFinalBounciness;
 
-                if (bounceCombine == PhysicMaterialCombine.Average)
+                if (bounceCombine == PhysicsMaterialCombine.Average)
                 {
                     baseFinalBounciness     = (ourBaseBounciness + otherBaseBounciness) * 0.5f;
                     extendedFinalBounciness = (ourExtendedBounciness + otherExtendedBounciness) * 0.5f;
                 }
-                else if (bounceCombine == PhysicMaterialCombine.Maximum)
+                else if (bounceCombine == PhysicsMaterialCombine.Maximum)
                 {
                     baseFinalBounciness     = Mathf.Max(ourBaseBounciness, otherBaseBounciness);
                     extendedFinalBounciness = Mathf.Max(ourExtendedBounciness, otherExtendedBounciness);
                 }
-                else if (bounceCombine == PhysicMaterialCombine.Minimum)
+                else if (bounceCombine == PhysicsMaterialCombine.Minimum)
                 {
                     baseFinalBounciness     = Mathf.Min(ourBaseBounciness, otherBaseBounciness);
                     extendedFinalBounciness = Mathf.Min(ourExtendedBounciness, otherExtendedBounciness);
                 }
-                else if (bounceCombine == PhysicMaterialCombine.Multiply)
+                else if (bounceCombine == PhysicsMaterialCombine.Multiply)
                 {
                     baseFinalBounciness     = ourBaseBounciness * otherBaseBounciness;
                     extendedFinalBounciness = ourExtendedBounciness * otherExtendedBounciness;
@@ -122,7 +122,7 @@ namespace Template.Physics
                 if (rigidbody == null || contactType == ContactType.Trigger || affectedBodies.Contains(rigidbody))
                     continue;
 
-                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
+                rigidbody.linearVelocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
                 rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicsMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
 
                 affectedBodies.Add(rigidbody);

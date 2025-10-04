@@ -23,19 +23,19 @@ namespace Template.Physics
 
         public static void CheckReferences(string[] searchInFolders)
         {
-            HashSet<PhysicMaterial> basePhysicsMaterials =
+            HashSet<PhysicsMaterial> basePhysicsMaterials =
                 _registeredMaterials
                 .Select((m) => m.BaseMaterial)
                 .ToHashSet();
 
-            PhysicMaterial[] physicsMaterials =
-                AssetDatabase.FindAssets($"t: {nameof(PhysicMaterial)}", searchInFolders)
-                .Select((guid) => AssetDatabase.LoadAssetAtPath<PhysicMaterial>(AssetDatabase.GUIDToAssetPath(guid)))
+            PhysicsMaterial[] physicsMaterials =
+                AssetDatabase.FindAssets($"t: {nameof(PhysicsMaterial)}", searchInFolders)
+                .Select((guid) => AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(AssetDatabase.GUIDToAssetPath(guid)))
                 .ToArray();
 
             for (int i = 0; i < physicsMaterials.Length; i++)
             {
-                PhysicMaterial physicsMaterial = physicsMaterials[i];
+                PhysicsMaterial physicsMaterial = physicsMaterials[i];
 
                 if (basePhysicsMaterials.Contains(physicsMaterial))
                     physicsMaterial.hideFlags = HideFlags.NotEditable;
@@ -44,7 +44,7 @@ namespace Template.Physics
             }
         }
 
-        public static ExtendedPhysicsMaterial GetExtendedMaterialFromBase(PhysicMaterial physicsMaterial)
+        public static ExtendedPhysicsMaterial GetExtendedMaterialFromBase(PhysicsMaterial physicsMaterial)
         {
             return _registeredMaterials.FirstOrDefault((m) => m.BaseMaterial == physicsMaterial);
         }
@@ -65,12 +65,12 @@ namespace Template.Physics
     {
 #if UNITY_EDITOR
         [SerializeField]
-        private PhysicMaterial _lastBaseMaterial;
+        private PhysicsMaterial _lastBaseMaterial;
 #endif
 
         [SerializeField]
-        private PhysicMaterial _baseMaterial;
-        public PhysicMaterial BaseMaterial => _baseMaterial;
+        private PhysicsMaterial _baseMaterial;
+        public PhysicsMaterial BaseMaterial => _baseMaterial;
 
         [SerializeField]
         private float _dynamicFriction = 0.6f;
@@ -128,8 +128,8 @@ namespace Template.Physics
         }
 
         [SerializeField]
-        private PhysicMaterialCombine _frictionCombine;
-        public PhysicMaterialCombine FrictionCombine
+        private PhysicsMaterialCombine _frictionCombine;
+        public PhysicsMaterialCombine FrictionCombine
         {
             get => _frictionCombine;
             set
@@ -141,8 +141,8 @@ namespace Template.Physics
         }
 
         [SerializeField]
-        private PhysicMaterialCombine _bounceCombine;
-        public PhysicMaterialCombine BounceCombine
+        private PhysicsMaterialCombine _bounceCombine;
+        public PhysicsMaterialCombine BounceCombine
         {
             get => _bounceCombine;
             set

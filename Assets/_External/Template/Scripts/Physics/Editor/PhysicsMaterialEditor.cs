@@ -7,14 +7,14 @@ namespace Template.Physics
     /// <summary>
     /// <see cref="Editor"/> for <see cref="PhysicMaterial"/>.
     /// </summary>
-    [CustomEditor(typeof(PhysicMaterial))]
+    [CustomEditor(typeof(PhysicsMaterial))]
     public class PhysicsMaterialEditor : Editor
     {
         private ExtendedPhysicsMaterial _extendedPhysicsMaterial;
 
         private void OnEnable()
         {
-            _extendedPhysicsMaterial = ExtendedPhysicsMaterialReferenceChecker.GetExtendedMaterialFromBase(target as PhysicMaterial);
+            _extendedPhysicsMaterial = ExtendedPhysicsMaterialReferenceChecker.GetExtendedMaterialFromBase(target as PhysicsMaterial);
         }
 
         public override void OnInspectorGUI()

@@ -280,6 +280,9 @@ namespace Template.Audio
         private static void OnAudioObjectDestroy(AudioObject audioObject)
         {
             audioObject.StoppedPlaying -= OnAudioObjectStoppedPlaying;
+            if (!audioObject)
+                return;
+
             Destroy(audioObject.gameObject);
         }
 

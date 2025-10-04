@@ -63,7 +63,7 @@ namespace Template.Physics
                 if (rigidbody == null || contactType == ContactType.Trigger || affectedBodies.Contains(rigidbody))
                     continue;
 
-                rigidbody.velocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
+                rigidbody.linearVelocity        *= Mathf.Pow(1.0f / (PhysicsMaterial.LinearDrag  + 1.0f), Time.fixedDeltaTime);
                 rigidbody.angularVelocity *= Mathf.Pow(1.0f / (PhysicsMaterial.AngularDrag + 1.0f), Time.fixedDeltaTime);
 
                 affectedBodies.Add(rigidbody);

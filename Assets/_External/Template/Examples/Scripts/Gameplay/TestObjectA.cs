@@ -38,7 +38,7 @@ namespace Template.Gameplay
             AudioManager.PlaySoundAttached(ImpactSound, ImpactSoundSettings, transform);
             TimeManager.DoHitstop(ImpactHitstopSettings);
 
-            foreach (TestObjectB testObjectB in FindObjectsOfType<TestObjectB>())
+            foreach (TestObjectB testObjectB in FindObjectsByType<TestObjectB>(FindObjectsSortMode.None))
                 testObjectB.Launch(LaunchForce);
         }
 
@@ -66,7 +66,7 @@ namespace Template.Gameplay
             var saveData = new SaveData(this);
 
             saveData.Data.AddItem(nameof(_rigidbody.position), _rigidbody.position);
-            saveData.Data.AddItem(nameof(_rigidbody.velocity), _rigidbody.velocity);
+            saveData.Data.AddItem(nameof(_rigidbody.linearVelocity), _rigidbody.linearVelocity);
 
             return saveData;
         }
@@ -81,8 +81,8 @@ namespace Template.Gameplay
                 _rigidbody.MovePosition(position);
 
             Vector3 velocity = Vector3.zero;
-            if (dataContainer.GetItem(nameof(_rigidbody.velocity), ref velocity))
-                _rigidbody.velocity = velocity;
+            if (dataContainer.GetItem(nameof(_rigidbody.linearVelocity), ref velocity))
+                _rigidbody.linearVelocity = velocity;
 
             var interpolation        = _rigidbody.interpolation;
             _rigidbody.interpolation = RigidbodyInterpolation.None;

@@ -188,7 +188,7 @@ namespace Template.Physics
         }
         private void MovementChecking()
         {
-            float velocitySqrMagnitude = _rigidbody.velocity.sqrMagnitude;
+            float velocitySqrMagnitude = _rigidbody.linearVelocity.sqrMagnitude;
 
             if (velocitySqrMagnitude >= MinVelocity * MinVelocity && !IsMoving)
                 OnStartedMoving();
@@ -211,7 +211,7 @@ namespace Template.Physics
             else
                 OnBecameAirborn();
 
-            float velocitySqrMagnitude = _rigidbody.velocity.sqrMagnitude;
+            float velocitySqrMagnitude = _rigidbody.linearVelocity.sqrMagnitude;
             if (velocitySqrMagnitude >= MinVelocity * MinVelocity)
                 OnStartedMoving();
             else
